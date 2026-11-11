@@ -84,7 +84,7 @@ private fun classOf(name: String): GraphemeBreakClass? = when (name) {
 }
 
 /** Reads a UCD-format file: `0300..036F ; Extend # comment`. */
-private fun ucdLines(resource: String): List<List<String>> {
+internal fun ucdLines(resource: String): List<List<String>> {
     val text = checkNotNull(object {}.javaClass.getResourceAsStream("/ucd/$resource")) {
         "vendored UCD file /ucd/$resource is missing"
     }.bufferedReader().readText()
@@ -94,13 +94,17 @@ private fun ucdLines(resource: String): List<List<String>> {
     // that would fail in a way that looks like an algorithm bug.
     //
     // emoji-data.txt is the exception: it is versioned as an Emoji release
-    // rather than a UCD one and states neither in its header. It is checked by
-    // content instead, on a code point whose class this file exists to provide.
+    // rather than a UCD one. Check its stated Emoji release against the matching
+    // major/minor Unicode version and require the property we consume.
     val declared = Regex("""^# \S+-(\d+\.\d+\.\d+)\.txt""").find(text)?.groupValues?.get(1)
     if (declared != null) {
         check(declared == UCD_VERSION) { "$resource declares Unicode $declared, expected $UCD_VERSION" }
     } else {
         check(text.contains("Extended_Pictographic")) { "$resource carries no Extended_Pictographic data" }
+        val emojiVersion = Regex("Emoji Version (\\d+\\.\\d+)").find(text)?.groupValues?.get(1)
+        check(emojiVersion == UCD_VERSION.substringBeforeLast('.')) {
+            "$resource declares Emoji $emojiVersion, expected Unicode $UCD_VERSION properties"
+        }
     }
 
     return text.lineSequence()
@@ -119,9 +123,9 @@ private fun ucdLines(resource: String): List<List<String>> {
  * they do not form ranges, so a table of starts and ends would be longer than
  * the set it encodes.
  *
- * The rest of the word break properties are deliberately not read. Applying them
- * fully needs the dictionaries the scripts without spaces between words require,
- * and this library ships none.
+ * This small subset serves person-name initials. The segmentation backend reads
+ * the complete default word-boundary properties separately; dictionary-based
+ * word detection remains a different capability.
  */
 fun parseWordBreakMidLetters(): String {
     val wanted = setOf("MidLetter", "MidNumLet", "Single_Quote")

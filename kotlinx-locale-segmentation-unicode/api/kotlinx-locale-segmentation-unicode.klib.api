@@ -1,0 +1,22 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-segmentation-unicode>
+final object dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation : dev.carcara.kotlinx.locale.segmentation/SegmentationSource { // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation|null[0]
+    final val supportedGranularities // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.supportedGranularities|{}supportedGranularities[0]
+        final fun <get-supportedGranularities>(): kotlin.collections/Set<dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity> // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.supportedGranularities.<get-supportedGranularities>|<get-supportedGranularities>(){}[0]
+    final val supportedLocales // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.supportedLocales|{}supportedLocales[0]
+        final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
+    final val unicodeVersion // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.unicodeVersion|{}unicodeVersion[0]
+        final fun <get-unicodeVersion>(): kotlin/String // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.unicodeVersion.<get-unicodeVersion>|<get-unicodeVersion>(){}[0]
+
+    final fun localeCoverageOrNull(dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity): dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.localeCoverageOrNull|localeCoverageOrNull(dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity){}[0]
+    final fun segmenterOrNull(dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity): dev.carcara.kotlinx.locale.segmentation/TextSegmenter // dev.carcara.kotlinx.locale.segmentation.unicode/UnicodeSegmentation.segmenterOrNull|segmenterOrNull(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity){}[0]
+}
+
+final fun dev.carcara.kotlinx.locale.segmentation.unicode/segmentationSegmenter(dev.carcara.kotlinx.locale/Locale = ..., dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity = ...): dev.carcara.kotlinx.locale.segmentation/TextSegmenter // dev.carcara.kotlinx.locale.segmentation.unicode/segmentationSegmenter|segmentationSegmenter(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity){}[0]
+final fun dev.carcara.kotlinx.locale.segmentation.unicode/segmentationSegments(kotlin/String, dev.carcara.kotlinx.locale/Locale = ..., dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity = ...): dev.carcara.kotlinx.locale.segmentation/TextSegments // dev.carcara.kotlinx.locale.segmentation.unicode/segmentationSegments|segmentationSegments(kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity){}[0]

@@ -19,7 +19,7 @@ package dev.carcara.kotlinx.locale.internal
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 
 /**
- * Where one written character ends and the next begins, per UAX #29.
+ * Immutable grapheme rules over an explicitly supplied Unicode property table.
  *
  * A grapheme cluster is what a reader means by "a character", and it is
  * regularly more than one code point: a base plus its combining marks, a Hangul
@@ -34,46 +34,38 @@ import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
  * every case of it.
  */
 @InternalKotlinxLocaleApi
-public object GraphemeClusters {
+public class GraphemeBreakRules(table: String) {
 
-    // The classes, in the order the generated table encodes them.
-    private const val OTHER = 0
-    private const val CR = 1
-    private const val LF = 2
-    private const val CONTROL = 3
-    private const val EXTEND = 4
-    private const val ZWJ = 5
-    private const val REGIONAL_INDICATOR = 6
-    private const val PREPEND = 7
-    private const val SPACING_MARK = 8
-    private const val HANGUL_L = 9
-    private const val HANGUL_V = 10
-    private const val HANGUL_T = 11
-    private const val HANGUL_LV = 12
-    private const val HANGUL_LVT = 13
-    private const val EXTENDED_PICTOGRAPHIC = 14
+    public companion object {
+        // The classes, in the order the generated table encodes them.
+        private const val OTHER = 0
+        private const val CR = 1
+        private const val LF = 2
+        private const val CONTROL = 3
+        private const val EXTEND = 4
+        private const val ZWJ = 5
+        private const val REGIONAL_INDICATOR = 6
+        private const val PREPEND = 7
+        private const val SPACING_MARK = 8
+        private const val HANGUL_L = 9
+        private const val HANGUL_V = 10
+        private const val HANGUL_T = 11
+        private const val HANGUL_LV = 12
+        private const val HANGUL_LVT = 13
+        private const val EXTENDED_PICTOGRAPHIC = 14
 
-    private const val INCB_NONE = 0
-    private const val INCB_CONSONANT = 1
-    private const val INCB_LINKER = 2
-    private const val INCB_EXTEND = 3
+        private const val INCB_NONE = 0
+        private const val INCB_CONSONANT = 1
+        private const val INCB_LINKER = 2
+        private const val INCB_EXTEND = 3
+    }
 
-    private var starts = IntArray(0)
-    private var ends = IntArray(0)
-    private var flags = IntArray(0)
+    private val starts: IntArray
+    private val ends: IntArray
+    private val flags: IntArray
 
-    /**
-     * Installs the property table.
-     *
-     * Called once by whichever generated artifact carries it. Until then every
-     * code point reads as Other, which degrades to breaking between code points
-     * rather than to anything wrong: a build with no table still answers, it
-     * just cannot see a conjunct.
-     */
-    @InternalKotlinxLocaleApi
-    public fun install(table: String) {
-        if (starts.isNotEmpty() || table.isEmpty()) return
-        val entries = table.split(ENTRY_SEPARATOR)
+    init {
+        val entries = if (table.isEmpty()) emptyList() else table.split(ENTRY_SEPARATOR)
         val s = IntArray(entries.size)
         val e = IntArray(entries.size)
         val f = IntArray(entries.size)
@@ -256,4 +248,27 @@ public object GraphemeClusters {
         }
         return low.code
     }
+}
+
+/** Legacy installation entry point for generated person-name bindings. */
+@InternalKotlinxLocaleApi
+public object GraphemeClusters {
+    private var rules = GraphemeBreakRules("")
+    private var installed = false
+
+    @InternalKotlinxLocaleApi
+    public fun install(table: String) {
+        if (installed || table.isEmpty()) return
+        rules = GraphemeBreakRules(table)
+        installed = true
+    }
+
+    @InternalKotlinxLocaleApi
+    public fun clusterLengthAt(text: String, start: Int = 0): Int = rules.clusterLengthAt(text, start)
+
+    @InternalKotlinxLocaleApi
+    public fun firstCluster(text: String): String = rules.firstCluster(text)
+
+    @InternalKotlinxLocaleApi
+    public fun clusters(text: String): List<String> = rules.clusters(text)
 }

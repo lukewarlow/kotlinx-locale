@@ -27,6 +27,7 @@ an implementation of a few of them.
 | [UTS #35 Part 4: Dates][tr35-4] | Date and time patterns, skeletons, interval formats, week data, time zone names, and the hour cycle an `hc` keyword resolves to | `-datetime-*`, `-timezone-*` |
 | [UTS #35 Part 6: Supplemental][tr35-6] | Territory, currency and calendar metadata not tied to one locale | `Country`, `Currency`, `WeekInfo` |
 | [UTS #35 Part 8: Person Names][tr35-8] | Name field order, patterns per length and formality, initials | `-personname-*` |
+| [UAX #29: Text Segmentation](https://unicode.org/reports/tr29/) | Default grapheme, word and sentence boundaries | `kotlinx-locale-segmentation-unicode`, person-name initials |
 | [UTS #51: Emoji][tr51] | Emoji sequences, which is where flag emoji come from | `Country.flagEmoji` |
 
 Outside Unicode:
@@ -51,6 +52,8 @@ at the same specification.
 | `kotlinx-locale-types` | [UTS #35 Part 1][tr35-1], the locale catalogue |
 | `kotlinx-locale-platform` | none; reads the host's own locale |
 | `kotlinx-locale-serialization` | [BCP 47][bcp47] |
+| `kotlinx-locale-segmentation-core` | UTF-16 range contracts for grapheme, word and sentence segmentation |
+| `kotlinx-locale-segmentation-unicode` | [UAX #29](https://unicode.org/reports/tr29/), Unicode 15.1.0 default grapheme, word and sentence rules; no dictionaries or locale tailoring |
 | `kotlinx-locale-country-types` | [ISO 3166-1][iso3166], with CLDR's code mappings |
 | `kotlinx-locale-country-core` | [ISO 3166-1][iso3166] |
 | `kotlinx-locale-country-cldr-runtime` | [UTS #35 Part 2][tr35-2], territory display names |

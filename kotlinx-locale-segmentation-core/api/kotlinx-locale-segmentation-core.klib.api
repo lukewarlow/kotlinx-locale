@@ -1,0 +1,99 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-segmentation-core>
+final enum class dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity : kotlin/Enum<dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity> { // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity|null[0]
+    enum entry GRAPHEME // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.GRAPHEME|null[0]
+    enum entry SENTENCE // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.SENTENCE|null[0]
+    enum entry WORD // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.WORD|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity> // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity> // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity.Companion|null[0]
+}
+
+abstract interface dev.carcara.kotlinx.locale.segmentation/SegmentationSource : dev.carcara.kotlinx.locale/LocaleDataSource { // dev.carcara.kotlinx.locale.segmentation/SegmentationSource|null[0]
+    abstract val supportedGranularities // dev.carcara.kotlinx.locale.segmentation/SegmentationSource.supportedGranularities|{}supportedGranularities[0]
+        abstract fun <get-supportedGranularities>(): kotlin.collections/Set<dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity> // dev.carcara.kotlinx.locale.segmentation/SegmentationSource.supportedGranularities.<get-supportedGranularities>|<get-supportedGranularities>(){}[0]
+    open val unicodeVersion // dev.carcara.kotlinx.locale.segmentation/SegmentationSource.unicodeVersion|{}unicodeVersion[0]
+        open fun <get-unicodeVersion>(): kotlin/String? // dev.carcara.kotlinx.locale.segmentation/SegmentationSource.unicodeVersion.<get-unicodeVersion>|<get-unicodeVersion>(){}[0]
+
+    abstract fun localeCoverageOrNull(dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity): dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage? // dev.carcara.kotlinx.locale.segmentation/SegmentationSource.localeCoverageOrNull|localeCoverageOrNull(dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity){}[0]
+    abstract fun segmenterOrNull(dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity): dev.carcara.kotlinx.locale.segmentation/TextSegmenter? // dev.carcara.kotlinx.locale.segmentation/SegmentationSource.segmenterOrNull|segmenterOrNull(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.segmentation/SegmentationSource.Companion|null[0]
+}
+
+abstract interface dev.carcara.kotlinx.locale.segmentation/TextSegmenter { // dev.carcara.kotlinx.locale.segmentation/TextSegmenter|null[0]
+    abstract val granularity // dev.carcara.kotlinx.locale.segmentation/TextSegmenter.granularity|{}granularity[0]
+        abstract fun <get-granularity>(): dev.carcara.kotlinx.locale.segmentation/SegmentationGranularity // dev.carcara.kotlinx.locale.segmentation/TextSegmenter.granularity.<get-granularity>|<get-granularity>(){}[0]
+    abstract val locale // dev.carcara.kotlinx.locale.segmentation/TextSegmenter.locale|{}locale[0]
+        abstract fun <get-locale>(): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.segmentation/TextSegmenter.locale.<get-locale>|<get-locale>(){}[0]
+
+    abstract fun segment(kotlin/String): dev.carcara.kotlinx.locale.segmentation/TextSegments // dev.carcara.kotlinx.locale.segmentation/TextSegmenter.segment|segment(kotlin.String){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.segmentation/TextSegmenter.Companion|null[0]
+}
+
+abstract interface dev.carcara.kotlinx.locale.segmentation/TextSegments : kotlin.collections/Iterable<dev.carcara.kotlinx.locale.segmentation/TextSegment> { // dev.carcara.kotlinx.locale.segmentation/TextSegments|null[0]
+    abstract val input // dev.carcara.kotlinx.locale.segmentation/TextSegments.input|{}input[0]
+        abstract fun <get-input>(): kotlin/String // dev.carcara.kotlinx.locale.segmentation/TextSegments.input.<get-input>|<get-input>(){}[0]
+
+    abstract fun containingOrNull(kotlin/Int): dev.carcara.kotlinx.locale.segmentation/TextSegment? // dev.carcara.kotlinx.locale.segmentation/TextSegments.containingOrNull|containingOrNull(kotlin.Int){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.segmentation/TextSegments.Companion|null[0]
+}
+
+sealed interface dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage { // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage|null[0]
+    final class Enumerated : dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage { // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated|null[0]
+        constructor <init>(kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale>) // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.<init>|<init>(kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+
+        final val locales // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.locales|{}locales[0]
+            final fun <get-locales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.locales.<get-locales>|<get-locales>(){}[0]
+
+        final fun component1(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.component1|component1(){}[0]
+        final fun copy(kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> = ...): dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.copy|copy(kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.toString|toString(){}[0]
+
+        final object Companion // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Enumerated.Companion|null[0]
+    }
+
+    final object Companion // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Companion|null[0]
+
+    final object Universal : dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage { // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Universal|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Universal.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Universal.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.segmentation/SegmentationLocaleCoverage.Universal.toString|toString(){}[0]
+    }
+}
+
+final class dev.carcara.kotlinx.locale.segmentation/TextSegment { // dev.carcara.kotlinx.locale.segmentation/TextSegment|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int, kotlin/Boolean?) // dev.carcara.kotlinx.locale.segmentation/TextSegment.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Boolean?){}[0]
+
+    final val endExclusive // dev.carcara.kotlinx.locale.segmentation/TextSegment.endExclusive|{}endExclusive[0]
+        final fun <get-endExclusive>(): kotlin/Int // dev.carcara.kotlinx.locale.segmentation/TextSegment.endExclusive.<get-endExclusive>|<get-endExclusive>(){}[0]
+    final val isWordLike // dev.carcara.kotlinx.locale.segmentation/TextSegment.isWordLike|{}isWordLike[0]
+        final fun <get-isWordLike>(): kotlin/Boolean? // dev.carcara.kotlinx.locale.segmentation/TextSegment.isWordLike.<get-isWordLike>|<get-isWordLike>(){}[0]
+    final val start // dev.carcara.kotlinx.locale.segmentation/TextSegment.start|{}start[0]
+        final fun <get-start>(): kotlin/Int // dev.carcara.kotlinx.locale.segmentation/TextSegment.start.<get-start>|<get-start>(){}[0]
+
+    final fun component1(): kotlin/Int // dev.carcara.kotlinx.locale.segmentation/TextSegment.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // dev.carcara.kotlinx.locale.segmentation/TextSegment.component2|component2(){}[0]
+    final fun component3(): kotlin/Boolean? // dev.carcara.kotlinx.locale.segmentation/TextSegment.component3|component3(){}[0]
+    final fun copy(kotlin/Int = ..., kotlin/Int = ..., kotlin/Boolean? = ...): dev.carcara.kotlinx.locale.segmentation/TextSegment // dev.carcara.kotlinx.locale.segmentation/TextSegment.copy|copy(kotlin.Int;kotlin.Int;kotlin.Boolean?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.segmentation/TextSegment.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.segmentation/TextSegment.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.segmentation/TextSegment.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.segmentation/TextSegment.Companion|null[0]
+}

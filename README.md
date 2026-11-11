@@ -247,6 +247,9 @@ locale-timezone-cldr-cities = { module = "dev.carcara:kotlinx-locale-timezone-cl
 locale-personname-core = { module = "dev.carcara:kotlinx-locale-personname-core", version.ref = "kotlinx-locale" }
 locale-personname-cldr-runtime = { module = "dev.carcara:kotlinx-locale-personname-cldr-runtime", version.ref = "kotlinx-locale" }
 locale-personname-cldr-full = { module = "dev.carcara:kotlinx-locale-personname-cldr-full", version.ref = "kotlinx-locale" }
+# Unicode grapheme, word and sentence segmentation.
+locale-segmentation-core = { module = "dev.carcara:kotlinx-locale-segmentation-core", version.ref = "kotlinx-locale" }
+locale-segmentation-unicode = { module = "dev.carcara:kotlinx-locale-segmentation-unicode", version.ref = "kotlinx-locale" }
 locale-collation-core = { module = "dev.carcara:kotlinx-locale-collation-core", version.ref = "kotlinx-locale" }
 locale-collation-cldr-runtime = { module = "dev.carcara:kotlinx-locale-collation-cldr-runtime", version.ref = "kotlinx-locale" }
 locale-collation-cldr-full = { module = "dev.carcara:kotlinx-locale-collation-cldr-full", version.ref = "kotlinx-locale" }
@@ -256,6 +259,7 @@ locale-phone-metadata-full = { module = "dev.carcara:kotlinx-locale-phone-metada
 locale-phone-serialization = { module = "dev.carcara:kotlinx-locale-phone-serialization", version.ref = "kotlinx-locale" }
 
 [bundles]
+locale-segmentation = ["locale-segmentation-core", "locale-segmentation-unicode"]
 # Bundled CLDR data: the normal choice.
 locale-country-cldr = ["locale-country-types", "locale-country-core", "locale-country-cldr-full"]
 locale-currency-cldr = ["locale-currency-types", "locale-currency-core", "locale-currency-cldr-full"]
@@ -431,6 +435,8 @@ plugin flag beside the artifact for every domain that has one.
 | `kotlinx-locale-personname-core` | `PersonName` and the option enums, plus `PersonNameSource`. No data. |
 | `kotlinx-locale-personname-cldr-runtime` | Pattern selection, field modifiers and the empty-field cleanup. Carries no records. |
 | `kotlinx-locale-personname-cldr-full` | `CldrPersonName`, `personNameFormat` and `personNameOrder`: a name written the way a locale writes one, and its initials. |
+| `kotlinx-locale-segmentation-core` | Segmentation contracts and UTF-16 segment ranges. The source reports whether grapheme, word or sentence segmentation is available. |
+| `kotlinx-locale-segmentation-unicode` | Default grapheme, word and sentence boundaries using Unicode 15.1.0 properties. Initializes its own data, reports explicit locale coverage, preserves UTF-16 ranges and caches boundaries. No dictionary segmentation or locale tailoring. |
 | `kotlinx-locale-collation-core` | `CollationStrength` and `CollationSource`: how much of a difference counts, and the contract a table answers through. No algorithm. |
 | `kotlinx-locale-collation-cldr-runtime` | The Unicode Collation Algorithm over a weight table it does not carry: contractions, prefixes, script reordering and sort keys. |
 | `kotlinx-locale-collation-cldr-full` | `CldrCollation` and `collationComparator`: sorting text the way a reader reads it, per UTS #10 and the tailorings of UTS #35 Part 5. Costs the same at three locales as at 1121, because the root weight table does not vary by locale and it is nearly all of the weight. |
@@ -465,6 +471,50 @@ No artifact name is a prefix of another at a hyphen boundary, because Kotlin
 Multiplatform already owns that suffix space: every module publishes one
 artifact per target, so `-jvm` and `-iosarm64` sit beside the bare coordinate on
 Maven Central. `settings.gradle.kts` enforces it at configuration time.
+
+### Segmentation sources
+
+`kotlinx-locale-segmentation-unicode` supplies default grapheme, word and sentence
+boundaries. Its tables initialize independently of person-name formatting.
+[API.md](API.md#text-segmentation) documents `segmentationSegments` and
+`segmentationSegmenter` for ordinary callers.
+
+An adapter that needs backend capabilities can use the source directly:
+
+```kotlin
+import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity
+import dev.carcara.kotlinx.locale.segmentation.SegmentationLocaleCoverage
+import dev.carcara.kotlinx.locale.segmentation.SegmentationSource
+import dev.carcara.kotlinx.locale.segmentation.unicode.UnicodeSegmentation
+
+val source: SegmentationSource = UnicodeSegmentation
+val granularity = SegmentationGranularity.WORD
+val segmenter = source.segmenterOrNull(Locale.forLanguageTag("en"), granularity)
+val coverage = source.localeCoverageOrNull(granularity)
+check(coverage == SegmentationLocaleCoverage.Universal)
+source.unicodeVersion // "15.1.0"
+```
+
+`localeCoverageOrNull` returns `Universal` when default segmentation is available for
+every locale, `Enumerated(locales)` for a finite set, or null for an unsupported
+granularity. Universal coverage does not imply dictionaries or tailored rules.
+The Unicode source supports all three granularities. Its inherited
+`supportedLocales` is an empty enumeration; use `localeCoverageOrNull` to determine
+coverage explicitly. `unicodeVersion` may be null on a backend that cannot
+report its Unicode release.
+
+Word-like classification is supplied by the backend. The Unicode source uses
+the policy documented in [API.md](API.md#text-segmentation). It does not provide
+dictionary word detection for Thai, Lao, Khmer, Myanmar, Chinese or Japanese,
+or sentence abbreviation dictionaries. See
+[segmentation limitations](docs/boundaries.md#default-segmentation-without-dictionaries-or-locale-tailoring).
+
+The Unicode-only tables and word/sentence fixtures can be regenerated without a
+CLDR checkout using `./gradlew :codegen:generateSegmentationData`. The grapheme
+properties are also carried in the committed CLDR bundle. Properties, rules and
+all three conformance fixtures use the Unicode release pinned by `UCD_VERSION`
+in `codegen/src/main/kotlin/dev/carcara/kotlinx/locale/codegen/Repos.kt`.
 
 ## Naming the fields instead of picking a length
 

@@ -1,0 +1,95 @@
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationGranularity : java/lang/Enum {
+	public static final field Companion Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity$Companion;
+	public static final field GRAPHEME Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;
+	public static final field SENTENCE Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;
+	public static final field WORD Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationGranularity$Companion {
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage {
+	public static final field Companion Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Companion;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Enumerated : dev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage {
+	public static final field Companion Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Enumerated$Companion;
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Enumerated;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Enumerated;Ljava/util/Set;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Enumerated;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLocales ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Enumerated$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Universal : dev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage$Universal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/segmentation/SegmentationSource : dev/carcara/kotlinx/locale/LocaleDataSource {
+	public static final field Companion Ldev/carcara/kotlinx/locale/segmentation/SegmentationSource$Companion;
+	public abstract fun getSupportedGranularities ()Ljava/util/Set;
+	public fun getUnicodeVersion ()Ljava/lang/String;
+	public abstract fun localeCoverageOrNull (Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;)Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage;
+	public abstract fun segmenterOrNull (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;)Ldev/carcara/kotlinx/locale/segmentation/TextSegmenter;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationSource$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/SegmentationSource$DefaultImpls {
+	public static fun getUnicodeVersion (Ldev/carcara/kotlinx/locale/segmentation/SegmentationSource;)Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/TextSegment {
+	public static final field Companion Ldev/carcara/kotlinx/locale/segmentation/TextSegment$Companion;
+	public fun <init> (IILjava/lang/Boolean;)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()Ljava/lang/Boolean;
+	public final fun copy (IILjava/lang/Boolean;)Ldev/carcara/kotlinx/locale/segmentation/TextSegment;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/segmentation/TextSegment;IILjava/lang/Boolean;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/segmentation/TextSegment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEndExclusive ()I
+	public final fun getStart ()I
+	public fun hashCode ()I
+	public final fun isWordLike ()Ljava/lang/Boolean;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/TextSegment$Companion {
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/segmentation/TextSegmenter {
+	public static final field Companion Ldev/carcara/kotlinx/locale/segmentation/TextSegmenter$Companion;
+	public abstract fun getGranularity ()Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;
+	public abstract fun getLocale ()Ldev/carcara/kotlinx/locale/Locale;
+	public abstract fun segment (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/segmentation/TextSegments;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/TextSegmenter$Companion {
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/segmentation/TextSegments : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+	public static final field Companion Ldev/carcara/kotlinx/locale/segmentation/TextSegments$Companion;
+	public abstract fun containingOrNull (I)Ldev/carcara/kotlinx/locale/segmentation/TextSegment;
+	public abstract fun getInput ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/TextSegments$Companion {
+}
+

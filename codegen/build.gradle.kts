@@ -66,3 +66,12 @@ tasks.test {
     // needs to know where the checked-in ones are.
     systemProperty("kotlinx.locale.rootDir", rootDir.absolutePath)
 }
+
+// Unicode-only regeneration needs no CLDR checkout.
+tasks.register<JavaExec>("generateSegmentationData") {
+    group = "codegen"
+    description = "Generate standalone Unicode word/sentence properties and conformance fixtures"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = mainClassFqn
+    args("segmentation", rootDir.absolutePath)
+}

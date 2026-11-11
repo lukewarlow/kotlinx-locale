@@ -41,8 +41,10 @@ fun main(args: Array<String>) {
         "regenerate" -> {
             val bundle = bundleFile(rootDir).bufferedReader().use(LocaleDataBundle::readFrom)
             generateSources(bundle = bundle, roots = shippedRoots(rootDir))
+            generateSegmentationData(rootDir)
         }
-        else -> error("Unknown mode '$mode'. Use 'clone', 'generate' or 'regenerate'.")
+        "segmentation" -> generateSegmentationData(rootDir)
+        else -> error("Unknown mode '$mode'. Use 'clone', 'generate', 'regenerate' or 'segmentation'.")
     }
 }
 
@@ -146,12 +148,21 @@ private fun generate(rootDir: File, cldrDir: File, icuDir: File) {
 
     // The same call the Gradle plugin makes, with the shipped roots and packages.
     generateSources(bundle, shippedRoots(rootDir))
+    generateSegmentationData(rootDir)
 
     println("[codegen] done")
 }
 
 /** Every published artifact that carries generated source, and where its package root is. */
 internal fun shippedRoots(rootDir: File): SourceRoots = SourceRoots.Builder()
+    .binding(
+        GeneratedBinding.SEGMENTATION,
+        BindingTarget(
+            root = rootDir.sourceRoot("kotlinx-locale-segmentation-unicode"),
+            packageName = "dev.carcara.kotlinx.locale.segmentation.unicode",
+            objectName = "UnicodeSegmentation",
+        ),
+    )
     .table(GeneratedTable.LOCALE_CATALOG, rootDir.sourceRoot("kotlinx-locale-types"))
     .table(GeneratedTable.COUNTRY_ENUM, rootDir.sourceRoot("kotlinx-locale-country-types"))
     .table(GeneratedTable.COUNTRY_NAMES, rootDir.sourceRoot("kotlinx-locale-territory-cldr-full"))
@@ -490,6 +501,13 @@ private fun extractBundle(rootDir: File, cldrDir: File, icuDir: File): LocaleDat
     )
     emitGraphemeBreakCases(
         outputFile = coreConformanceDir(rootDir).resolve("GraphemeBreakCaseData.kt"),
+        ucdVersion = UCD_VERSION,
+        cases = parseGraphemeBreakCases(cldrDir),
+        table = encodeGraphemeBreakRanges(parseGraphemeBreakRanges()),
+    )
+    emitGraphemeBreakCases(
+        outputFile = rootDir.sourceRoot("kotlinx-locale-segmentation-unicode", "commonTest")
+            .resolve("dev/carcara/kotlinx/locale/segmentation/conformance").resolve("GraphemeBreakCaseData.kt"),
         ucdVersion = UCD_VERSION,
         cases = parseGraphemeBreakCases(cldrDir),
         table = encodeGraphemeBreakRanges(parseGraphemeBreakRanges()),

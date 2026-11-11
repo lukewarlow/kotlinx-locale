@@ -1,0 +1,16 @@
+public final class dev/carcara/kotlinx/locale/segmentation/unicode/UnicodeSegmentation : dev/carcara/kotlinx/locale/segmentation/SegmentationSource {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/segmentation/unicode/UnicodeSegmentation;
+	public fun getSupportedGranularities ()Ljava/util/Set;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun getUnicodeVersion ()Ljava/lang/String;
+	public fun localeCoverageOrNull (Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;)Ldev/carcara/kotlinx/locale/segmentation/SegmentationLocaleCoverage;
+	public fun segmenterOrNull (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;)Ldev/carcara/kotlinx/locale/segmentation/TextSegmenter;
+}
+
+public final class dev/carcara/kotlinx/locale/segmentation/unicode/UnicodeSegmentationKt {
+	public static final fun segmentationSegmenter (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;)Ldev/carcara/kotlinx/locale/segmentation/TextSegmenter;
+	public static synthetic fun segmentationSegmenter$default (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/segmentation/TextSegmenter;
+	public static final fun segmentationSegments (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;)Ldev/carcara/kotlinx/locale/segmentation/TextSegments;
+	public static synthetic fun segmentationSegments$default (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/segmentation/SegmentationGranularity;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/segmentation/TextSegments;
+}
+

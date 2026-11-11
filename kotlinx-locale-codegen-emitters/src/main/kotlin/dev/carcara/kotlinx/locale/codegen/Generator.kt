@@ -161,6 +161,9 @@ public enum class GeneratedBinding(public val objectSuffix: String) {
     TIME_ZONE_CITIES("TimeZoneCities"),
     PERSON_NAME("PersonName"),
     COLLATION("Collation"),
+
+    /** Locale-independent Unicode grapheme properties, initialized by the segmentation backend. */
+    SEGMENTATION("Segmentation"),
     ;
 
     public companion object
@@ -872,6 +875,17 @@ public fun generateSources(
             target.root,
             target.spec(packages[GeneratedTable.SKELETONS], cldr),
             dateTimeObject = "${dateTime.packageName}.${dateTime.objectName}",
+        )
+    }
+
+    roots[GeneratedBinding.SEGMENTATION]?.let { target ->
+        val table = requireNotNull(bundle.tables[BundleTables.GRAPHEME_BREAK]) {
+            "grapheme segmentation requires Unicode property data"
+        }
+        require(table.isNotEmpty()) { "grapheme segmentation requires nonempty Unicode property data" }
+        val spec = target.spec(target.packageName, cldr)
+        target.root.packageFile(target.packageName, "GraphemeProperties.kt").writeText(
+            preamble(spec, emptyList()) + "internal val graphemeBreakTable: String = \"${kotlinEscape(table)}\"\n",
         )
     }
 

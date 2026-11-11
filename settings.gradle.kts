@@ -57,6 +57,8 @@ rootProject.name = "kotlinx-locale-project"
 val published = listOf(
     "kotlinx-locale-core",
     "kotlinx-locale-types",
+    "kotlinx-locale-segmentation-core",
+    "kotlinx-locale-segmentation-unicode",
     "kotlinx-locale-platform",
     "kotlinx-locale-serialization",
     "kotlinx-locale-country-types",

@@ -72,6 +72,18 @@ public final class dev/carcara/kotlinx/locale/LocaleRefKt {
 	public static final fun toLocale (Ldev/carcara/kotlinx/locale/LocaleRef;)Ldev/carcara/kotlinx/locale/Locale;
 }
 
+public final class dev/carcara/kotlinx/locale/internal/GraphemeBreakRules {
+	public static final field Companion Ldev/carcara/kotlinx/locale/internal/GraphemeBreakRules$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun clusterLengthAt (Ljava/lang/String;I)I
+	public static synthetic fun clusterLengthAt$default (Ldev/carcara/kotlinx/locale/internal/GraphemeBreakRules;Ljava/lang/String;IILjava/lang/Object;)I
+	public final fun clusters (Ljava/lang/String;)Ljava/util/List;
+	public final fun firstCluster (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/internal/GraphemeBreakRules$Companion {
+}
+
 public final class dev/carcara/kotlinx/locale/internal/GraphemeClusters {
 	public static final field INSTANCE Ldev/carcara/kotlinx/locale/internal/GraphemeClusters;
 	public final fun clusterLengthAt (Ljava/lang/String;I)I

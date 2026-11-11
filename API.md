@@ -59,6 +59,7 @@ All date and time examples are real output for 2026-07-27, a Monday, at
 - [Time zones](#time-zones)
 - [Country.flagEmoji](#countryflagemoji)
 - [Person names](#person-names)
+- [Text segmentation](#text-segmentation)
 - [Sorting text](#sorting-text)
 - [Phone numbers](#phone-numbers)
 - [Serialization](#serialization)
@@ -1783,6 +1784,80 @@ Three fields cannot be derived and must be supplied if the locale asks for them:
 
 Falls back to the given name and surname joined by a space.
 
+## Text segmentation
+
+From `kotlinx-locale-segmentation-unicode`, which includes the contracts in
+`kotlinx-locale-segmentation-core`.
+
+```kotlin
+import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity
+import dev.carcara.kotlinx.locale.segmentation.unicode.segmentationSegmenter
+import dev.carcara.kotlinx.locale.segmentation.unicode.segmentationSegments
+
+public fun segmentationSegments(
+    value: String,
+    locale: Locale = Locale.current,
+    granularity: SegmentationGranularity = SegmentationGranularity.GRAPHEME,
+): TextSegments
+
+public fun segmentationSegmenter(
+    locale: Locale = Locale.current,
+    granularity: SegmentationGranularity = SegmentationGranularity.GRAPHEME,
+): TextSegmenter
+```
+
+`segmentationSegments` partitions the original string into nonempty UTF-16
+ranges. It accepts lone surrogates and preserves whitespace and punctuation.
+Empty input produces no segments. `segmentationSegmenter` returns a reusable
+segmenter with the requested `locale` and `granularity`.
+
+```kotlin
+val en = Locale.forLanguageTag("en")
+val segments = segmentationSegments("a\u0301b", en)
+segments.map { it.start to it.endExclusive } // [(0, 2), (2, 3)]
+segments.containingOrNull(1)                     // TextSegment(0, 2, null)
+segments.containingOrNull(3)                     // null
+
+val words = segmentationSegments("Hello, world!", en, SegmentationGranularity.WORD)
+words.map { words.input.substring(it.start, it.endExclusive) }
+// [Hello, ,,  , world, !]
+words.map { it.isWordLike } // [true, false, false, true, false]
+
+val segmenter = segmentationSegmenter(en, SegmentationGranularity.SENTENCE)
+val sentences = segmenter.segment("Hello! Next.")
+sentences.map { sentences.input.substring(it.start, it.endExclusive) }
+// [Hello! , Next.]
+```
+
+The returned `TextSegments` exposes the unchanged `input` and implements
+`Iterable<TextSegment>`. Each `TextSegment` has an inclusive `start`, an exclusive
+`endExclusive` and nullable `isWordLike`. Offsets count UTF-16 code units on every
+target. `containingOrNull(utf16Index)` returns the segment that iteration would produce,
+including indices inside a surrogate pair or combining sequence. Negative
+indices and indices at or beyond the input length return null. A `TextSegment`
+constructor requires `0 <= start < endExclusive`; invalid ranges throw
+`IllegalArgumentException`.
+
+Boundaries are computed once per result; `containingOrNull` searches them in
+logarithmic time. Iterators have independent positions, and segmenters and
+results are immutable and safe to share.
+
+All three granularities use Unicode 15.1.0 default rules from
+[UAX #29](https://unicode.org/reports/tr29/). Every locale uses the same rules.
+Word segmentation retains every segment and supplies a Boolean `isWordLike`.
+It is true when a segment contains a Unicode Letter or Number, or a code point
+with Word_Break ALetter, Hebrew_Letter, Numeric or Katakana. Other segments,
+including ordinary punctuation, whitespace, emoji and isolated marks, are false.
+Grapheme and sentence segments have `isWordLike = null`. Sentence boundaries
+include closing punctuation and trailing whitespace according to the rules.
+
+Dictionary segmentation and locale tailoring are not implemented. See
+[segmentation sources](README.md#segmentation-sources) for backend capabilities,
+locale coverage and Unicode-version metadata, and
+[segmentation limitations](docs/boundaries.md#default-segmentation-without-dictionaries-or-locale-tailoring)
+for the linguistic limits.
+
 ## Sorting text
 
 From `kotlinx-locale-collation-cldr-full`, or with `collation { order = true }`.
@@ -2313,7 +2388,8 @@ and names additionally fall back to the ISO code.
 The throwing entry points are `Locale.of`, `Locale.forLanguageTag`,
 `Locale.withUnicodeKeyword`, the non-`OrNull` code lookups on `Country` and
 `Currency`, `CurrencyAmount.of`, `CurrencyAmount.parse`,
-`CurrencyAmount.parseFormatted`, and `CurrencyAmount` arithmetic or comparison
+`CurrencyAmount.parseFormatted`, `TextSegment` with an invalid range, and
+`CurrencyAmount` arithmetic or comparison
 across two different currencies. All of them throw `IllegalArgumentException`,
 and every lookup that can fail has a non-throwing alternative.
 

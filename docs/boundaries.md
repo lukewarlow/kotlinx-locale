@@ -484,3 +484,25 @@ So a formatter here would be this library inventing a presentation and
 presenting it as a standard, for every country separately. The IBAN itself is
 different, because its grouping in fours is in the standard, and it is on the
 [roadmap](../ROADMAP.md).
+
+## Default segmentation without dictionaries or locale tailoring
+
+The Unicode segmentation backend implements the complete default grapheme, word
+and sentence rules for Unicode 15.1.0. Every locale can use those rules, which is
+what its explicit universal coverage reports. This is not a claim that every
+locale has dictionary-based word detection or tailored sentence boundaries.
+
+Default word boundaries do not provide linguistic word detection for Thai, Lao,
+Khmer, Myanmar, Chinese or Japanese. Sentence rules do not use an abbreviation
+dictionary. Dictionary segmentation and locale-specific tailoring can be added
+as separate capabilities; neither is required to expose the Unicode defaults.
+
+Word-like classification is supplied by the backend: a segment containing a
+Unicode Letter or Number, or a Word_Break ALetter, Hebrew_Letter, Numeric or
+Katakana character, is word-like. Kana and ideographs therefore count even when
+the default rules separate them. Other segments, including ordinary whitespace,
+punctuation and emoji, are retained with `isWordLike = false`.
+
+The distinction between defaults and tailoring is specified by
+[UAX #29](https://unicode.org/reports/tr29/). Properties, rules and all three
+conformance suites use the same Unicode release, reported by `unicodeVersion`.
