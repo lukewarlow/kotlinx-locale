@@ -20,7 +20,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        androidMain.dependencies {
+        findByName("androidMain")?.dependencies {
             implementation(libs.androidx.startup.runtime)
         }
 

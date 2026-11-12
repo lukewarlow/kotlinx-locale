@@ -31,7 +31,6 @@ import org.jetbrains.kotlin.konan.target.HostManager
  */
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.kotlin.multiplatform.library")
     // Applied to every multiplatform module rather than only the ones with tests
     // today. The compiler plugin instruments source sets whose name matches
     // [tT]est and emits nothing where there are none, so applying it once here
@@ -43,17 +42,16 @@ plugins {
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
-// Narrows the build to the five platforms a release ships: JVM, Android, iOS,
-// JS and Wasm-JS. Off by default, so a developer and CI still see all
-// twenty-five targets; the release workflow turns it on with
+// Narrows the build to JVM and eight Native targets across macOS, iOS, Linux,
+// Android Native and Windows. Off by default, so a developer and CI still see the
+// full target set; the release workflow turns it on with
 // ORG_GRADLE_PROJECT_slimTargets=true.
 //
 // Maven Central meters file count per month, and a target costs the same in
-// files whoever uses it. Twenty-five targets across forty-two multiplatform
-// modules is twenty-six publications each, and each publication carries an
+// files whoever uses it. Each target adds a publication to every multiplatform
+// module, and each publication carries an
 // artifact, sources, javadoc, a POM and module metadata, every one of them with
-// a signature and checksums beside it. The five platforms here are under a
-// third of that.
+// a signature and checksums beside it. The slim set reduces that file count.
 //
 // This has to narrow the targets rather than skip the publishing tasks. The
 // root module metadata of a multiplatform publication lists every target the
@@ -62,6 +60,11 @@ val libs = the<VersionCatalogsExtension>().named("libs")
 // not offering the platform at all.
 val slimTargets = providers.gradleProperty("slimTargets").orNull.toBoolean()
 
+// Applying AGP creates its Android JVM target, even without configuring it.
+if (!slimTargets) {
+    pluginManager.apply("com.android.kotlin.multiplatform.library")
+}
+
 kotlin {
     explicitApi()
 
@@ -69,47 +72,18 @@ kotlin {
 
     jvm()
 
-    androidLibrary {
-        namespace = "dev.carcara." + project.name.replace('-', '.')
-        compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
-        minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()
-
-        withHostTestBuilder {}
-    }
-
-    // Mocha times a whole test node, and a conformance node is a whole case set:
-    // one node compares every skeleton in a locale rather than reporting one
-    // green line per pattern. Thirty seconds was sized for a test that asserts
-    // one thing and is not enough for one that asserts a few thousand. The cap
-    // still exists, so a node that hangs still fails rather than wedging CI.
-    js {
-        nodejs {
-            testTask {
-                useMocha {
-                    timeout = "120s"
-                }
-            }
-        }
-    }
-
-    // The three iOS targets are the whole of what a release means by "iOS".
-    // iosX64 is the Intel simulator and tier 3 rather than tier 1, but leaving
-    // it out would break anyone still developing on an Intel Mac for the sake
-    // of one klib per module, so it sits with the other two.
+    // Tier 1
+    macosArm64()
     iosSimulatorArm64()
     iosArm64()
-    iosX64()
 
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        nodejs {
-            testTask {
-                useMocha {
-                    timeout = "120s"
-                }
-            }
-        }
-    }
+    // Tier 2
+    linuxX64()
+    linuxArm64()
+    // Tier 3
+    androidNativeArm64()
+    androidNativeX64()
+    mingwX64()
 
     // Everything a release currently leaves out. Still built and tested on
     // every push; see the note on slimTargets above for why publishing them is
@@ -118,16 +92,46 @@ kotlin {
     // Native targets follow the tiers of <https://kotlinlang.org/docs/native-target-support.html>,
     // matching the targets published by kotlinx-datetime.
     if (!slimTargets) {
+        extensions.configure<com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget>("android") {
+            namespace = "dev.carcara." + project.name.replace('-', '.')
+            compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
+            minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()
+
+            withHostTestBuilder {}
+        }
+
+        // Mocha times a whole test node, and a conformance node is a whole case set:
+        // one node compares every skeleton in a locale rather than reporting one
+        // green line per pattern. Thirty seconds was sized for a test that asserts
+        // one thing and is not enough for one that asserts a few thousand. The cap
+        // still exists, so a node that hangs still fails rather than wedging CI.
+        js {
+            nodejs {
+                testTask {
+                    useMocha {
+                        timeout = "120s"
+                    }
+                }
+            }
+        }
+
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            nodejs {
+                testTask {
+                    useMocha {
+                        timeout = "120s"
+                    }
+                }
+            }
+        }
+
         @OptIn(ExperimentalWasmDsl::class)
         wasmWasi {
             nodejs()
         }
 
-        // Tier 1
-        macosArm64()
         // Tier 2
-        linuxX64()
-        linuxArm64()
         watchosSimulatorArm64()
         watchosArm32()
         watchosArm64()
@@ -135,18 +139,9 @@ kotlin {
         tvosArm64()
         // Tier 3
         androidNativeArm32()
-        androidNativeArm64()
         androidNativeX86()
-        androidNativeX64()
-        mingwX64()
         watchosDeviceArm64()
-        // Deprecated x64 Apple targets, still published by kotlinx-datetime (KT-78660)
-        @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-        run {
-            macosX64()
-            watchosX64()
-            tvosX64()
-        }
+        iosX64()
     }
 
     // Materialise the default hierarchy now, so the Apple source sets the two
@@ -270,7 +265,7 @@ kotlin {
     // It used to arrive by accident, transitively through kotlin-test. Declared
     // here now that kotlin-test is gone, and scoped to the one source set that
     // needs it rather than added everywhere.
-    sourceSets.named("androidHostTest").dependencies {
+    sourceSets.findByName("androidHostTest")?.dependencies {
         implementation(libs.findLibrary("junit4").get())
     }
 }

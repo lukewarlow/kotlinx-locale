@@ -15,7 +15,7 @@
  */
 
 /**
- * Maven Central publication for every published module, whatever its shape:
+ * Maven publication for every published module, whatever its shape:
  * `configureBasedOnAppliedPlugins` picks the right publication setup for a
  * multiplatform module, a plain JVM one, or the Gradle plugin, so this is the
  * single place that knows the modules publish at all. The plugins that decide
@@ -36,7 +36,9 @@
  * token as `mavenCentralUsername`/`mavenCentralPassword` and a GPG key as
  * `signingInMemoryKey`/`signingInMemoryKeyPassword`, both usually injected as
  * `ORG_GRADLE_PROJECT_*` environment variables in CI. Signing is only required
- * for non-SNAPSHOT versions, so `publishToMavenLocal` works without a key.
+ * for non-SNAPSHOT versions, so `publishToMavenLocal` works without a key for
+ * snapshots. Self-hosted releases can use `-PsignPublications=false` to publish
+ * unsigned artifacts with checksums; Maven Central still requires signatures.
  */
 plugins {
     id("com.vanniktech.maven.publish.base")
@@ -63,9 +65,22 @@ fun pomProperty(name: String): String =
 
 val fallbackDescription = pomProperty("POM_DESCRIPTION")
 
+// A complete Maven repository for upload to a static file server. Unlike Maven
+// local, this destination includes remote-repository metadata and checksums.
+publishing {
+    repositories {
+        maven {
+            name = "Staging"
+            url = layout.settingsDirectory.dir("build/maven-repository").asFile.toURI()
+        }
+    }
+}
+
 mavenPublishing {
     publishToMavenCentral()
-    signAllPublications()
+    if (providers.gradleProperty("signPublications").orNull?.toBoolean() != false) {
+        signAllPublications()
+    }
     configureBasedOnAppliedPlugins()
 
     pom {
