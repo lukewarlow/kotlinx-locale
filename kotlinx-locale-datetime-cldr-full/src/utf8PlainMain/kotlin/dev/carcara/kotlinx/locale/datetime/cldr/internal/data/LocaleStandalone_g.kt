@@ -18,8 +18,26 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.datetime.cldr.internal.data
 
+internal val LOCALE_STANDALONE_GA: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DRC\u001Eera/abbreviated/1\u001DAD\u001Eera/wide/0\u001DRoimh Chríost\u001Eera/wide/1\u001DAnno Domini\u001Eperiod/format/abbreviated/am\u001Dr.n.\u001Eperiod/format/abbreviated/pm\u001Di.n."
+
+internal val LOCALE_STANDALONE_GAA: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBCE\u001Eera/abbreviated/1\u001DCE\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM\u001Eperiod/format/wide/am\u001DLEEBI\u001Eperiod/format/wide/pm\u001DSHWANE"
+
 internal val LOCALE_STANDALONE_GD: String =
-    "Am Faoilleach\u001EAn Gearran\u001EAm Màrt\u001EAn Giblean\u001EAn Cèitean\u001EAn t-Ògmhios\u001EAn t-Iuchar\u001EAn Lùnastal\u001EAn t-Sultain\u001EAn Dàmhair\u001EAn t-Samhain\u001EAn Dùbhlachd\u001F\u001F\u001F\u001F\u001F\u001F0"
+    "Am Faoilleach\u001EAn Gearran\u001EAm Màrt\u001EAn Giblean\u001EAn Cèitean\u001EAn t-Ògmhios\u001EAn t-Iuchar\u001EAn Lùnastal\u001EAn t-Sultain\u001EAn Dàmhair\u001EAn t-Samhain\u001EAn Dùbhlachd\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DRC\u001Eera/abbreviated/1\u001DAD\u001Eera/narrow/0\u001DR\u001Eera/narrow/1\u001DA\u001Eera/wide/0\u001DRo Chrìosta\u001Eera/wide/1\u001DAn dèidh Chrìosta\u001Eperiod/format/abbreviated/am\u001Dm\u001Eperiod/format/abbreviated/pm\u001Df"
 
 internal val LOCALE_STANDALONE_GL: String =
-    "\u001F\u001FX\u001EF\u001EM\u001EA\u001EM\u001EX\u001EX\u001EA\u001ES\u001EO\u001EN\u001ED\u001F\u001F\u001FL\u001EM\u001EM\u001EX\u001EV\u001ES\u001ED\u001F0"
+    "\u001F\u001FX\u001EF\u001EM\u001EA\u001EM\u001EX\u001EX\u001EA\u001ES\u001EO\u001EN\u001ED\u001F\u001F\u001FL\u001EM\u001EM\u001EX\u001EV\u001ES\u001ED\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001Da.C.\u001Eera/abbreviated/1\u001Dd.C.\u001Eera/wide/0\u001Dantes de Cristo\u001Eera/wide/1\u001Ddespois de Cristo\u001Eperiod/format/abbreviated/afternoon1\u001Ddo mediodía\u001Eperiod/format/abbreviated/am\u001Da.m.\u001Eperiod/format/abbreviated/evening1\u001Dda tarde\u001Eperiod/format/abbreviated/midnight\u001Dda noite\u001Eperiod/format/abbreviated/morning1\u001Dda madrugada\u001Eperiod/format/abbreviated/morning2\u001Dda mañá\u001Eperiod/format/abbreviated/night1\u001Dda noite\u001Eperiod/format/abbreviated/pm\u001Dp.m.\u001Eperiod/stand-alone/abbreviated/afternoon1\u001Dmediodía\u001Eperiod/stand-alone/abbreviated/evening1\u001Dtarde\u001Eperiod/stand-alone/abbreviated/midnight\u001Dmedianoite\u001Eperiod/stand-alone/abbreviated/morning1\u001Dmadrugada\u001Eperiod/stand-alone/abbreviated/morning2\u001Dmañá\u001Eperiod/stand-alone/abbreviated/night1\u001Dnoite"
+
+internal val LOCALE_STANDALONE_GSW: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001Dv. Chr.\u001Eera/abbreviated/1\u001Dn. Chr.\u001Eperiod/format/abbreviated/afternoon1\u001Dzmittag\u001Eperiod/format/abbreviated/afternoon2\u001Dam Namittag\u001Eperiod/format/abbreviated/am\u001Dvorm.\u001Eperiod/format/abbreviated/evening1\u001Dzaabig\u001Eperiod/format/abbreviated/midnight\u001DMitternacht\u001Eperiod/format/abbreviated/morning1\u001Dam Morge\u001Eperiod/format/abbreviated/night1\u001Dznacht\u001Eperiod/format/abbreviated/pm\u001Dnam.\u001Eperiod/format/wide/am\u001Dam Vormittag\u001Eperiod/format/wide/pm\u001Dam Namittag\u001Eperiod/stand-alone/wide/afternoon1\u001DMittag\u001Eperiod/stand-alone/wide/afternoon2\u001DNamittag\u001Eperiod/stand-alone/wide/am\u001DVormittag\u001Eperiod/stand-alone/wide/evening1\u001DAabig\u001Eperiod/stand-alone/wide/morning1\u001DMorge\u001Eperiod/stand-alone/wide/night1\u001DNacht\u001Eperiod/stand-alone/wide/pm\u001DNamittag"
+
+internal val LOCALE_STANDALONE_GU: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001Dઈ.સ.પૂર્વે\u001Eera/abbreviated/1\u001Dઈ.સ.\u001Eera/narrow/0\u001Dઇ સ પુ\u001Eera/narrow/1\u001Dઇસ\u001Eera/wide/0\u001Dઈસવીસન પૂર્વે\u001Eera/wide/1\u001Dઇસવીસન\u001Eperiod/format/abbreviated/afternoon1\u001Dબપોરે\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/evening1\u001Dસાંજે\u001Eperiod/format/abbreviated/midnight\u001Dમધ્યરાત્રિ\u001Eperiod/format/abbreviated/morning1\u001Dસવારે\u001Eperiod/format/abbreviated/night1\u001Dરાત્રે\u001Eperiod/format/abbreviated/pm\u001DPM\u001Eperiod/format/narrow/midnight\u001Dમ.રાત્રિ\u001Eperiod/stand-alone/wide/afternoon1\u001Dબપોર\u001Eperiod/stand-alone/wide/evening1\u001Dસાંજ\u001Eperiod/stand-alone/wide/morning1\u001Dસવાર\u001Eperiod/stand-alone/wide/night1\u001Dરાત્રિ"
+
+internal val LOCALE_STANDALONE_GUZ: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DYA\u001Eera/abbreviated/1\u001DYK\u001Eera/wide/0\u001DYeso ataiborwa\u001Eera/wide/1\u001DYeso kaiboirwe\u001Eperiod/format/abbreviated/am\u001DMa\u001Eperiod/format/abbreviated/pm\u001DMo\u001Eperiod/format/wide/am\u001DMambia\u001Eperiod/format/wide/pm\u001DMog"
+
+internal val LOCALE_STANDALONE_GV: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DRC\u001Eera/abbreviated/1\u001DAD\u001Eperiod/format/abbreviated/am\u001Da.m.\u001Eperiod/format/abbreviated/pm\u001Dp.m."

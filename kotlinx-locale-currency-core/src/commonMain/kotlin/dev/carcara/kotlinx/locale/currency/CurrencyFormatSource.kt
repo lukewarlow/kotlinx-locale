@@ -18,8 +18,12 @@ package dev.carcara.kotlinx.locale.currency
 
 import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.number.FormattedNumber
+import dev.carcara.kotlinx.locale.number.NumberFormatOptions
 import dev.carcara.kotlinx.locale.number.NumberGrouping
 import dev.carcara.kotlinx.locale.number.NumberNotation
+import dev.carcara.kotlinx.locale.number.NumberValue
 import dev.carcara.kotlinx.locale.number.SignDisplay
 
 /**
@@ -82,6 +86,15 @@ public interface CurrencyFormatSource : LocaleDataSource {
      * recognize the code, since the code is what fixes the fraction scale.
      */
     public fun formatOrNull(minorUnits: Long, currencyCode: String, locale: Locale, options: CurrencyFormatOptions): String?
+
+    /** Exact amount rendering; currency codes need not occur in the generated enum. */
+    public fun render(
+        value: NumberValue,
+        currencyCode: String,
+        locale: Locale,
+        options: NumberFormatOptions = NumberFormatOptions.Default,
+        style: CurrencySymbolStyle = CurrencySymbolStyle.SYMBOL,
+    ): LocaleLookup<FormattedNumber> = LocaleLookup.Unsupported("exact currency rendering")
 
     /** [text] read back as ISO minor units, or `null` when it does not parse. */
     public fun parseToMinorUnitsOrNull(text: String, currencyCode: String, locale: Locale): Long?

@@ -21,16 +21,21 @@ package dev.carcara.kotlinx.locale.datetime.cldr.runtime
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
 import dev.carcara.kotlinx.locale.internal.ENTRY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
 import dev.carcara.kotlinx.locale.number.Decimal
+import dev.carcara.kotlinx.locale.number.FormattedNumber
+import dev.carcara.kotlinx.locale.number.NumberFormatOptions
 import dev.carcara.kotlinx.locale.number.NumberFormatSource
+import dev.carcara.kotlinx.locale.number.NumberValue
 import dev.carcara.kotlinx.locale.number.PluralCategory
 import dev.carcara.kotlinx.locale.number.PluralRuleSource
 import dev.carcara.kotlinx.locale.number.format
+import dev.carcara.kotlinx.locale.number.numberComposeUnit
 import dev.carcara.kotlinx.locale.number.pluralCategory
 
 /**
@@ -114,6 +119,16 @@ public interface DurationUnitFormatSource : LocaleDataSource {
 
     /** The locale's name for [unit] itself: `hours`, `Stunden`, or `null`. */
     public fun durationUnitNameOrNull(unit: DurationUnit, width: UnitWidth, locale: Locale): String?
+
+    public fun render(
+        value: Decimal,
+        unit: DurationUnit,
+        width: UnitWidth,
+        locale: Locale,
+        options: NumberFormatOptions = NumberFormatOptions.Default,
+    ): LocaleLookup<FormattedNumber> = LocaleLookup.Unsupported("Structured duration units")
+    public fun compose(number: FormattedNumber, unit: DurationUnit, width: UnitWidth, locale: Locale): LocaleLookup<FormattedNumber> =
+        LocaleLookup.Unsupported("Pre-rounded duration units")
 
     public companion object
 }
@@ -272,6 +287,27 @@ public class PayloadDurationUnitFormats(
 ) : DurationUnitFormatSource {
 
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
+
+    override fun render(
+        value: Decimal,
+        unit: DurationUnit,
+        width: UnitWidth,
+        locale: Locale,
+        options: NumberFormatOptions,
+    ): LocaleLookup<FormattedNumber> = when (val formatted = numbers.render(NumberValue.Finite(value), locale, options)) {
+        is LocaleLookup.Value -> compose(formatted.value, unit, width, locale)
+        is LocaleLookup.Unsupported -> formatted
+        LocaleLookup.MissingData -> formatted
+    }
+
+    override fun compose(number: FormattedNumber, unit: DurationUnit, width: UnitWidth, locale: Locale): LocaleLookup<FormattedNumber> {
+        val record = recordFor(locale) ?: return LocaleLookup.MissingData
+        val category =
+            plurals.pluralCategoryOrNull(number.quantityOperands, dev.carcara.kotlinx.locale.number.PluralType.CARDINAL, locale)
+                ?: return LocaleLookup.MissingData
+        val pattern = record.pattern(unit, width, category) ?: return LocaleLookup.MissingData
+        return LocaleLookup.Value(numberComposeUnit(number, pattern, unit.name.lowercase()))
+    }
 
     override fun durationFormatOrNull(value: Decimal, unit: DurationUnit, width: UnitWidth, locale: Locale): String? {
         val record = recordFor(locale) ?: return null

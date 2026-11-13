@@ -19,10 +19,8 @@ plugins {
 }
 
 sizeProbe {
-    // Measured at 228.5 KB, most of which is the skeletons this depends on.
-    // Pairs with probe-datetime-skeletons: the difference between the two is
-    // what the interval tables themselves cost.
-    budgetBytes = 280 * 1024
+    // Structured rendering adds exact number options, calendar name widths and zone-name context.
+    budgetBytes = 850 * 1024
 }
 
 kotlin {

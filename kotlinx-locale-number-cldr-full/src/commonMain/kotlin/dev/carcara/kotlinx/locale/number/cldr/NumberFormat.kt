@@ -36,8 +36,10 @@ import dev.carcara.kotlinx.locale.number.cldr.internal.data.compactLongRegistry
 import dev.carcara.kotlinx.locale.number.cldr.internal.data.compactShortRegistry
 import dev.carcara.kotlinx.locale.number.cldr.internal.data.numberPatternsRegistry
 import dev.carcara.kotlinx.locale.number.cldr.internal.data.numberSymbolsRegistry
+import dev.carcara.kotlinx.locale.number.cldr.internal.data.numberSystemsRegistry
 import dev.carcara.kotlinx.locale.number.cldr.internal.data.ordinalRuleIndexRegistry
 import dev.carcara.kotlinx.locale.number.cldr.internal.data.ordinalRuleSetsRegistry
+import dev.carcara.kotlinx.locale.number.cldr.internal.data.pluralRangesRegistry
 import dev.carcara.kotlinx.locale.number.cldr.internal.data.pluralRuleIndexRegistry
 import dev.carcara.kotlinx.locale.number.cldr.internal.data.pluralRuleSetsRegistry
 import dev.carcara.kotlinx.locale.number.cldr.runtime.PayloadNumberFormats
@@ -60,6 +62,7 @@ import dev.carcara.kotlinx.locale.number.symbols
 public object CldrNumberPlurals : PluralRuleSource by PayloadPluralRules(
     pluralRuleSetsRegistry,
     pluralRuleIndexRegistry,
+    pluralRangesRegistry,
 )
 
 /**
@@ -74,6 +77,7 @@ public object CldrNumber : NumberFormatSource by PayloadNumberFormats(
     compactShortRegistry,
     compactLongRegistry,
     CldrNumberPlurals,
+    numberSystemsRegistry,
 ) {
 
     /**

@@ -46,6 +46,8 @@ internal val skeletonSource: PayloadSkeletonFormats = PayloadSkeletonFormats(
     skeletonNamesRegistry,
     CldrDateTime.records,
     CldrDateTime.standaloneRecords,
+    defaultNumbers = dev.carcara.kotlinx.locale.number.cldr.CldrNumber,
+    defaultZones = dev.carcara.kotlinx.locale.timezone.cldr.CldrTimeZone,
 )
 
 public object CldrDateTimeSkeletons : SkeletonFormatSource by skeletonSource {

@@ -18,8 +18,8 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
-internal val COLLATION_TAILORING_WAE: String =
-    ";2p.2p:25k8u0/2hwcg/27wr28,2p.lk.2p.lk:25k8u0/2hwcg/27wr28,2t.2t:25zzyo/2hwcg/27wr28,2x.2x:26iyu0/2hwcg/27wr28,33.33:27am7c/2hwcg/27wr28,33.lk.33.lk:27am7c/2hwcg/27wr28,2r.2w:25sa6o/2hwcg/27wr28,37.2r.2w:280za0/2hwcg/27wr28,39.39:28cjy0/2hwcg/27wr28,39.lk.39.lk:28cjy0/2hwcg/27wr28;;;;;"
-
 internal val COLLATION_TAILORING_WO: String =
-    "97:274tw4/2hwcg/27wr28,96:274tw4/2hwcg/27y5mo;2p.lc:25k8ue/2hwcg/27wr28,1t.lc:25k8ue/2hwcg/27y5mo,2t.ld:25zzz2/2hwcg/27wr28,1x.ld:25zzz2/2hwcg/27y5mo,2t.lk:25zzzg/2hwcg/27wr28,1x.lk:25zzzg/2hwcg/27y5mo,32.lf:274tvq/2hwcg/27wr28,26.lf:274tvq/2hwcg/27y5mo,33.ld:27am7q/2hwcg/27wr28,27.ld:27am7q/2hwcg/27y5mo;;;;;"
+    "root\u001F0097:274tw4/2hwcg/27wr28/0,96:274tw4/2hwcg/27y5mo/2;2p.lc:25k8ue/2hwcg/27wr28/0,1t.lc:25k8ue/2hwcg/27y5mo/2,2t.ld:25zzz2/2hwcg/27wr28/0,1x.ld:25zzz2/2hwcg/27y5mo/2,2t.lk:25zzzg/2hwcg/27wr28/0,1x.lk:25zzzg/2hwcg/27y5mo/2,32.lf:274tvq/2hwcg/27wr28/0,26.lf:274tvq/2hwcg/27y5mo/2,33.ld:27am7q/2hwcg/27wr28/0,27.ld:27am7q/2hwcg/27y5mo/2;;;;;\u001F01"
+
+internal val COLLATION_TAILORING_WOL: String =
+    "wo\u001F04\u001F01"

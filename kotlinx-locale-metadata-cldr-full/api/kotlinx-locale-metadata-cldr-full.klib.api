@@ -1,0 +1,39 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-metadata-cldr-full>
+final object dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata : dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource { // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata|null[0]
+    final val dataVersion // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.dataVersion|{}dataVersion[0]
+        final fun <get-dataVersion>(): kotlin/String // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.dataVersion.<get-dataVersion>|<get-dataVersion>(){}[0]
+
+    final fun bestFitOrNull(kotlin.collections/List<dev.carcara.kotlinx.locale/Locale>, kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale>): dev.carcara.kotlinx.locale.metadata/LocaleMatch? // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.bestFitOrNull|bestFitOrNull(kotlin.collections.List<dev.carcara.kotlinx.locale.Locale>;kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+    final fun canonicalize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.canonicalize|canonicalize(dev.carcara.kotlinx.locale.Locale){}[0]
+    final fun canonicalizeUnicodeValue(kotlin/String, kotlin/String): kotlin/String // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.canonicalizeUnicodeValue|canonicalizeUnicodeValue(kotlin.String;kotlin.String){}[0]
+    final fun currencies(): kotlin.collections/List<dev.carcara.kotlinx.locale.metadata/CurrencyMetadata> // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.currencies|currencies(){}[0]
+    final fun maximize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.maximize|maximize(dev.carcara.kotlinx.locale.Locale){}[0]
+    final fun minimize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.minimize|minimize(dev.carcara.kotlinx.locale.Locale){}[0]
+    final fun numberingSystemDigitsOrNull(kotlin/String): kotlin/String? // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.numberingSystemDigitsOrNull|numberingSystemDigitsOrNull(kotlin.String){}[0]
+    final fun numberingSystems(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.numberingSystems|numberingSystems(){}[0]
+    final fun preferences(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale.metadata/LocalePreferences // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.preferences|preferences(dev.carcara.kotlinx.locale.Locale){}[0]
+    final fun regionPreference(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale.metadata/RegionPreference // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.regionPreference|regionPreference(dev.carcara.kotlinx.locale.Locale){}[0]
+    final fun timeZoneIdentifierOrNull(kotlin/String): dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier? // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.timeZoneIdentifierOrNull|timeZoneIdentifierOrNull(kotlin.String){}[0]
+    final fun timeZoneIdentifiers(): kotlin.collections/List<dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier> // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.timeZoneIdentifiers|timeZoneIdentifiers(){}[0]
+    final fun timeZonesForRegion(kotlin/String): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata.cldr/CldrLocaleMetadata.timeZonesForRegion|timeZonesForRegion(kotlin.String){}[0]
+}
+
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeCanonicalize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata.cldr/localeCanonicalize|localeCanonicalize(dev.carcara.kotlinx.locale.Locale){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeCanonicalizeUnicodeValue(kotlin/String, kotlin/String): kotlin/String // dev.carcara.kotlinx.locale.metadata.cldr/localeCanonicalizeUnicodeValue|localeCanonicalizeUnicodeValue(kotlin.String;kotlin.String){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeCurrencies(): kotlin.collections/List<dev.carcara.kotlinx.locale.metadata/CurrencyMetadata> // dev.carcara.kotlinx.locale.metadata.cldr/localeCurrencies|localeCurrencies(){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeMatchOrNull(kotlin.collections/List<dev.carcara.kotlinx.locale/Locale>, kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale>): dev.carcara.kotlinx.locale.metadata/LocaleMatch? // dev.carcara.kotlinx.locale.metadata.cldr/localeMatchOrNull|localeMatchOrNull(kotlin.collections.List<dev.carcara.kotlinx.locale.Locale>;kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeMaximize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata.cldr/localeMaximize|localeMaximize(dev.carcara.kotlinx.locale.Locale){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeMinimize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata.cldr/localeMinimize|localeMinimize(dev.carcara.kotlinx.locale.Locale){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeNumberingSystems(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.metadata.cldr/localeNumberingSystems|localeNumberingSystems(){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localePreferences(dev.carcara.kotlinx.locale/Locale = ...): dev.carcara.kotlinx.locale.metadata/LocalePreferences // dev.carcara.kotlinx.locale.metadata.cldr/localePreferences|localePreferences(dev.carcara.kotlinx.locale.Locale){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeRegionPreference(dev.carcara.kotlinx.locale/Locale = ...): dev.carcara.kotlinx.locale.metadata/RegionPreference // dev.carcara.kotlinx.locale.metadata.cldr/localeRegionPreference|localeRegionPreference(dev.carcara.kotlinx.locale.Locale){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeTimeZoneIdentifierOrNull(kotlin/String): dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier? // dev.carcara.kotlinx.locale.metadata.cldr/localeTimeZoneIdentifierOrNull|localeTimeZoneIdentifierOrNull(kotlin.String){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeTimeZoneIdentifiers(): kotlin.collections/List<dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier> // dev.carcara.kotlinx.locale.metadata.cldr/localeTimeZoneIdentifiers|localeTimeZoneIdentifiers(){}[0]
+final fun dev.carcara.kotlinx.locale.metadata.cldr/localeTimeZones(kotlin/String): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata.cldr/localeTimeZones|localeTimeZones(kotlin.String){}[0]

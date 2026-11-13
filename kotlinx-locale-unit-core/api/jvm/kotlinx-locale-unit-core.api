@@ -1,0 +1,30 @@
+public abstract interface class dev/carcara/kotlinx/locale/unit/UnitFormatSource : dev/carcara/kotlinx/locale/LocaleDataSource {
+	public static final field Companion Ldev/carcara/kotlinx/locale/unit/UnitFormatSource$Companion;
+	public abstract fun compose (Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun compose$default (Ldev/carcara/kotlinx/locale/unit/UnitFormatSource;Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public abstract fun render (Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun render$default (Ldev/carcara/kotlinx/locale/unit/UnitFormatSource;Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/unit/UnitFormatSource$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/unit/UnitFormatSource$DefaultImpls {
+	public static synthetic fun compose$default (Ldev/carcara/kotlinx/locale/unit/UnitFormatSource;Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static fun getLocaleCoverage (Ldev/carcara/kotlinx/locale/unit/UnitFormatSource;)Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public static synthetic fun render$default (Ldev/carcara/kotlinx/locale/unit/UnitFormatSource;Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/unit/UnitWidth : java/lang/Enum {
+	public static final field Companion Ldev/carcara/kotlinx/locale/unit/UnitWidth$Companion;
+	public static final field LONG Ldev/carcara/kotlinx/locale/unit/UnitWidth;
+	public static final field NARROW Ldev/carcara/kotlinx/locale/unit/UnitWidth;
+	public static final field SHORT Ldev/carcara/kotlinx/locale/unit/UnitWidth;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/unit/UnitWidth;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/unit/UnitWidth;
+}
+
+public final class dev/carcara/kotlinx/locale/unit/UnitWidth$Companion {
+}
+

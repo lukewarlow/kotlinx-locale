@@ -17,8 +17,14 @@
 package dev.carcara.kotlinx.locale.language
 
 import dev.carcara.kotlinx.locale.Capitalization
+import dev.carcara.kotlinx.locale.DisplayName
+import dev.carcara.kotlinx.locale.DisplayNameType
 import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.NameFallback
+import dev.carcara.kotlinx.locale.NameOrigin
+import dev.carcara.kotlinx.locale.NameWidth
 
 /** Which spelling of a name: CLDR's default, or its shorter `alt="short"` form. */
 public enum class LanguageNameStyle {
@@ -76,6 +82,39 @@ public class LocaleDisplayPatterns(
  * locales a particular build kept.
  */
 public interface LanguageNameSource : LocaleDataSource {
+
+    /** Lookup a typed name without conflating unsupported operations with unknown codes. */
+    public fun lookupName(
+        type: DisplayNameType,
+        code: String,
+        locale: Locale,
+        width: NameWidth = NameWidth.LONG,
+        fallback: NameFallback = NameFallback.NONE,
+    ): LocaleLookup<DisplayName> {
+        if (width != NameWidth.LONG &&
+            !(type == DisplayNameType.LANGUAGE && width == NameWidth.SHORT)
+        ) {
+            return LocaleLookup.Unsupported("display name width $width")
+        }
+        val text = when (type) {
+            DisplayNameType.LANGUAGE -> languageNameOrNull(
+                code,
+                if (width ==
+                    NameWidth.SHORT
+                ) {
+                    LanguageNameStyle.SHORT
+                } else {
+                    LanguageNameStyle.STANDARD
+                },
+                locale,
+            )
+            DisplayNameType.SCRIPT -> scriptNameOrNull(code, locale)
+            DisplayNameType.REGION -> regionNameOrNull(code, locale)
+            else -> return LocaleLookup.Unsupported("display name type $type")
+        }
+        return text?.let { LocaleLookup.Value(DisplayName(it, NameOrigin.LOCALIZED, width)) }
+            ?: if (fallback == NameFallback.CODE) LocaleLookup.Value(DisplayName(code, NameOrigin.CODE, null)) else LocaleLookup.MissingData
+    }
 
     /**
      * The name of the language [subtag] names, written in [locale].

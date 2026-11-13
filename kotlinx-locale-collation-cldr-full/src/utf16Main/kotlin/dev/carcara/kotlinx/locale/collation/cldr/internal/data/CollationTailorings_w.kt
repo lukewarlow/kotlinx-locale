@@ -18,8 +18,8 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
-internal val COLLATION_TAILORING_WAE: String =
-    "004U㻦嫃塦ࣄ㚈㵔ᑻ㏤榵ゃፉ㊲᧰㌧屢ᦣਇ羹℗⯒㸓ᯄ䇫帶䐃蟚尘⣏炇渺㇯晗椕Ⲕ枂茡⎴㖺᧊ᜳ₭刽牷椪圭緗℈⢵檺奣⪫抍朦㊀䩬⫾ᆵ噠泀纾虹琀"
-
 internal val COLLATION_TAILORING_WO: String =
-    "004s㻨Ṃ堆ࣄ㚈㸧䳦傫嶈姬₠⍝庭㑔თ箙淀䰓䬥෥⣥्刷ࣔ๳䑵Ꮓ肑殔㫸塦ⰽ㗵参૨莘琽㕑㞢拃⅝烯᳏粯憽薉 朴筵⍾䭔僯᳆⥱ऊⳛ偑渇莎㠠"
+    "005O㻨❃塆ࣈ䜍ᗀஅ乯⠀寐爆ࠓ᤮圥⑟窑呖蝽脳䍉疩扆〫嶠湬ᬸᗛ㷨ཤ㥋ᥰ㉼㑹ᩂ玞ಌ㶲⃺ㅟ⌟嫃㑯㥶▧ㆯ⑲ෝ䯘㞛茵噫帄䔼䨳䋭䯻粻分ཧ䍞爖㴑䪏ᐝ䟼孉≥砀"
+
+internal val COLLATION_TAILORING_WOL: String =
+    "0008ᷧ淍渒᭳ࠠࠀ"

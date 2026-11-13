@@ -19,7 +19,13 @@
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
 internal val COLLATION_TAILORING_YI: String =
-    "15v:2dtyfc/2hwcg.5ca6m8/27y5mo.27wr28;15d.14v:2dp4tq/2hwcg/27wr28,15h.14s:2dqf40/2hzi8/27wr28,15h.15h:2dqf40/2i2nw/27wr28,15h.15l:2dqf40/2i5tg/27wr28,15l.14k:2drpeo/2hzi8/27wr28,15l.15l:2drpeo/2i2nw/27wr28,16a.14n:2drpeo/2i5tg/27wr28,15n.14s:2drpf2/2hwcg/27wr28,15w.14s:2dtmv2/2hwcg/27wr28,161.14y:2dv8qe/2hwcg/27wr28,162.14s:2dv8qs/2hwcg/27wr28;;25k8u0.29fgeo.266r0o,29frzc.2ad7oo.2a2a60,2adj9c.2bs0e0.2b01g0,2bsbyo.2cjnrc.2ceu5c,2cjzc0.2dbb4o.2d6hio,2dbmpc.2doho0.2dy4w0,2dot8o.2eazuo.25k8u0;;;"
+    "root\u001F0015v:2dtyfc.0/2hwcg.5ca6m8/27y5mo.27wr28/0.0;15d.14v:2dp4tq/2hwcg/27wr28/0,15h.14s:2dqf40/2hzi8/27wr28/0,15h.15h:2dqf40/2i2nw/27wr28/0,15h.15l:2dqf40/2i5tg/27wr28/0,15l.14k:2drpeo/2hzi8/27wr28/0,15l.15l:2drpeo/2i2nw/27wr28/0,16a.14n:2drpeo/2i5tg/27wr28/0,15n.14s:2drpf2/2hwcg/27wr28/0,15w.14s:2dtmv2/2hwcg/27wr28/0,161.14y:2dv8qe/2hwcg/27wr28/0,162.14s:2dv8qs/2hwcg/27wr28/0;;25k8u0.29fgeo.266r0o,29frzc.2ad7oo.2a2a60,2adj9c.2bs0e0.2b01g0,2bsbyo.2cjnrc.2ceu5c,2cjzc0.2dbb4o.2d6hio,2dbmpc.2doho0.2dy4w0,2dot8o.2eazuo.25k8u0;;;\u001F01"
 
 internal val COLLATION_TAILORING_YO: String =
-    ";2t.mb:25zzz2/2hwcg/27wr28,1x.mb:25zzz2/2hwcg/27y5mo,2v.2q:26aace/2hwcg/27wr28,1z.2q:26aace/2hwcg/27y5mo,1z.1u:26aace/2hwcg/27zk5c,33.mb:27am7q/2hwcg/27wr28,27.mb:27am7q/2hwcg/27y5mo,37.mb:280zae/2hwcg/27wr28,2b.mb:280zae/2hwcg/27y5mo;;;;;"
+    "root\u001F00;2t.mb:25zzz2/2hwcg/27wr28/0,1x.mb:25zzz2/2hwcg/27y5mo/2,2v.2q:26aace/2hwcg/27wr28/0,1z.2q:26aace/2hwcg/27y5mo/1,1z.1u:26aace/2hwcg/27zk5c/2,33.mb:27am7q/2hwcg/27wr28/0,27.mb:27am7q/2hwcg/27y5mo/2,37.mb:280zae/2hwcg/27wr28/0,2b.mb:280zae/2hwcg/27y5mo/2;;;;;\u001F01"
+
+internal val COLLATION_TAILORING_YOR: String =
+    "yo\u001F04\u001F01"
+
+internal val COLLATION_TAILORING_YUE: String =
+    "zh-Hant\u001F04\u001F01"

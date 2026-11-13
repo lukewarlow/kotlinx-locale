@@ -21,19 +21,27 @@ package dev.carcara.kotlinx.locale.datetime.cldr.runtime
 import dev.carcara.kotlinx.locale.Capitalization
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.LocaleLookup
 import dev.carcara.kotlinx.locale.datetime.CalendarCapitalizationSource
 import dev.carcara.kotlinx.locale.datetime.CalendarNameUsage
+import dev.carcara.kotlinx.locale.datetime.DateTimeCapabilities
 import dev.carcara.kotlinx.locale.datetime.DateTimeFormatSource
+import dev.carcara.kotlinx.locale.datetime.DateTimeRenderContext
 import dev.carcara.kotlinx.locale.datetime.DurationPatternSource
 import dev.carcara.kotlinx.locale.datetime.DurationStyle
 import dev.carcara.kotlinx.locale.datetime.FormatStyle
+import dev.carcara.kotlinx.locale.datetime.FormattedDateTime
 import dev.carcara.kotlinx.locale.datetime.HourCycle
 import dev.carcara.kotlinx.locale.datetime.NameContext
+import dev.carcara.kotlinx.locale.datetime.SelectedDateTimeFormat
 import dev.carcara.kotlinx.locale.datetime.TextStyle
+import dev.carcara.kotlinx.locale.datetime.format
 import dev.carcara.kotlinx.locale.datetime.hourCycle
 import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
+import dev.carcara.kotlinx.locale.number.NumberFormatSource
+import dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource
 import dev.carcara.kotlinx.locale.titlecaseFirstWord
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -65,12 +73,80 @@ public class PayloadDateTimeFormats(
      * that declare no stand-alone form.
      */
     private val standaloneRecords: Map<String, String> = emptyMap(),
+    private val defaultNumbers: NumberFormatSource? = null,
+    private val defaultZones: TimeZoneNameSource? = null,
 ) : DateTimeFormatSource,
     CalendarCapitalizationSource,
     DurationPatternSource {
 
     override val supportedLocales: Set<Locale> by lazy {
         supportedLocalesOf(records)
+    }
+
+    override fun capabilities(locale: Locale): DateTimeCapabilities {
+        val data =
+            recordFor(locale)
+                ?: return DateTimeCapabilities(localeCoverage, emptySet(), null, emptySet(), null, null, null, null, false, false)
+        val coverage = if ("root" in records) dev.carcara.kotlinx.locale.LocaleCoverage.RootFallback(supportedLocales) else localeCoverage
+        val numbering = defaultNumbers?.capabilities(locale)?.numberingSystems ?: setOf(data.defaultNumberingSystem)
+        val hour = selectedDateTimeFormat(data.timePattern(FormatStyle.SHORT, null), locale, null).hourCycle
+        return DateTimeCapabilities(
+            coverage,
+            setOf(
+                "gregory",
+            ),
+            "gregory", numbering, data.defaultNumberingSystem, hour,
+            data.resolveHourCycle(
+                HourCycle.C12,
+            ),
+            data.resolveHourCycle(HourCycle.C24), true,
+            defaultZones != null,
+        )
+    }
+
+    override fun select(
+        dateStyle: FormatStyle?,
+        timeStyle: FormatStyle?,
+        locale: Locale,
+        hourCycle: HourCycle?,
+        numberingSystem: String?,
+    ): LocaleLookup<SelectedDateTimeFormat> {
+        require(dateStyle != null || timeStyle != null)
+        val data = recordFor(locale) ?: return LocaleLookup.MissingData
+        val date = dateStyle?.let { data.dateFormats[it.ordinal] }
+        val time = timeStyle?.let { data.timePattern(it, hourCycle ?: locale.hourCycle) }
+        val pattern = if (date != null &&
+            time != null
+        ) {
+            data.glueFormats[dateStyle!!.ordinal].replace("{1}", date).replace("{0}", time)
+        } else {
+            date ?: time!!
+        }
+        return LocaleLookup.Value(
+            selectedDateTimeFormat(
+                pattern,
+                locale,
+                numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.defaultNumberingSystem,
+            ),
+        )
+    }
+
+    override fun render(
+        context: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        numbers: NumberFormatSource?,
+        zones: TimeZoneNameSource?,
+    ): LocaleLookup<FormattedDateTime> {
+        val data = recordFor(format.locale) ?: return LocaleLookup.MissingData
+        return renderDateTimeTokens(
+            parseDateTimePattern(format.pattern),
+            context,
+            format,
+            data,
+            numbers = numbers ?: defaultNumbers,
+            zones =
+            zones ?: defaultZones,
+        )
     }
 
     override fun durationPatternOrNull(style: DurationStyle, locale: Locale): String? =
@@ -218,6 +294,40 @@ public class DateTimeRecord(record: String, standaloneRecord: String? = null) {
      * transform, and they mean it.
      */
     public val capitalizationBits: Int = standalone.getOrNull(6)?.toIntOrNull(16) ?: 0
+
+    private val extraNames: Map<String, String> = standalone.getOrNull(7).orEmpty().split('\u001e').mapNotNull { row ->
+        val separator = row.indexOf(dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR)
+        if (separator < 0) null else row.substring(0, separator) to row.substring(separator + 1)
+    }.toMap()
+
+    public val defaultNumberingSystem: String get() = extraNames["default/numberingSystem"] ?: "latn"
+
+    public fun eraName(era: Int, count: Int): String {
+        val width = if (count >= 5) {
+            "narrow"
+        } else if (count == 4) {
+            "wide"
+        } else {
+            "abbreviated"
+        }
+        return extraNames["era/$width/$era"] ?: if (era == 0) era0 else era1
+    }
+
+    public fun dayPeriodName(code: Int, count: Int): String? {
+        val types = listOf(
+            "am", "pm", "midnight", "noon", "morning1", "morning2",
+            "afternoon1", "afternoon2", "evening1", "evening2", "night1", "night2",
+        )
+        val type = types.getOrNull(code) ?: return null
+        val width = if (count >= 5) {
+            "narrow"
+        } else if (count == 4) {
+            "wide"
+        } else {
+            "abbreviated"
+        }
+        return extraNames["period/format/$width/$type"] ?: extraNames["period/format/abbreviated/$type"] ?: dayPeriodName(code)
+    }
 
     /** The month at [index] in [style] and [context]. */
     public fun month(index: Int, style: TextStyle, context: NameContext): String {

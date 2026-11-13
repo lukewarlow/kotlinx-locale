@@ -258,7 +258,23 @@ locale-phone-metadata-runtime = { module = "dev.carcara:kotlinx-locale-phone-met
 locale-phone-metadata-full = { module = "dev.carcara:kotlinx-locale-phone-metadata-full", version.ref = "kotlinx-locale" }
 locale-phone-serialization = { module = "dev.carcara:kotlinx-locale-phone-serialization", version.ref = "kotlinx-locale" }
 
+locale-metadata-core = { group = "dev.carcara", name = "kotlinx-locale-metadata-core", version.ref = "kotlinx-locale" }
+locale-metadata-cldr-runtime = { group = "dev.carcara", name = "kotlinx-locale-metadata-cldr-runtime", version.ref = "kotlinx-locale" }
+locale-metadata-cldr-full = { group = "dev.carcara", name = "kotlinx-locale-metadata-cldr-full", version.ref = "kotlinx-locale" }
+locale-list-core = { group = "dev.carcara", name = "kotlinx-locale-list-core", version.ref = "kotlinx-locale" }
+locale-list-cldr-runtime = { group = "dev.carcara", name = "kotlinx-locale-list-cldr-runtime", version.ref = "kotlinx-locale" }
+locale-list-cldr-full = { group = "dev.carcara", name = "kotlinx-locale-list-cldr-full", version.ref = "kotlinx-locale" }
+locale-unit-core = { group = "dev.carcara", name = "kotlinx-locale-unit-core", version.ref = "kotlinx-locale" }
+locale-unit-cldr-runtime = { group = "dev.carcara", name = "kotlinx-locale-unit-cldr-runtime", version.ref = "kotlinx-locale" }
+locale-unit-cldr-full = { group = "dev.carcara", name = "kotlinx-locale-unit-cldr-full", version.ref = "kotlinx-locale" }
+
 [bundles]
+locale-metadata-cldr = ["locale-metadata-core", "locale-metadata-cldr-full"]
+locale-metadata-narrowed = ["locale-metadata-core", "locale-metadata-cldr-runtime"]
+locale-list-cldr = ["locale-list-core", "locale-list-cldr-full"]
+locale-list-narrowed = ["locale-list-core", "locale-list-cldr-runtime"]
+locale-unit-cldr = ["locale-unit-core", "locale-unit-cldr-full"]
+locale-unit-narrowed = ["locale-unit-core", "locale-unit-cldr-runtime"]
 locale-segmentation = ["locale-segmentation-core", "locale-segmentation-unicode"]
 # Bundled CLDR data: the normal choice.
 locale-country-cldr = ["locale-country-types", "locale-country-core", "locale-country-cldr-full"]
@@ -417,6 +433,15 @@ plugin flag beside the artifact for every domain that has one.
 | `kotlinx-locale-language-core` | `LanguageNameSource` and the locale display name algorithm of UTS #35 Part 2: how a language name and its unconsumed subtags compose into `Serbian (Cyrillic)`. |
 | `kotlinx-locale-language-cldr-runtime` | The language, script and region name lookup over CLDR-shaped records it does not carry. |
 | `kotlinx-locale-language-cldr-full` | `-cldr-runtime` plus the name tables: `CldrLanguage`, `Locale.displayName` and `Locale.nativeDisplayName`. The largest table in the library, which is the strongest argument for the Gradle plugin. |
+| `kotlinx-locale-metadata-core` | Public value types and source contracts. |
+| `kotlinx-locale-metadata-cldr-runtime` | Lookup and rendering over caller-supplied records. |
+| `kotlinx-locale-metadata-cldr-full` | Locale canonicalization, likely subtags, region preferences and catalogues. |
+| `kotlinx-locale-list-core` | Public value types and source contracts. |
+| `kotlinx-locale-list-cldr-runtime` | Lookup and rendering over caller-supplied records. |
+| `kotlinx-locale-list-cldr-full` | Conjunction, disjunction and unit lists with element identities. |
+| `kotlinx-locale-unit-core` | Public value types and source contracts. |
+| `kotlinx-locale-unit-cldr-runtime` | Lookup and rendering over caller-supplied records. |
+| `kotlinx-locale-unit-cldr-full` | Measurement units and compound per-unit wording with number parts. |
 | `kotlinx-locale-number-core` | `Decimal`, `NumberSymbols`, `PluralCategory`, `SignDisplay` and the number, plural and ordinal contracts. Its own README records where each part of the behaviour is defined, because CLDR settles the data and not the option names. |
 | `kotlinx-locale-number-cldr-runtime` | The CLDR pattern engine, the compact algorithm, the plural rule evaluator and the ordinal rule evaluator. The currency domain formats through this one rather than through a copy. |
 | `kotlinx-locale-number-cldr-full` | `-cldr-runtime` plus the symbol, pattern, compact, plural and ordinal tables: `CldrNumber`, `numberFormat`, `numberFormatPercent`, `numberOrdinal`, `numberSymbols` and `pluralCategory`. |
@@ -431,7 +456,7 @@ plugin flag beside the artifact for every domain that has one.
 | `kotlinx-locale-datetime-cldr-runtime` | The pattern parser and formatter plus the record lookup, over CLDR-shaped records it does not carry. |
 | `kotlinx-locale-datetime-cldr-full` | `-cldr-runtime` plus the CLDR pattern data for all 1121 locales: `CldrDateTime`, `LocalDate.format` and friends. |
 | `kotlinx-locale-datetime-cldr-skeletons` | `-cldr-full` plus the skeleton tables: `CldrDateTimeSkeletons` and `date.format("yMMMd", locale)`, where you name the fields and the locale decides their order. Opt in, at around 61 KB gzipped on top of `-cldr-full`. |
-| `kotlinx-locale-datetime-cldr-intervals` | `CldrDateTimeIntervals` and `intervalFormat`: `Jul 18 – 22, 2026`, with the parts both ends share written once. Builds on `-cldr-skeletons`, since a range is a split of the pattern the matcher picks, and adds around 28 KB gzipped over it. |
+| `kotlinx-locale-datetime-cldr-intervals` | `CldrDateTimeIntervals` and `intervalFormat`: `Jul 18 \u2013 22, 2026`, with the parts both ends share written once. Builds on `-cldr-skeletons`, since a range is a split of the pattern the matcher picks, and adds around 28 KB gzipped over it. |
 | `kotlinx-locale-personname-core` | `PersonName` and the option enums, plus `PersonNameSource`. No data. |
 | `kotlinx-locale-personname-cldr-runtime` | Pattern selection, field modifiers and the empty-field cleanup. Carries no records. |
 | `kotlinx-locale-personname-cldr-full` | `CldrPersonName`, `personNameFormat` and `personNameOrder`: a name written the way a locale writes one, and its initials. |
@@ -1383,3 +1408,48 @@ Apache License 2.0. See [LICENSE](LICENSE).
 
 CLDR and ICU data is used under the
 [Unicode License](https://www.unicode.org/license.txt).
+
+## Exact values and structured formatting
+
+These additions are unreleased. Build this checkout to use them;
+`0.4.0-kingfisher.1` does not contain these APIs or the new modules.
+
+The CLDR backends also return typed formatting results. These retain number
+parts, visible plural operands, list element indices and range provenance.
+`Decimal` stores an arbitrary-length coefficient and a signed scale, including
+a separate sign for zero. `NumberValue` adds NaN and infinities.
+
+```kotlin
+import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.number.*
+import dev.carcara.kotlinx.locale.number.cldr.*
+
+val result = numberFormatPercent(
+    NumberValue.Finite(Decimal.parse("0.125")),
+    Locale.of("en"),
+    NumberFormatOptions(maximumFractionDigits = 0, roundingMode = NumberRoundingMode.HALF_EXPAND),
+)
+check((result as LocaleLookup.Value).value.text == "13%")
+```
+
+Half-even remains the default. Callers can select any of the nine rounding
+modes, fraction or significant-digit precision, increments and trailing-zero
+handling. `numberFormatRounded` renders exact visible digits without another
+rounding or percent-scaling pass.
+
+The metadata module is independent of formatter locale coverage. Use its strict
+locale parser and canonicalization for identifiers, then consult each service's
+capabilities when negotiating a formatter. Calendar preferences can include
+calendars that this library does not render; date/time rendering supports
+Gregorian only.
+
+For a browser backend, add the metadata, list and unit CLDR bundles to the number,
+currency, language, collation, date/time and segmentation bundles you use. Person
+names, phone numbers, IBANs, flags and exemplar-city pickers serve separate
+application features. They are not required for Intl.
+
+See [structured formatting](API.md#structured-formatting-and-locale-metadata)
+for the public operations and result contracts. JavaScript coercion, option
+validation, observable property access and Temporal calendar arithmetic remain
+the embedding application's work.

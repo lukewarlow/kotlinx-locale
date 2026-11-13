@@ -20,6 +20,8 @@ package dev.carcara.kotlinx.locale.datetime.cldr.runtime
 
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.datetime.FormattedRelativeTime
 import dev.carcara.kotlinx.locale.datetime.RelativeTimeFormatSource
 import dev.carcara.kotlinx.locale.datetime.RelativeTimeNumbering
 import dev.carcara.kotlinx.locale.datetime.RelativeTimeStyle
@@ -29,12 +31,14 @@ import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
-import dev.carcara.kotlinx.locale.number.FormattedNumber
+import dev.carcara.kotlinx.locale.number.Decimal
+import dev.carcara.kotlinx.locale.number.NumberFormatOptions
 import dev.carcara.kotlinx.locale.number.NumberFormatSource
+import dev.carcara.kotlinx.locale.number.NumberPart
+import dev.carcara.kotlinx.locale.number.NumberPartKind
 import dev.carcara.kotlinx.locale.number.PluralCategory
 import dev.carcara.kotlinx.locale.number.PluralRuleSource
 import dev.carcara.kotlinx.locale.number.PluralType
-import dev.carcara.kotlinx.locale.number.format
 
 /** displayName, then five literals for -2..2, then six future and six past plural forms. */
 private const val SLOTS_PER_UNIT = 18
@@ -129,20 +133,40 @@ public class PayloadRelativeTimeFormats(
         style: RelativeTimeStyle,
         numbering: RelativeTimeNumbering,
         locale: Locale,
-    ): String? {
-        val record = recordFor(locale) ?: return null
-        if (numbering == RelativeTimeNumbering.AUTO && value in -2L..2L) {
-            record.literal(value.toInt(), unit, style)?.let { return it }
+    ): String? = (render(Decimal.of(value), unit, style, numbering, locale) as? LocaleLookup.Value)?.value?.text
+
+    override fun render(
+        value: Decimal,
+        unit: RelativeTimeUnit,
+        style: RelativeTimeStyle,
+        numbering: RelativeTimeNumbering,
+        locale: Locale,
+        options: NumberFormatOptions,
+    ): LocaleLookup<FormattedRelativeTime> {
+        val record = recordFor(locale) ?: return LocaleLookup.MissingData
+        if (numbering == RelativeTimeNumbering.AUTO && value.isInteger) {
+            val offset = value.integerPartOrNull()
+            if (offset != null && offset in -2L..2L) {
+                record.literal(offset.toInt(), unit, style)?.let {
+                    return LocaleLookup.Value(FormattedRelativeTime(listOf(NumberPart(NumberPartKind.LITERAL, it))))
+                }
+            }
         }
-        val magnitude = if (value < 0) -value else value
-        val digits = magnitude.toString()
-        val category = plurals.pluralCategoryOrNull(
-            FormattedNumber(digits, digits, ""),
-            PluralType.CARDINAL,
-            locale,
-        ) ?: PluralCategory.OTHER
-        val pattern = record.pattern(unit, style, future = value >= 0, category = category) ?: return null
-        return pattern.replace("{0}", numbers.format(magnitude, locale))
+        val formatted = numbers.formatOrNull(value.absoluteValue, locale, options) ?: return LocaleLookup.MissingData
+        val category = plurals.pluralCategoryOrNull(formatted.quantityOperands, PluralType.CARDINAL, locale) ?: PluralCategory.OTHER
+        val pattern = record.pattern(unit, style, future = !value.isNegative, category = category) ?: return LocaleLookup.MissingData
+        val marker = pattern.indexOf("{0}")
+        if (marker < 0) return LocaleLookup.Value(FormattedRelativeTime(listOf(NumberPart(NumberPartKind.LITERAL, pattern))))
+        val parts = buildList {
+            if (marker > 0) add(NumberPart(NumberPartKind.LITERAL, pattern.take(marker)))
+            addAll(
+                formatted.parts.map { part ->
+                    NumberPart(part.kind, part.value, if (part.kind == NumberPartKind.LITERAL) null else unit.name.lowercase())
+                },
+            )
+            if (marker + 3 < pattern.length) add(NumberPart(NumberPartKind.LITERAL, pattern.drop(marker + 3)))
+        }
+        return LocaleLookup.Value(FormattedRelativeTime(parts))
     }
 
     override fun literalOrNull(offset: Int, unit: RelativeTimeUnit, style: RelativeTimeStyle, locale: Locale): String? =

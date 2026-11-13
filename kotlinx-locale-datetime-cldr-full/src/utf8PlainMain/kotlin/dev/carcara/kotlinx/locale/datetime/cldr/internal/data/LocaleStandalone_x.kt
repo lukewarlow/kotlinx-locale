@@ -19,4 +19,10 @@
 package dev.carcara.kotlinx.locale.datetime.cldr.internal.data
 
 internal val LOCALE_STANDALONE_XH: String =
-    "Janyuwari\u001EFebruwari\u001EMatshi\u001EEpreli\u001EMeyi\u001EJuni\u001EJulayi\u001EAgasti\u001ESeptemba\u001EOkthoba\u001ENovemba\u001EDisemba\u001FJan\u001EFeb\u001EMat\u001EEpr\u001EMey\u001EJun\u001EJul\u001EAga\u001ESep\u001EOkt\u001ENov\u001EDis\u001F\u001F\u001FMvu\u001EBin\u001ETha\u001ESin\u001EHla\u001EMgq\u001ECaw\u001FMv\u001ESb\u001ESt\u001ESin\u001EHl\u001EMg\u001EC\u001F0"
+    "Janyuwari\u001EFebruwari\u001EMatshi\u001EEpreli\u001EMeyi\u001EJuni\u001EJulayi\u001EAgasti\u001ESeptemba\u001EOkthoba\u001ENovemba\u001EDisemba\u001FJan\u001EFeb\u001EMat\u001EEpr\u001EMey\u001EJun\u001EJul\u001EAga\u001ESep\u001EOkt\u001ENov\u001EDis\u001F\u001F\u001FMvu\u001EBin\u001ETha\u001ESin\u001EHla\u001EMgq\u001ECaw\u001FMv\u001ESb\u001ESt\u001ESin\u001EHl\u001EMg\u001EC\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBC\u001Eera/abbreviated/1\u001DAD\u001Eera/wide/0\u001DPhambi KoKristu\u001Eera/wide/1\u001DAnno Domino\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM"
+
+internal val LOCALE_STANDALONE_XNR: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001Dईसा-पैले\u001Eera/abbreviated/1\u001Dईस्वी\u001Eera/wide/1\u001Dईसवी सन\u001Eperiod/format/abbreviated/am\u001Dभ्यागा\u001Eperiod/format/abbreviated/pm\u001Dदपेहरा/संजा"
+
+internal val LOCALE_STANDALONE_XOG: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DAZ\u001Eera/abbreviated/1\u001DAF\u001Eera/wide/0\u001DKulisto nga azilawo\u001Eera/wide/1\u001DKulisto nga affile\u001Eperiod/format/abbreviated/am\u001DMunkyo\u001Eperiod/format/abbreviated/pm\u001DEigulo"

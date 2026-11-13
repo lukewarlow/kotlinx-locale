@@ -18,5 +18,17 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.datetime.cldr.internal.data
 
+internal val LOCALE_STANDALONE_ZA: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBCE\u001Eera/abbreviated/1\u001DCE\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM\u001Eperiod/format/wide/am\u001Dbanhaet\u001Eperiod/format/wide/pm\u001Dbanringzgvaq"
+
+internal val LOCALE_STANDALONE_ZH: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001D公元前\u001Eera/abbreviated/1\u001D公元\u001Eperiod/format/abbreviated/afternoon1\u001D中午\u001Eperiod/format/abbreviated/afternoon2\u001D下午\u001Eperiod/format/abbreviated/am\u001D上午\u001Eperiod/format/abbreviated/evening1\u001D晚上\u001Eperiod/format/abbreviated/midnight\u001D午夜\u001Eperiod/format/abbreviated/morning1\u001D早上\u001Eperiod/format/abbreviated/morning2\u001D上午\u001Eperiod/format/abbreviated/night1\u001D凌晨\u001Eperiod/format/abbreviated/pm\u001D下午\u001Eperiod/format/wide/morning1\u001D清晨"
+
+internal val LOCALE_STANDALONE_ZH_HANT: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001D西元前\u001Eera/abbreviated/1\u001D西元\u001Eperiod/format/abbreviated/afternoon1\u001D中午\u001Eperiod/format/abbreviated/afternoon2\u001D下午\u001Eperiod/format/abbreviated/am\u001D上午\u001Eperiod/format/abbreviated/evening1\u001D晚上\u001Eperiod/format/abbreviated/midnight\u001D午夜\u001Eperiod/format/abbreviated/morning1\u001D清晨\u001Eperiod/format/abbreviated/morning2\u001D上午\u001Eperiod/format/abbreviated/night1\u001D凌晨\u001Eperiod/format/abbreviated/pm\u001D下午"
+
+internal val LOCALE_STANDALONE_ZH_HANT_HK: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001D公元前\u001Eera/abbreviated/1\u001D公元\u001Eperiod/format/abbreviated/afternoon1\u001D中午\u001Eperiod/format/abbreviated/afternoon2\u001D下午\u001Eperiod/format/abbreviated/am\u001D上午\u001Eperiod/format/abbreviated/evening1\u001D晚上\u001Eperiod/format/abbreviated/midnight\u001D午夜\u001Eperiod/format/abbreviated/morning1\u001D早上\u001Eperiod/format/abbreviated/morning2\u001D上午\u001Eperiod/format/abbreviated/night1\u001D凌晨\u001Eperiod/format/abbreviated/pm\u001D下午"
+
 internal val LOCALE_STANDALONE_ZU: String =
-    "\u001F\u001FJ\u001EF\u001EM\u001EA\u001EM\u001EJ\u001EJ\u001EA\u001ES\u001EO\u001EN\u001ED\u001F\u001F\u001F\u001F0"
+    "\u001F\u001FJ\u001EF\u001EM\u001EA\u001EM\u001EJ\u001EJ\u001EA\u001ES\u001EO\u001EN\u001ED\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBC\u001Eera/abbreviated/1\u001DAD\u001Eperiod/format/abbreviated/afternoon1\u001Demini\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/evening1\u001Dntambama\u001Eperiod/format/abbreviated/morning1\u001Dentathakusa\u001Eperiod/format/abbreviated/morning2\u001Dekuseni\u001Eperiod/format/abbreviated/night1\u001Debusuku\u001Eperiod/format/abbreviated/pm\u001DPM\u001Eperiod/format/narrow/am\u001Da\u001Eperiod/format/narrow/pm\u001Dp"

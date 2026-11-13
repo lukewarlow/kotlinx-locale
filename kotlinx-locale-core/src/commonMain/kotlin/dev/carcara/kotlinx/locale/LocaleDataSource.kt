@@ -48,5 +48,9 @@ public interface LocaleDataSource {
      */
     public val supportedLocales: Set<Locale>
 
+    /** Data coverage, separate from any root fallback a lookup may use. */
+    public val localeCoverage: LocaleCoverage
+        get() = if (supportedLocales.isEmpty()) LocaleCoverage.Unknown else LocaleCoverage.Enumerated(supportedLocales)
+
     public companion object
 }

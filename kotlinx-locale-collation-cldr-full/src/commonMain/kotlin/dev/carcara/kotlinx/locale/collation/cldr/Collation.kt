@@ -27,7 +27,7 @@ import dev.carcara.kotlinx.locale.collation.CollationStrength
 import dev.carcara.kotlinx.locale.collation.cldr.internal.data.collationRootRegistry
 import dev.carcara.kotlinx.locale.collation.cldr.internal.data.collationTailoringsRegistry
 import dev.carcara.kotlinx.locale.collation.cldr.internal.data.normalizationRegistry
-import dev.carcara.kotlinx.locale.collation.cldr.runtime.PayloadCollation
+import dev.carcara.kotlinx.locale.collation.cldr.runtime.PayloadCollationSource
 import dev.carcara.kotlinx.locale.internal.Normalization
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 
@@ -43,33 +43,10 @@ import dev.carcara.kotlinx.locale.internal.resolvedRecord
  * locale. The tailorings are looked up per locale and cached, since folding
  * one into the root is work a second call should not repeat.
  */
-public object CldrCollation : CollationSource {
-
-    // Keyed on the delta rather than on the tag: two locales that tailor
-    // the root the same way are the same table, and most of CLDR tailors
-    // it not at all.
-    private val tables = HashMap<String, PayloadCollation.Tailored>()
-    private var installed = false
-
-    private fun install(locale: Locale): Boolean {
-        if (installed) return true
-        // Both registries carry one entry, under `root`, so any locale
-        // resolves to it. Read through `resolvedRecord` all the same,
-        // because that is what unpacks and inflates the record.
-        val normalization = resolvedRecord(normalizationRegistry, locale) ?: return false
-        val table = resolvedRecord(collationRootRegistry, locale) ?: return false
-        Normalization.install(normalization)
-        PayloadCollation.install(table)
-        installed = true
-        return true
-    }
-
-    override fun comparatorOrNull(locale: Locale, strength: CollationStrength): Comparator<String>? {
-        if (!install(locale)) return null
-        val delta = resolvedRecord(collationTailoringsRegistry, locale) ?: return null
-        return tables.getOrPut(delta) { PayloadCollation.tailored(delta) }.at(strength)
-    }
-}
+public object CldrCollation : CollationSource by PayloadCollationSource(
+    collationRootRegistry, normalizationRegistry, collationTailoringsRegistry,
+    availableCollations = setOf("compat", "dict", "emoji", "eor", "phonebk", "phonetic", "pinyin", "searchjl", "stroke", "trad", "unihan", "zhuyin"),
+)
 
 /**
  * The order [locale] reads a list in.

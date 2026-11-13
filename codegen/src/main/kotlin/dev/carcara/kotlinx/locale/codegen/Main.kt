@@ -43,6 +43,23 @@ fun main(args: Array<String>) {
             generateSources(bundle = bundle, roots = shippedRoots(rootDir))
             generateSegmentationData(rootDir)
         }
+        "metadata" -> {
+            val cldr = ensureCloned(rootDir, CLDR_REPO)
+            val bundle = bundleFile(rootDir).bufferedReader().use(LocaleDataBundle::readFrom)
+            val builder = bundle.toBuilder().table(BundleTables.LOCALE_METADATA, encodeLocaleMetadata(cldr, bundle.currencies))
+                .table(BundleTables.TIME_ZONE_METADATA, encodeTimeZoneMetadata(cldr))
+            extractIntlPatterns(cldr).forEach { (name, records) -> builder.section(name, records) }
+            builder.section("dateTimeStandalone", augmentDateTimeNames(cldr, bundle.section("dateTimeStandalone")))
+            val collation = buildCollationPayloads(cldr)
+            builder.section("collationRoot", mapOf("root" to collation.root))
+                .section("normalization", mapOf("root" to collation.normalization))
+                .section("collationTailorings", collation.tailorings)
+            emitLocaleMetadataFixtures(rootDir, cldr)
+            val updated = builder.build()
+            bundleFile(rootDir).bufferedWriter().use(updated::writeTo)
+            generateSources(updated, shippedRoots(rootDir))
+        }
+        "identityFixtures" -> emitLocaleMetadataFixtures(rootDir, ensureCloned(rootDir, CLDR_REPO))
         "segmentation" -> generateSegmentationData(rootDir)
         else -> error("Unknown mode '$mode'. Use 'clone', 'generate', 'regenerate' or 'segmentation'.")
     }
@@ -155,6 +172,27 @@ private fun generate(rootDir: File, cldrDir: File, icuDir: File) {
 
 /** Every published artifact that carries generated source, and where its package root is. */
 internal fun shippedRoots(rootDir: File): SourceRoots = SourceRoots.Builder()
+    .table(GeneratedTable.LIST_PATTERNS, rootDir.sourceRoot("kotlinx-locale-list-cldr-full"))
+    .table(GeneratedTable.UNIT_PATTERNS, rootDir.sourceRoot("kotlinx-locale-unit-cldr-full"))
+    .table(GeneratedTable.PLURAL_RANGES, rootDir.sourceRoot("kotlinx-locale-number-cldr-full"))
+    .table(GeneratedTable.NUMBER_SYSTEMS, rootDir.sourceRoot("kotlinx-locale-number-cldr-full"))
+    .table(GeneratedTable.EXTENDED_DISPLAY_NAMES, rootDir.sourceRoot("kotlinx-locale-language-cldr-full"))
+    .binding(
+        GeneratedBinding.LIST,
+        BindingTarget(rootDir.sourceRoot("kotlinx-locale-list-cldr-full"), "dev.carcara.kotlinx.locale.list.cldr", "CldrListFormats"),
+    )
+    .binding(
+        GeneratedBinding.UNIT,
+        BindingTarget(rootDir.sourceRoot("kotlinx-locale-unit-cldr-full"), "dev.carcara.kotlinx.locale.unit.cldr", "CldrUnitFormats"),
+    )
+    .binding(
+        GeneratedBinding.METADATA,
+        BindingTarget(
+            rootDir.sourceRoot("kotlinx-locale-metadata-cldr-full"),
+            "dev.carcara.kotlinx.locale.metadata.cldr",
+            "CldrLocaleMetadata",
+        ),
+    )
     .binding(
         GeneratedBinding.SEGMENTATION,
         BindingTarget(
@@ -575,9 +613,11 @@ private fun extractBundle(rootDir: File, cldrDir: File, icuDir: File): LocaleDat
         hasFormats = true,
     )
 
+    emitLocaleMetadataFixtures(rootDir, cldrDir)
     val collation = buildCollationPayloads(cldrDir)
 
     return LocaleDataBundle.Builder()
+        .apply { extractIntlPatterns(cldrDir).forEach { (name, records) -> section(name, records) } }
         .apply {
             cldrVersion = CLDR_REPO.tag
             isoPublished = iso4217.published
@@ -587,7 +627,7 @@ private fun extractBundle(rootDir: File, cldrDir: File, icuDir: File): LocaleDat
             countryCurrencies = countryCurrencyCodes
         }
         .section("dateTime", dateTime)
-        .section("dateTimeStandalone", dateTimeStandalone)
+        .section("dateTimeStandalone", augmentDateTimeNames(cldrDir, dateTimeStandalone))
         .section("localeDisplayNames", buildLocaleDisplayNamePayloads(flattener, extras))
         .section("relativeTime", relativeTime)
         .section("durationUnits", durationUnits)
@@ -598,6 +638,7 @@ private fun extractBundle(rootDir: File, cldrDir: File, icuDir: File): LocaleDat
         .table(BundleTables.PHONE_TERRITORIES, phoneTerritoryTable)
         .table(BundleTables.PHONE_FORMATS, phoneFormatTable)
         .table(BundleTables.WEEK_DATA, supplemental.encodeWeekData())
+        .table(BundleTables.LOCALE_METADATA, encodeLocaleMetadata(cldrDir, currencyEntries))
         .table(BundleTables.GRAPHEME_BREAK, encodeGraphemeBreakRanges(parseGraphemeBreakRanges()))
         .table(BundleTables.WORD_BREAK_MID, parseWordBreakMidLetters())
         .section("countryNames", buildCountryNamePayloads(flattener, extras))

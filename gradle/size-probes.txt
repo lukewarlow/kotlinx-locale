@@ -26,3 +26,6 @@ probe-everything-platform
 probe-datetime-intervals
 probe-personname-full
 probe-collation-full
+probe-metadata-full
+probe-list-full
+probe-unit-full

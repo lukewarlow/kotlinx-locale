@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -29,6 +29,7 @@ final enum class dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle : kotlin/
 abstract interface dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource : dev.carcara.kotlinx.locale/LocaleDataSource { // dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource|null[0]
     abstract fun displayNameOrNull(kotlinx.datetime/TimeZone, dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle, kotlinx.datetime/UtcOffset?, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource.displayNameOrNull|displayNameOrNull(kotlinx.datetime.TimeZone;dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle;kotlinx.datetime.UtcOffset?;dev.carcara.kotlinx.locale.Locale){}[0]
     abstract fun exemplarCityOrNull(kotlinx.datetime/TimeZone, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource.exemplarCityOrNull|exemplarCityOrNull(kotlinx.datetime.TimeZone;dev.carcara.kotlinx.locale.Locale){}[0]
+    open fun render(dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext, dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle, dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/LocaleLookup<kotlin/String> // dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource.render|render(dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext;dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle;dev.carcara.kotlinx.locale.Locale){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource.Companion|null[0]
 }
@@ -43,6 +44,36 @@ final class dev.carcara.kotlinx.locale.timezone/FallbackTimeZoneNames : dev.carc
     final fun exemplarCityOrNull(kotlinx.datetime/TimeZone, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.timezone/FallbackTimeZoneNames.exemplarCityOrNull|exemplarCityOrNull(kotlinx.datetime.TimeZone;dev.carcara.kotlinx.locale.Locale){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.timezone/FallbackTimeZoneNames.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext { // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext|null[0]
+    constructor <init>(kotlin/String, kotlin/Int?, kotlin/Long? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/String? = ...) // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.<init>|<init>(kotlin.String;kotlin.Int?;kotlin.Long?;kotlin.Boolean?;kotlin.Boolean?;kotlin.String?){}[0]
+
+    final val epochSeconds // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.epochSeconds|{}epochSeconds[0]
+        final fun <get-epochSeconds>(): kotlin/Long? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.epochSeconds.<get-epochSeconds>|<get-epochSeconds>(){}[0]
+    final val identifier // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.identifier|{}identifier[0]
+        final fun <get-identifier>(): kotlin/String // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val isDaylight // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.isDaylight|{}isDaylight[0]
+        final fun <get-isDaylight>(): kotlin/Boolean? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.isDaylight.<get-isDaylight>|<get-isDaylight>(){}[0]
+    final val numberingSystem // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.numberingSystem|{}numberingSystem[0]
+        final fun <get-numberingSystem>(): kotlin/String? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.numberingSystem.<get-numberingSystem>|<get-numberingSystem>(){}[0]
+    final val observesDaylight // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.observesDaylight|{}observesDaylight[0]
+        final fun <get-observesDaylight>(): kotlin/Boolean? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.observesDaylight.<get-observesDaylight>|<get-observesDaylight>(){}[0]
+    final val offsetSeconds // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.offsetSeconds|{}offsetSeconds[0]
+        final fun <get-offsetSeconds>(): kotlin/Int? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.offsetSeconds.<get-offsetSeconds>|<get-offsetSeconds>(){}[0]
+
+    final fun component1(): kotlin/String // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.component1|component1(){}[0]
+    final fun component2(): kotlin/Int? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.component2|component2(){}[0]
+    final fun component3(): kotlin/Long? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.component4|component4(){}[0]
+    final fun component5(): kotlin/Boolean? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.component5|component5(){}[0]
+    final fun component6(): kotlin/String? // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.component6|component6(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int? = ..., kotlin/Long? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/String? = ...): dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.copy|copy(kotlin.String;kotlin.Int?;kotlin.Long?;kotlin.Boolean?;kotlin.Boolean?;kotlin.String?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext.Companion|null[0]
 }
 
 final fun (dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource).dev.carcara.kotlinx.locale.timezone/displayName(kotlinx.datetime/TimeZone, dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle = ..., kotlinx.datetime/UtcOffset? = ..., dev.carcara.kotlinx.locale/Locale = ...): kotlin/String // dev.carcara.kotlinx.locale.timezone/displayName|displayName@dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource(kotlinx.datetime.TimeZone;dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle;kotlinx.datetime.UtcOffset?;dev.carcara.kotlinx.locale.Locale){}[0]

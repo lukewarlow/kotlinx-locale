@@ -2,10 +2,19 @@ public final class dev/carcara/kotlinx/locale/language/cldr/CldrLanguage : dev/c
 	public static final field INSTANCE Ldev/carcara/kotlinx/locale/language/cldr/CldrLanguage;
 	public fun capitalized (Ljava/lang/String;Ldev/carcara/kotlinx/locale/language/LanguageNameUsage;Ldev/carcara/kotlinx/locale/Capitalization;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun displayPatternsOrNull (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/language/LocaleDisplayPatterns;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public fun languageNameOrNull (Ljava/lang/String;Ldev/carcara/kotlinx/locale/language/LanguageNameStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public fun lookupName (Ldev/carcara/kotlinx/locale/DisplayNameType;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/NameWidth;Ldev/carcara/kotlinx/locale/NameFallback;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun regionNameOrNull (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun scriptNameOrNull (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/language/cldr/IntlLanguageNamesKt {
+	public static final fun localeDisplayName (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/NameWidth;Ldev/carcara/kotlinx/locale/NameFallback;Ldev/carcara/kotlinx/locale/language/LanguageDisplay;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static final fun localeDisplayName (Ljava/lang/String;Ldev/carcara/kotlinx/locale/DisplayNameType;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/NameWidth;Ldev/carcara/kotlinx/locale/NameFallback;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun localeDisplayName$default (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/NameWidth;Ldev/carcara/kotlinx/locale/NameFallback;Ldev/carcara/kotlinx/locale/language/LanguageDisplay;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun localeDisplayName$default (Ljava/lang/String;Ldev/carcara/kotlinx/locale/DisplayNameType;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/NameWidth;Ldev/carcara/kotlinx/locale/NameFallback;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/language/cldr/LanguageNamesKt {

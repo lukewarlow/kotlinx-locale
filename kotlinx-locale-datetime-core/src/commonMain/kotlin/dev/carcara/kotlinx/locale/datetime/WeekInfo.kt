@@ -102,6 +102,10 @@ public interface WeekInfoSource {
      */
     public fun weekInfoForRegionOrNull(regionCode: String): WeekInfo?
 
+    /** Distinguishes an explicit regional row from world fallback. */
+    public fun regionalWeekInfo(regionCode: String): dev.carcara.kotlinx.locale.LocaleLookup<WeekInfo> =
+        dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Regional week rows")
+
     public companion object
 }
 

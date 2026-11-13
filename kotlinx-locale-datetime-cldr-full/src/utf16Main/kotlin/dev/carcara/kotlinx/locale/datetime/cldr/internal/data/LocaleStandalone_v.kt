@@ -18,5 +18,11 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.datetime.cldr.internal.data
 
+internal val LOCALE_STANDALONE_VEC: String =
+    "0033凋䧀⡿⅍ⶦᭊ䀥薼煮ㄵ᱙叏⼆㎊ⶨ擙噢ⲏἺ判⿮᪒充岲湢ⲵએ堽冑綜舘楃璊⸜ᜬ沢婂涉䒓⺂䆨憜ㄧ氡流䋆私砦吢ࡴ 䥏疧窋䆈ᨔᆉ擙⮯朜䢿ᬨᗰ਀"
+
 internal val LOCALE_STANDALONE_VI: String =
-    "003Z෤嘯ฅ緜ኁ䀓ౡ਱丰䬄欘㥌㦄ᓇ⃂ᐋᑡ䲱丆個✃⁬㶓࿐玝ఌࠀࠀ"
+    "00Dj曈埛塦ौ㩻ገቕ櫴螬ᑭተ琠ヶఅ῰䄲ᬨ禇䰮䉺粉㆗墨亪癁滵ਓ劣⴪瓷菹䛏矹瓰纏㐜⴪䇢ओ൳උ䶋䶫䶛䶳䦏䮬ਝ៴渓⳴䜇蛙嶬脕愜䴦⛖ᤑઘ積䬸爦Ⰳ亇᳸ဢ䪛㼥१愚凨⾿崊⤷⪨᪓冔ᶺ蛅㧫༔杫巓繺磾掽䦽篶䵀姝ⅼ搢இ綫⍑嬤瑫廝ૌ氫᮳⍊᪠柚椮㓁㉔⩓₦林⽢氖᨜໴ጲ㈙哠却㘷䙠ሞᦇ䲓㘍燰Ꮾ歓㻢気㵈㻭繡疁悆ㇹᷗ湥碑砸簩௹ຟ矾樞ᢟ卍ḻ㇑㹫Ⴒ坩柕园⏰ᵗ⁨橽੍᧵儿命㙇栐"
+
+internal val LOCALE_STANDALONE_VMW: String =
+    "003D䛥廂恆ई㜌帱㪅爒㈾ഁዮప㦖椧่煱菓⯗昇凨蛽涶༖䒢⻪燩堩支瞱㩖㉍岴㧁姂⃑䈇ᾠᑵ⟏㝷⿾笏㯔㧶䊞壞ᖥ槲毙粽䉪肛氨㕂全柚⇢䣌ℾ⠠"

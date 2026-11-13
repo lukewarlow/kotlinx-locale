@@ -52,6 +52,7 @@ public final class dev/carcara/kotlinx/locale/segmentation/SegmentationSource$Co
 }
 
 public final class dev/carcara/kotlinx/locale/segmentation/SegmentationSource$DefaultImpls {
+	public static fun getLocaleCoverage (Ldev/carcara/kotlinx/locale/segmentation/SegmentationSource;)Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public static fun getUnicodeVersion (Ldev/carcara/kotlinx/locale/segmentation/SegmentationSource;)Ljava/lang/String;
 }
 

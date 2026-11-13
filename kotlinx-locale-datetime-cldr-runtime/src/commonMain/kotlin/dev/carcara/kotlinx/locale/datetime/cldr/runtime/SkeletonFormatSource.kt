@@ -21,9 +21,17 @@ package dev.carcara.kotlinx.locale.datetime.cldr.runtime
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.datetime.DateTimeRenderContext
+import dev.carcara.kotlinx.locale.datetime.FormatStyle
+import dev.carcara.kotlinx.locale.datetime.FormattedDateTime
+import dev.carcara.kotlinx.locale.datetime.SelectedDateTimeFormat
+import dev.carcara.kotlinx.locale.datetime.format
 import dev.carcara.kotlinx.locale.datetime.hourCycle
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
+import dev.carcara.kotlinx.locale.number.NumberFormatSource
+import dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -68,6 +76,19 @@ public interface SkeletonFormatSource : LocaleDataSource {
     public fun formatOrNull(time: LocalTime, skeleton: String, locale: Locale): String?
 
     public fun formatOrNull(dateTime: LocalDateTime, skeleton: String, locale: Locale): String?
+
+    public fun selectSkeleton(skeleton: String, locale: Locale, numberingSystem: String? = null): LocaleLookup<SelectedDateTimeFormat> =
+        LocaleLookup.Unsupported("Skeleton selection")
+
+    /** Candidate records for callers implementing their own format matcher. */
+    public fun candidates(locale: Locale, numberingSystem: String? = null): LocaleLookup<List<SelectedDateTimeFormat>> =
+        LocaleLookup.Unsupported("Format candidates")
+    public fun render(
+        context: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        numbers: NumberFormatSource? = null,
+        zones: TimeZoneNameSource? = null,
+    ): LocaleLookup<FormattedDateTime> = LocaleLookup.Unsupported("Structured skeleton formatting")
 
     public companion object
 }
@@ -114,11 +135,104 @@ public class PayloadSkeletonFormats(
      * `de maig del 2026` where CLDR means `maig del 2026`.
      */
     private val standaloneRecords: Map<String, String> = emptyMap(),
+    private val defaultNumbers: NumberFormatSource? = null,
+    private val defaultZones: TimeZoneNameSource? = null,
 ) : SkeletonFormatSource {
 
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(skeletonFormats) }
 
     private val matchers = HashMap<String, LocaleSkeletons?>()
+
+    override fun selectSkeleton(skeleton: String, locale: Locale, numberingSystem: String?): LocaleLookup<SelectedDateTimeFormat> {
+        val data = skeletonsFor(locale) ?: return LocaleLookup.MissingData
+        val fraction = skeleton.count { it == 'S' }
+        val request = skeleton.filter { it != 'S' }
+        val base = if (request.isEmpty() && fraction > 0) {
+            ""
+        } else {
+            data.matcher.bestPatternOrNull(
+                if (fraction > 0 && 's' !in request) request + "s" else request,
+                extended = true,
+            ) ?: return LocaleLookup.Unsupported("Skeleton $skeleton")
+        }
+        val system = numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.dateTime.defaultNumberingSystem
+        val decimal = if (fraction > 0 && request.isNotEmpty()) {
+            defaultNumbers?.symbolsOrNull(locale, system)?.decimal
+                ?: return LocaleLookup.Unsupported("Numeric symbols are required for fractional-second patterns")
+        } else {
+            "."
+        }
+        val pattern = if (fraction == 0) {
+            base
+        } else if (base.isEmpty()) {
+            "S".repeat(fraction)
+        } else {
+            buildString {
+                for (token in parseDateTimePattern(base)) {
+                    when (token) {
+                        is PatternToken.Literal -> append(quoteLiteral(token.text))
+                        is PatternToken.Field -> {
+                            repeat(token.count) { append(token.letter) }
+                            if (token.letter == 's') {
+                                append(quoteLiteral(decimal))
+                                repeat(fraction) { append('S') }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return LocaleLookup.Value(
+            selectedDateTimeFormat(
+                pattern,
+                locale,
+                numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.dateTime.defaultNumberingSystem,
+            ),
+        )
+    }
+
+    override fun candidates(locale: Locale, numberingSystem: String?): LocaleLookup<List<SelectedDateTimeFormat>> {
+        val data = skeletonsFor(locale) ?: return LocaleLookup.MissingData
+        val dates = data.dateTime.dateFormats
+        val times = FormatStyle.entries.map { data.dateTime.timePattern(it, locale.hourCycle) }
+        val patterns = (
+            data.record.availableFormats.map { it.second } + dates + times + dates.flatMapIndexed { index, date ->
+                times.map { time -> data.dateTime.glueFormats[index].replace("{1}", date).replace("{0}", time) }
+            }
+            ).distinct()
+        return LocaleLookup.Value(
+            patterns.filter { pattern ->
+                parseDateTimePattern(pattern).all { token ->
+                    token !is PatternToken.Field ||
+                        (token.letter in "GyMLdEecabBhHKkmsSzvO" && !(token.letter in "ec" && token.count <= 2))
+                }
+            }.map {
+                selectedDateTimeFormat(
+                    it,
+                    locale,
+                    numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.dateTime.defaultNumberingSystem,
+                )
+            },
+        )
+    }
+
+    override fun render(
+        context: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        numbers: NumberFormatSource?,
+        zones: TimeZoneNameSource?,
+    ): LocaleLookup<FormattedDateTime> {
+        val data = skeletonsFor(format.locale) ?: return LocaleLookup.MissingData
+        return renderDateTimeTokens(
+            parseDateTimePattern(format.pattern),
+            context,
+            format,
+            data.dateTime,
+            data.record,
+            numbers ?: defaultNumbers,
+            zones ?: defaultZones,
+        )
+    }
 
     override fun skeletonPatternOrNull(skeleton: String, locale: Locale): String? =
         skeletonsFor(locale)?.matcher?.bestPatternOrNull(skeleton)
@@ -166,6 +280,16 @@ public class PayloadSkeletonFormats(
         return built
     }
 
+    internal fun renderTokens(
+        tokens: List<PatternToken>,
+        context: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        numbers: NumberFormatSource?,
+        zones: TimeZoneNameSource?,
+    ): LocaleLookup<FormattedDateTime> {
+        val data = skeletonsFor(format.locale) ?: return LocaleLookup.MissingData
+        return renderDateTimeTokens(tokens, context, format, data.dateTime, data.record, numbers ?: defaultNumbers, zones ?: defaultZones)
+    }
     public companion object
 }
 

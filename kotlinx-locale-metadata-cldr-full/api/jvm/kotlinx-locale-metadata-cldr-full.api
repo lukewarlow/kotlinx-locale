@@ -1,0 +1,35 @@
+public final class dev/carcara/kotlinx/locale/metadata/cldr/CldrLocaleMetadata : dev/carcara/kotlinx/locale/metadata/LocaleMetadataSource {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/metadata/cldr/CldrLocaleMetadata;
+	public fun bestFitOrNull (Ljava/util/List;Ljava/util/Set;)Ldev/carcara/kotlinx/locale/metadata/LocaleMatch;
+	public fun canonicalize (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/Locale;
+	public fun canonicalizeUnicodeValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun currencies ()Ljava/util/List;
+	public fun getDataVersion ()Ljava/lang/String;
+	public fun maximize (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/Locale;
+	public fun minimize (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/Locale;
+	public fun numberingSystemDigitsOrNull (Ljava/lang/String;)Ljava/lang/String;
+	public fun numberingSystems ()Ljava/util/Set;
+	public fun preferences (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/LocalePreferences;
+	public fun regionPreference (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
+	public fun timeZoneIdentifierOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TimeZoneIdentifier;
+	public fun timeZoneIdentifiers ()Ljava/util/List;
+	public fun timeZonesForRegion (Ljava/lang/String;)Ljava/util/List;
+}
+
+public final class dev/carcara/kotlinx/locale/metadata/cldr/LocaleMetadataKt {
+	public static final fun localeCanonicalize (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/Locale;
+	public static final fun localeCanonicalizeUnicodeValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun localeCurrencies ()Ljava/util/List;
+	public static final fun localeMatchOrNull (Ljava/util/List;Ljava/util/Set;)Ldev/carcara/kotlinx/locale/metadata/LocaleMatch;
+	public static final fun localeMaximize (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/Locale;
+	public static final fun localeMinimize (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/Locale;
+	public static final fun localeNumberingSystems ()Ljava/util/Set;
+	public static final fun localePreferences (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/LocalePreferences;
+	public static synthetic fun localePreferences$default (Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/metadata/LocalePreferences;
+	public static final fun localeRegionPreference (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
+	public static synthetic fun localeRegionPreference$default (Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
+	public static final fun localeTimeZoneIdentifierOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TimeZoneIdentifier;
+	public static final fun localeTimeZoneIdentifiers ()Ljava/util/List;
+	public static final fun localeTimeZones (Ljava/lang/String;)Ljava/util/List;
+}
+

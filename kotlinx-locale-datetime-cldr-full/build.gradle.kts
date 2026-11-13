@@ -22,6 +22,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":kotlinx-locale-datetime-cldr-runtime"))
+            api(project(":kotlinx-locale-number-cldr-full"))
+            api(project(":kotlinx-locale-timezone-cldr-full"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

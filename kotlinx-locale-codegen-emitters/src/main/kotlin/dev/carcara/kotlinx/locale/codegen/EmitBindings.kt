@@ -80,11 +80,11 @@ public class BindingSpec(
      * A generated build has both tables in one package, so it passes a lookup
      * over its own country registry rather than an object it does not have.
      */
-    public fun languageNamesArgument(): String = if (hasSharedTerritory) {
-        "PayloadLanguageNames(\n        |    localeDisplayNamesRegistry,\n        |    $territoryName::nameOrNull,\n        |)"
+    public fun languageNamesArgument(extendedNames: String = "emptyMap()"): String = if (hasSharedTerritory) {
+        "PayloadLanguageNames(\n        |    localeDisplayNamesRegistry,\n        |    $territoryName::nameOrNull,\n        |    extendedRecords = $extendedNames,\n        |)"
     } else {
         "PayloadLanguageNames(\n        |    localeDisplayNamesRegistry,\n        |    { code, locale -> " +
-            "sparseRecordValue(countryNamesRegistry, locale, field = 1, fieldCount = 2, key = code) },\n        |)"
+            "sparseRecordValue(countryNamesRegistry, locale, field = 1, fieldCount = 2, key = code) },\n        |    extendedRecords = $extendedNames,\n        |)"
     }
 
     public companion object {
@@ -187,7 +187,9 @@ public fun emitCurrencyBinding(outputRoot: File, spec: BindingSpec, numberObject
             "\n        |        FormattedNumberSelector {" +
             "\n        |            ${numberObject}Plurals.pluralCategoryOrNull(it, PluralType.CARDINAL, Locale.current)" +
             "\n        |                ?: PluralCategory.OTHER" +
-            "\n        |        },"
+            "\n        |        }," +
+            "\n        |        numbers = $numberObject," +
+            "\n        |        plurals = ${numberObject}Plurals,"
     }
     // Each block is trimmed on its own and the pieces are concatenated, rather
     // than interpolated into one template: a margin-prefixed block spliced into
@@ -222,6 +224,9 @@ public fun emitCurrencyBinding(outputRoot: File, spec: BindingSpec, numberObject
         |
         |    override fun currencyNameOrNull(currencyCode: String, locale: Locale): String? =
         |        names.currencyNameOrNull(currencyCode, locale)
+        |
+        |    override fun render(value: dev.carcara.kotlinx.locale.number.NumberValue, currencyCode: String, locale: Locale, options: dev.carcara.kotlinx.locale.number.NumberFormatOptions, style: CurrencySymbolStyle): dev.carcara.kotlinx.locale.LocaleLookup<dev.carcara.kotlinx.locale.number.FormattedNumber> =
+        |        formats.render(value, currencyCode, locale, options, style)
         |
         |    override fun formatOrNull(
         |        minorUnits: Long,
@@ -391,7 +396,14 @@ public fun emitCurrencyBinding(outputRoot: File, spec: BindingSpec, numberObject
 }
 
 /** `CldrDateTime`-shaped binding: the source object plus the datetime extensions. */
-public fun emitDateTimeBinding(outputRoot: File, spec: BindingSpec, hasStandalone: Boolean = false, weekData: String = "") {
+public fun emitDateTimeBinding(
+    outputRoot: File,
+    spec: BindingSpec,
+    hasStandalone: Boolean = false,
+    weekData: String = "",
+    numberObject: String? = null,
+    zoneObject: String? = null,
+) {
     val file = outputRoot.packageFile(spec.packageName, "LocalizedFormat.kt")
     val standaloneArgument = if (hasStandalone) ", localeStandaloneRegistry" else ""
     val standaloneAccessor = if (hasStandalone) "localeStandaloneRegistry" else "emptyMap()"
@@ -439,7 +451,7 @@ public fun emitDateTimeBinding(outputRoot: File, spec: BindingSpec, hasStandalon
         ) + """
         |
         |internal val dateTimeSource: PayloadDateTimeFormats =
-        |    PayloadDateTimeFormats(localeDataRegistry$standaloneArgument)
+        |    PayloadDateTimeFormats(localeDataRegistry$standaloneArgument, defaultNumbers = ${numberObject ?: "null"}, defaultZones = ${zoneObject ?: "null"})
         |
         |/**
         | * The date and time patterns this build carries.
@@ -599,6 +611,10 @@ private fun weekDataSection(spec: BindingSpec, weekData: String): String {
         | */
         |public fun weekInfoForRegion(regionCode: String): WeekInfo = weekInfoTable.weekInfoForRegion(regionCode)
         |
+        |/** The explicit regional row; null means no row, without world-default substitution. */
+        |public fun weekInfoForRegionOrNull(regionCode: String): WeekInfo? =
+        |    (weekInfoTable.regionalWeekInfo(regionCode) as? dev.carcara.kotlinx.locale.LocaleLookup.Value)?.value
+        |
     """.trimMargin()
 }
 
@@ -611,7 +627,13 @@ private fun weekDataSection(spec: BindingSpec, weekData: String): String {
  * names its own objects, and a narrowed build has to bind its skeletons to its
  * own patterns rather than to the shipped ones.
  */
-public fun emitSkeletonBinding(outputRoot: File, spec: BindingSpec, dateTimeObject: String) {
+public fun emitSkeletonBinding(
+    outputRoot: File,
+    spec: BindingSpec,
+    dateTimeObject: String,
+    numberObject: String? = null,
+    zoneObject: String? = null,
+) {
     val file = outputRoot.packageFile(spec.packageName, "SkeletonFormat.kt")
     val dateTimePackage = dateTimeObject.substringBeforeLast('.')
     val dateTimeName = dateTimeObject.substringAfterLast('.')
@@ -645,6 +667,8 @@ public fun emitSkeletonBinding(outputRoot: File, spec: BindingSpec, dateTimeObje
         |    skeletonNamesRegistry,
         |    $dateTimeName.records,
         |    $dateTimeName.standaloneRecords,
+        |    defaultNumbers = ${numberObject ?: "null"},
+        |    defaultZones = ${zoneObject ?: "null"},
         |)
         |
         |public object ${spec.objectName} : SkeletonFormatSource by skeletonSource {

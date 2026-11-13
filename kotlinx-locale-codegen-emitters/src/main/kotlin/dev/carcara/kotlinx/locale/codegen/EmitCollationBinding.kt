@@ -19,7 +19,7 @@ package dev.carcara.kotlinx.locale.codegen
 import java.io.File
 
 /** `CldrCollation`-shaped binding: the source object plus the comparator entry points. */
-public fun emitCollationBinding(outputRoot: File, spec: BindingSpec) {
+public fun emitCollationBinding(outputRoot: File, spec: BindingSpec, availableCollations: Set<String> = emptySet()) {
     val file = outputRoot.packageFile(spec.packageName, "Collation.kt")
     file.writeText(
         preamble(
@@ -29,7 +29,7 @@ public fun emitCollationBinding(outputRoot: File, spec: BindingSpec) {
                 "dev.carcara.kotlinx.locale.Locale",
                 "dev.carcara.kotlinx.locale.collation.CollationSource",
                 "dev.carcara.kotlinx.locale.collation.CollationStrength",
-                "dev.carcara.kotlinx.locale.collation.cldr.runtime.PayloadCollation",
+                "dev.carcara.kotlinx.locale.collation.cldr.runtime.PayloadCollationSource",
                 "dev.carcara.kotlinx.locale.internal.Normalization",
                 "dev.carcara.kotlinx.locale.internal.resolvedRecord",
                 "${spec.registryPackage}.collationRootRegistry",
@@ -51,33 +51,10 @@ public fun emitCollationBinding(outputRoot: File, spec: BindingSpec) {
         | * locale. The tailorings are looked up per locale and cached, since folding
         | * one into the root is work a second call should not repeat.
         | */
-        |public object ${spec.objectName} : CollationSource {
-        |
-        |    // Keyed on the delta rather than on the tag: two locales that tailor
-        |    // the root the same way are the same table, and most of CLDR tailors
-        |    // it not at all.
-        |    private val tables = HashMap<String, PayloadCollation.Tailored>()
-        |    private var installed = false
-        |
-        |    private fun install(locale: Locale): Boolean {
-        |        if (installed) return true
-        |        // Both registries carry one entry, under `root`, so any locale
-        |        // resolves to it. Read through `resolvedRecord` all the same,
-        |        // because that is what unpacks and inflates the record.
-        |        val normalization = resolvedRecord(normalizationRegistry, locale) ?: return false
-        |        val table = resolvedRecord(collationRootRegistry, locale) ?: return false
-        |        Normalization.install(normalization)
-        |        PayloadCollation.install(table)
-        |        installed = true
-        |        return true
-        |    }
-        |
-        |    override fun comparatorOrNull(locale: Locale, strength: CollationStrength): Comparator<String>? {
-        |        if (!install(locale)) return null
-        |        val delta = resolvedRecord(collationTailoringsRegistry, locale) ?: return null
-        |        return tables.getOrPut(delta) { PayloadCollation.tailored(delta) }.at(strength)
-        |    }
-        |}
+        |public object ${spec.objectName} : CollationSource by PayloadCollationSource(
+        |    collationRootRegistry, normalizationRegistry, collationTailoringsRegistry,
+        |    availableCollations = setOf(${availableCollations.sorted().joinToString(", ") { "\"${kotlinEscape(it)}\"" }}),
+        |)
         |
         |/**
         | * The order [locale] reads a list in.

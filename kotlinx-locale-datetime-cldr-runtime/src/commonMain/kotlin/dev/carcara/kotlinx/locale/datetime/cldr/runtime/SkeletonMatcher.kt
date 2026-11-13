@@ -122,9 +122,9 @@ internal class SkeletonMatcher(
      * The locale's pattern for [skeleton], or `null` when the skeleton names a
      * field this library cannot render.
      */
-    fun bestPatternOrNull(skeleton: String): String? {
+    fun bestPatternOrNull(skeleton: String, extended: Boolean = false): String? {
         val mapped = resolveHourMetacharacters(skeleton)
-        if (mapped.skeleton.any { it.isAsciiLetter() && it !in REQUESTABLE_LETTERS }) return null
+        if (mapped.skeleton.any { it.isAsciiLetter() && it !in REQUESTABLE_LETTERS && !(extended && it in "zvO") }) return null
         val request = SkeletonFields.of(mapped.skeleton) ?: return null
 
         val difference = FieldDifference()

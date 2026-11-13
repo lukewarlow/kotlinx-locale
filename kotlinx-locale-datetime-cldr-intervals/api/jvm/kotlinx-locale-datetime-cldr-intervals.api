@@ -1,9 +1,11 @@
 public final class dev/carcara/kotlinx/locale/datetime/cldr/intervals/CldrDateTimeIntervals : dev/carcara/kotlinx/locale/datetime/cldr/runtime/IntervalFormatSource {
 	public static final field INSTANCE Ldev/carcara/kotlinx/locale/datetime/cldr/intervals/CldrDateTimeIntervals;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public fun intervalFormatOrNull (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun intervalFormatOrNull (Lkotlinx/datetime/LocalDateTime;Lkotlinx/datetime/LocalDateTime;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun intervalFormatOrNull (Lkotlinx/datetime/LocalTime;Lkotlinx/datetime/LocalTime;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public fun renderRange (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ljava/lang/String;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/cldr/intervals/IntervalFormatKt {
@@ -13,5 +15,10 @@ public final class dev/carcara/kotlinx/locale/datetime/cldr/intervals/IntervalFo
 	public static synthetic fun intervalFormat$default (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ljava/lang/String;
 	public static synthetic fun intervalFormat$default (Lkotlinx/datetime/LocalDateTime;Lkotlinx/datetime/LocalDateTime;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ljava/lang/String;
 	public static synthetic fun intervalFormat$default (Lkotlinx/datetime/LocalTime;Lkotlinx/datetime/LocalTime;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/cldr/intervals/IntlDateTimeIntervalsKt {
+	public static final fun intervalFormatSelected (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ljava/lang/String;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun intervalFormatSelected$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ljava/lang/String;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 

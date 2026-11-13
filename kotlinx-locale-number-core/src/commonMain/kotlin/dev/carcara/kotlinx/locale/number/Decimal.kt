@@ -14,171 +14,192 @@
  * limitations under the License.
  */
 
-@file:OptIn(InternalKotlinxLocaleApi::class)
-
 package dev.carcara.kotlinx.locale.number
 
-import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
-import dev.carcara.kotlinx.locale.number.internal.rescaleFraction
+/** An exact finite decimal coefficient times ten to minus [scale], retaining sign at zero. */
+public class Decimal private constructor(public val coefficientDigits: String, public val scale: Int, public val isNegative: Boolean) :
+    Comparable<Decimal> {
+    public val isZero: Boolean get() = coefficientDigits == "0"
+    public val isInteger: Boolean get() = scale <= 0 || coefficientDigits.takeLast(scale).all { it == '0' }
+    public val absoluteValue: Decimal get() = if (isNegative) Decimal(coefficientDigits, scale, false) else this
+    public val integerDigits: String get() = when {
+        scale <= 0 -> if (isZero) "0" else coefficientDigits + "0".repeat(-scale)
+        scale >= coefficientDigits.length -> "0"
+        else -> coefficientDigits.dropLast(scale)
+    }
+    public val fractionDigits: String get() = if (scale <= 0) "" else coefficientDigits.takeLast(scale).padStart(scale, '0')
+    public val magnitude: Int get() = if (isZero) 0 else checkedInt(coefficientDigits.length.toLong() - scale - 1)
 
-/** The largest scale a [Long] of unscaled units can carry without losing the integer part entirely. */
-private const val MAX_SCALE = 18
+    /** The signed coefficient when it fits Long; null otherwise. */
+    public fun unscaledOrNull(): Long? = ((if (isNegative) "-" else "") + coefficientDigits).toLongOrNull()
 
-/**
- * An exact decimal: [unscaled] units at [scale] fraction digits, so
- * `Decimal.ofUnscaled(12345, 2)` is `123.45`.
- *
- * This is the type every formatter here takes, and the reason is plural rules.
- * UTS #35's operands `v`, `w`, `f` and `t` count the digits a number is *printed
- * with*, so `1` and `1.0` fall into different categories in Czech for the same
- * numeric value. A binary float cannot say how many digits it has, and the
- * platforms do not agree on what `Double.toString` produces, so a formatter that
- * inferred the precision would print different text on different targets for the
- * same input.
- *
- * It is `CurrencyAmount` generalised away from a currency, and it holds the same
- * range: 18 significant digits of unscaled units, with [scale] between 0 and 18.
- * There is no arbitrary precision here and none is planned; a locale library
- * formats what it is handed.
- */
-public class Decimal private constructor(public val unscaled: Long, public val scale: Int) : Comparable<Decimal> {
+    /** Integer part truncated toward zero, or null outside Long's range. */
+    public fun integerPartOrNull(): Long? = ((if (isNegative) "-" else "") + integerDigits).toLongOrNull()
 
-    public val isZero: Boolean get() = unscaled == 0L
+    public fun absoluteDigits(): String = coefficientDigits
+    public operator fun unaryMinus(): Decimal = Decimal(coefficientDigits, scale, !isNegative)
 
-    public val isNegative: Boolean get() = unscaled < 0L
+    /** Move the decimal point by [power] places without rounding. */
+    public fun shifted(power: Int): Decimal = Decimal(coefficientDigits, checkedInt(scale.toLong() - power), isNegative)
 
-    /** The integer part, truncated towards zero: `-1.7` is `-1`. */
-    public val integerPart: Long
-        get() {
-            var divisor = 1L
-            repeat(scale) { divisor *= 10 }
-            return unscaled / divisor
+    /** Remove optional fraction zeros, retaining at least [minimumScale] fraction digits. */
+    public fun trimmed(minimumScale: Int = 0): Decimal {
+        if (scale <= minimumScale) return this
+        if (isZero) return Decimal("0", minimumScale, isNegative)
+        val drop = minOf(coefficientDigits.length - coefficientDigits.trimEnd('0').length, scale - minimumScale)
+        return if (drop == 0) this else Decimal(coefficientDigits.dropLast(drop), scale - drop, isNegative)
+    }
+
+    /** Round once to an increment of 10 to minus [scale], preserving the sign of zero. */
+    public fun rescaled(scale: Int, roundingMode: NumberRoundingMode = NumberRoundingMode.HALF_EVEN, increment: Int = 1): Decimal {
+        require(increment > 0) { "increment must be positive" }
+        val difference = scale.toLong() - this.scale
+        val whole: String
+        val discarded: String
+        val drop: Long
+        if (difference >= 0) {
+            whole = coefficientDigits + "0".repeat(checkedInt(difference))
+            discarded = ""
+            drop = 0
+        } else {
+            drop = -difference
+            whole = if (drop >= coefficientDigits.length) "0" else coefficientDigits.dropLast(drop.toInt())
+            discarded = if (drop >= coefficientDigits.length) coefficientDigits else coefficientDigits.takeLast(drop.toInt())
         }
-
-    /** The same value at [scale] fraction digits, rounding half-even when losing digits. */
-    public fun rescaled(scale: Int): Decimal {
-        require(scale in 0..MAX_SCALE) { "scale must be in 0..$MAX_SCALE, was $scale" }
-        if (scale == this.scale) return this
-        return Decimal(rescaleFraction(unscaled, this.scale, scale), scale)
-    }
-
-    public operator fun unaryMinus(): Decimal = Decimal(-unscaled, scale)
-
-    public val absoluteValue: Decimal get() = if (unscaled < 0) Decimal(-unscaled, scale) else this
-
-    /**
-     * `-12.50`: an optional minus, the integer digits, and exactly [scale]
-     * fraction digits after a `.`.
-     *
-     * ASCII throughout and locale-independent, which is what makes it a
-     * debugging and wire form rather than something to show anyone.
-     */
-    public fun toPlainString(): String = buildString {
-        if (unscaled < 0) append('-')
-        val digits = absoluteDigits()
-        if (scale == 0) {
-            append(digits)
-            return@buildString
+        val (quotient, remainder) = divideDigits(whole, increment)
+        val hasFraction = discarded.any { it != '0' }
+        val halfFraction = when {
+            !hasFraction -> -1
+            drop > discarded.length -> -1
+            discarded.first() < '5' -> -1
+            discarded.first() > '5' || discarded.drop(1).any { it != '0' } -> 1
+            else -> 0
         }
-        val padded = digits.padStart(scale + 1, '0')
-        append(padded, 0, padded.length - scale)
-        append('.')
-        append(padded, padded.length - scale, padded.length)
+        val twice = remainder.toLong() * 2
+        val half = when {
+            twice > increment -> 1
+            twice == increment.toLong() -> if (hasFraction) 1 else 0
+            twice == increment - 1L -> halfFraction
+            else -> -1
+        }
+        val nonzero = remainder != 0 || hasFraction
+        val up = when (roundingMode) {
+            NumberRoundingMode.CEIL -> !isNegative && nonzero
+            NumberRoundingMode.FLOOR -> isNegative && nonzero
+            NumberRoundingMode.EXPAND -> nonzero
+            NumberRoundingMode.TRUNC -> false
+            NumberRoundingMode.HALF_CEIL -> half > 0 || (half == 0 && !isNegative)
+            NumberRoundingMode.HALF_FLOOR -> half > 0 || (half == 0 && isNegative)
+            NumberRoundingMode.HALF_EXPAND -> half >= 0
+            NumberRoundingMode.HALF_TRUNC -> half > 0
+            NumberRoundingMode.HALF_EVEN -> half > 0 || (half == 0 && (quotient.last() - '0') % 2 != 0)
+        }
+        val rounded = if (up) addOne(quotient) else quotient
+        return Decimal(multiplyDigits(rounded, increment), scale, isNegative)
     }
 
-    /** The unsigned digits of [unscaled], with no separator and no sign. */
-    @InternalKotlinxLocaleApi
-    public fun absoluteDigits(): String = if (unscaled == Long.MIN_VALUE) {
-        unscaled.toString().substring(1)
-    } else {
-        (if (unscaled < 0) -unscaled else unscaled).toString()
+    /** Exact remainder by a positive integral divisor, including the fractional part. */
+    public fun remainder(divisor: Int): Decimal {
+        require(divisor > 0)
+        val rem = divideDigits(integerDigits, divisor).second
+        return ofDigits(rem.toString() + fractionDigits, maxOf(scale, 0), isNegative)
     }
+
+    public fun toPlainString(): String = (if (isNegative) "-" else "") + integerDigits +
+        if (scale > 0) "." + fractionDigits else ""
 
     override fun compareTo(other: Decimal): Int {
-        if (scale == other.scale) return unscaled.compareTo(other.unscaled)
-        val common = maxOf(scale, other.scale)
-        return rescaled(common).unscaled.compareTo(other.rescaled(common).unscaled)
+        if (isZero && other.isZero) return 0
+        if (isZero) return if (other.isNegative) 1 else -1
+        if (other.isZero) return if (isNegative) -1 else 1
+        if (isNegative != other.isNegative) return if (isNegative) -1 else 1
+        val magnitudeComparison = magnitude.compareTo(other.magnitude)
+        val comparison = if (magnitudeComparison != 0) {
+            magnitudeComparison
+        } else {
+            val length = maxOf(coefficientDigits.length, other.coefficientDigits.length)
+            coefficientDigits.padEnd(length, '0').compareTo(other.coefficientDigits.padEnd(length, '0'))
+        }
+        return if (isNegative) -comparison else comparison
     }
-
-    /**
-     * Equal when the unscaled value and the scale both match, so `1.0` does not
-     * equal `1`.
-     *
-     * Deliberate, and the same choice `BigDecimal` makes: the scale is part of
-     * the value here because it decides the plural category and the printed
-     * text. Use [compareTo] to compare numerically.
-     */
-    override fun equals(other: Any?): Boolean = other is Decimal && unscaled == other.unscaled && scale == other.scale
-
-    override fun hashCode(): Int = unscaled.hashCode() * 31 + scale
-
+    override fun equals(other: Any?): Boolean =
+        other is Decimal && coefficientDigits == other.coefficientDigits && scale == other.scale && isNegative == other.isNegative
+    override fun hashCode(): Int = 31 * (31 * coefficientDigits.hashCode() + scale) + isNegative.hashCode()
     override fun toString(): String = toPlainString()
 
     public companion object {
-
-        public val ZERO: Decimal = Decimal(0L, 0)
-
-        public fun of(value: Long): Decimal = Decimal(value, 0)
-
-        public fun ofUnscaled(unscaled: Long, scale: Int): Decimal {
-            require(scale in 0..MAX_SCALE) { "scale must be in 0..$MAX_SCALE, was $scale" }
-            return Decimal(unscaled, scale)
+        public val ZERO: Decimal = Decimal("0", 0, false)
+        public fun of(value: Long): Decimal = Decimal(value.toString().removePrefix("-"), 0, value < 0)
+        public fun ofUnscaled(unscaled: Long, scale: Int): Decimal = ofDigits(unscaled.toString().removePrefix("-"), scale, unscaled < 0)
+        public fun ofDigits(coefficientDigits: String, scale: Int, negative: Boolean = false): Decimal {
+            require(coefficientDigits.isNotEmpty() && coefficientDigits.all { it in '0'..'9' }) { "Expected ASCII coefficient digits" }
+            require(scale != Int.MIN_VALUE) { "Scale cannot be Int.MIN_VALUE" }
+            return Decimal(coefficientDigits.trimStart('0').ifEmpty { "0" }, scale, negative)
         }
-
-        /**
-         * [value] rounded half-even to [fractionDigits], or `null` when the
-         * result does not fit a [Long] of unscaled units.
-         *
-         * The digit count is required rather than derived. `Double.toString`
-         * does not agree across Kotlin/JVM, Kotlin/JS and Kotlin/Native, so a
-         * formatter that read the precision off the float would print different
-         * text on different targets for one input, which is the class of bug
-         * this library exists to remove.
-         */
-        public fun ofOrNull(value: Double, fractionDigits: Int): Decimal? {
-            if (fractionDigits !in 0..MAX_SCALE) return null
-            if (value.isNaN() || value.isInfinite()) return null
-            var factor = 1.0
-            repeat(fractionDigits) { factor *= 10.0 }
-            val scaled = value * factor
-            if (scaled >= 9.223372036854776E18 || scaled <= -9.223372036854776E18) return null
-            return Decimal(roundHalfEven(scaled), fractionDigits)
-        }
-
-        /** Like [ofOrNull] but throws when the value does not fit. */
-        public fun of(value: Double, fractionDigits: Int): Decimal = requireNotNull(ofOrNull(value, fractionDigits)) {
-            "$value does not fit a Decimal at $fractionDigits fraction digits"
-        }
-
-        /** `-12.50` read back, or `null` when [text] is not that shape. */
         public fun parseOrNull(text: String): Decimal? {
             if (text.isEmpty()) return null
-            val negative = text[0] == '-'
-            val body = if (negative || text[0] == '+') text.substring(1) else text
-            if (body.isEmpty()) return null
-            val point = body.indexOf('.')
-            val digits = if (point < 0) body else body.substring(0, point) + body.substring(point + 1)
+            val negative = text.first() == '-'
+            val body = if (negative || text.first() == '+') text.drop(1) else text
+            val exponentAt = body.indexOfFirst { it == 'e' || it == 'E' }
+            val exponent = if (exponentAt < 0) 0 else body.substring(exponentAt + 1).toIntOrNull() ?: return null
+            val coefficient = if (exponentAt < 0) body else body.take(exponentAt)
+            val point = coefficient.indexOf('.')
+            val digits = if (point < 0) coefficient else coefficient.removeRange(point, point + 1)
             if (digits.isEmpty() || !digits.all { it in '0'..'9' }) return null
-            val scale = if (point < 0) 0 else body.length - point - 1
-            if (scale > MAX_SCALE) return null
-            val unscaled = digits.toLongOrNull() ?: return null
-            return Decimal(if (negative) -unscaled else unscaled, scale)
+            val scale = (if (point < 0) 0 else coefficient.length - point - 1).toLong() - exponent
+            if (scale <= Int.MIN_VALUE || scale > Int.MAX_VALUE) return null
+            return ofDigits(digits, scale.toInt(), negative)
         }
-
-        /** Like [parseOrNull] but throws on anything it cannot read. */
-        public fun parse(text: String): Decimal = requireNotNull(parseOrNull(text)) { "not a decimal: '$text'" }
-
-        private fun roundHalfEven(value: Double): Long {
-            val floor = kotlin.math.floor(value)
-            val fraction = value - floor
-            val rounded = when {
-                fraction > 0.5 -> floor + 1
-                fraction < 0.5 -> floor
-                // Exactly halfway: take whichever neighbour is even.
-                floor.toLong() % 2 == 0L -> floor
-                else -> floor + 1
-            }
-            return rounded.toLong()
+        public fun parse(text: String): Decimal = requireNotNull(parseOrNull(text)) { "Not a finite decimal: '$text'" }
+        public fun ofOrNull(value: Double, fractionDigits: Int): Decimal? {
+            if (!value.isFinite() || fractionDigits < 0) return null
+            return parseOrNull(value.toString())?.rescaled(fractionDigits)
         }
+        public fun of(value: Double, fractionDigits: Int): Decimal =
+            requireNotNull(ofOrNull(value, fractionDigits)) { "Not a finite decimal: $value" }
     }
+}
+
+private fun checkedInt(value: Long): Int {
+    require(value in (Int.MIN_VALUE + 1L)..Int.MAX_VALUE) { "Decimal scale or output length exceeds Int range" }
+    return value.toInt()
+}
+
+private fun divideDigits(digits: String, divisor: Int): Pair<String, Int> {
+    var remainder = 0L
+    val quotient = buildString {
+        for (digit in digits) {
+            remainder = remainder * 10 + (digit - '0')
+            append(('0'.code + (remainder / divisor).toInt()).toChar())
+            remainder %= divisor
+        }
+    }.trimStart('0').ifEmpty { "0" }
+    return quotient to remainder.toInt()
+}
+
+private fun multiplyDigits(digits: String, multiplier: Int): String {
+    var carry = 0L
+    val result = StringBuilder()
+    for (index in digits.indices.reversed()) {
+        val value = (digits[index] - '0').toLong() * multiplier + carry
+        result.append(('0'.code + (value % 10).toInt()).toChar())
+        carry = value / 10
+    }
+    while (carry != 0L) {
+        result.append(('0'.code + (carry % 10).toInt()).toChar())
+        carry /= 10
+    }
+    return result.reverse().toString().trimStart('0').ifEmpty { "0" }
+}
+
+private fun addOne(digits: String): String {
+    val result = digits.toCharArray()
+    for (index in result.indices.reversed()) {
+        if (result[index] != '9') {
+            result[index]++
+            return result.concatToString()
+        }
+        result[index] = '0'
+    }
+    return "1" + result.concatToString()
 }

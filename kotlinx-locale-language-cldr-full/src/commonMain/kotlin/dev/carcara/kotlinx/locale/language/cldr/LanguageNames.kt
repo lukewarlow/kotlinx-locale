@@ -22,6 +22,7 @@ import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.language.LanguageDisplay
 import dev.carcara.kotlinx.locale.language.LanguageNameSource
 import dev.carcara.kotlinx.locale.language.LanguageNameStyle
+import dev.carcara.kotlinx.locale.language.cldr.internal.data.extendedDisplayNamesRegistry
 import dev.carcara.kotlinx.locale.language.cldr.internal.data.localeDisplayNamesRegistry
 import dev.carcara.kotlinx.locale.language.cldr.runtime.PayloadLanguageNames
 import dev.carcara.kotlinx.locale.language.displayName
@@ -41,6 +42,7 @@ import dev.carcara.kotlinx.locale.territory.cldr.CldrTerritory
 public object CldrLanguage : LanguageNameSource by PayloadLanguageNames(
     localeDisplayNamesRegistry,
     CldrTerritory::nameOrNull,
+    extendedRecords = extendedDisplayNamesRegistry,
 )
 
 /**

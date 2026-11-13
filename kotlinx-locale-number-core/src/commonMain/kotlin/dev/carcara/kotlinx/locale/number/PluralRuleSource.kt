@@ -32,6 +32,16 @@ public interface PluralRuleSource : LocaleDataSource {
     /** The category [number] falls into for [locale], or `null` when this source has no rules for it. */
     public fun pluralCategoryOrNull(number: FormattedNumber, type: PluralType, locale: Locale): PluralCategory?
 
+    /** Select directly from exact already-rounded digits without localized formatting. */
+    public fun pluralCategoryOrNull(number: PluralOperands, type: PluralType, locale: Locale): PluralCategory? =
+        pluralCategoryOrNull(FormattedNumber("", number.integerDigits, number.fractionDigits, number.c), type, locale)
+
+    /** Null means this source cannot report categories for the locale/type. */
+    public fun pluralCategoriesOrNull(type: PluralType, locale: Locale): Set<PluralCategory>? = null
+
+    /** Null means this source has no plural-range data for the locale. */
+    public fun pluralRangeOrNull(start: PluralCategory, end: PluralCategory, locale: Locale): PluralCategory? = null
+
     public companion object
 }
 

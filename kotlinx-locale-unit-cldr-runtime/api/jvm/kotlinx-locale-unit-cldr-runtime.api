@@ -1,0 +1,12 @@
+public final class dev/carcara/kotlinx/locale/unit/cldr/runtime/PayloadUnitFormats : dev/carcara/kotlinx/locale/unit/UnitFormatSource {
+	public static final field Companion Ldev/carcara/kotlinx/locale/unit/cldr/runtime/PayloadUnitFormats$Companion;
+	public fun <init> (Ljava/util/Map;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/number/PluralRuleSource;)V
+	public fun compose (Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun render (Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/unit/cldr/runtime/PayloadUnitFormats$Companion {
+}
+

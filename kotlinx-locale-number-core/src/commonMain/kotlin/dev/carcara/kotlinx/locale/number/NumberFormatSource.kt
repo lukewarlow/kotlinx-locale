@@ -17,7 +17,10 @@
 package dev.carcara.kotlinx.locale.number
 
 import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.LocaleCoverage
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.RangePart
 
 /**
  * A source of localized number formatting.
@@ -28,8 +31,22 @@ import dev.carcara.kotlinx.locale.LocaleDataSource
  */
 public interface NumberFormatSource : LocaleDataSource {
 
+    /** Actual operations and Unicode values available from this source for the locale. */
+    public fun capabilities(locale: Locale): NumberFormatCapabilities = NumberFormatCapabilities(
+        localeCoverage,
+        symbolsOrNull(locale)?.numberingSystem,
+        emptySet(),
+        emptySet(),
+        false,
+        false,
+    )
+
     /** [locale]'s number symbols, or `null` when this source has none. */
     public fun symbolsOrNull(locale: Locale): NumberSymbols?
+
+    /** Symbols for a selected numbering system; null when unavailable. */
+    public fun symbolsOrNull(locale: Locale, numberingSystem: String): NumberSymbols? =
+        symbolsOrNull(locale)?.takeIf { it.numberingSystem == numberingSystem }
 
     /** [value] written for [locale], or `null` when this source cannot render it. */
     public fun formatOrNull(value: Decimal, locale: Locale, options: NumberFormatOptions): FormattedNumber?
@@ -42,6 +59,40 @@ public interface NumberFormatSource : LocaleDataSource {
      * [PercentScale].
      */
     public fun formatPercentOrNull(value: Decimal, locale: Locale, scale: PercentScale, options: NumberFormatOptions): FormattedNumber?
+
+    /** Render a finite or special value, distinguishing missing data from unsupported input. */
+    public fun render(
+        value: NumberValue,
+        locale: Locale,
+        options: NumberFormatOptions = NumberFormatOptions.Default,
+    ): LocaleLookup<FormattedNumber> = when (value) {
+        is NumberValue.Finite -> formatOrNull(value.value, locale, options)?.let { LocaleLookup.Value(it) } ?: LocaleLookup.MissingData
+        else -> LocaleLookup.Unsupported("special number values")
+    }
+
+    /** Render exactly the supplied visible digits and notation exponents. */
+    public fun renderRounded(
+        value: RoundedNumber,
+        locale: Locale,
+        options: NumberFormatOptions = NumberFormatOptions.Default,
+    ): LocaleLookup<FormattedNumber> = LocaleLookup.Unsupported("pre-rounded number rendering")
+
+    public fun renderPercent(
+        value: NumberValue,
+        locale: Locale,
+        scale: PercentScale = PercentScale.FRACTION,
+        options: NumberFormatOptions = NumberFormatOptions.Default,
+    ): LocaleLookup<FormattedNumber> = LocaleLookup.Unsupported("Structured percent formatting")
+
+    /** Compose already-rendered endpoints using this locale's range data. */
+    public fun composeRange(
+        start: FormattedNumber,
+        end: FormattedNumber,
+        locale: Locale,
+        options: NumberFormatOptions = NumberFormatOptions.Default,
+        approximately: Boolean = false,
+        collapse: Boolean = true,
+    ): LocaleLookup<FormattedNumberRange> = LocaleLookup.Unsupported("number ranges")
 
     /** [text] read back as a [Decimal], or `null` when it does not parse in [locale]. */
     public fun parseDecimalOrNull(text: String, locale: Locale): Decimal?
@@ -175,5 +226,23 @@ public class FallbackNumberFormats(private val primary: NumberFormatSource, priv
     override fun parseDecimalOrNull(text: String, locale: Locale): Decimal? =
         primary.parseDecimalOrNull(text, locale) ?: fallback.parseDecimalOrNull(text, locale)
 
+    public companion object
+}
+
+public data class NumberFormatCapabilities(
+    public val coverage: LocaleCoverage,
+    public val defaultNumberingSystem: String?,
+    public val numberingSystems: Set<String>,
+    public val notations: Set<NumberNotation>,
+    public val structuredParts: Boolean,
+    public val specialValues: Boolean,
+) {
+    public companion object
+}
+
+public class FormattedNumberRange(parts: List<RangePart<NumberPart>>) {
+    public val parts: List<RangePart<NumberPart>> = parts.toList()
+    public val text: String get() = parts.joinToString("") { it.part.value }
+    override fun toString(): String = text
     public companion object
 }

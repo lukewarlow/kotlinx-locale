@@ -20,6 +20,7 @@ package dev.carcara.kotlinx.locale.currency.cldr.runtime
 
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.LocaleLookup
 import dev.carcara.kotlinx.locale.currency.Currency
 import dev.carcara.kotlinx.locale.currency.CurrencyFormatOptions
 import dev.carcara.kotlinx.locale.currency.CurrencyFormatSource
@@ -30,10 +31,23 @@ import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 import dev.carcara.kotlinx.locale.internal.sparseRecordValue
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
+import dev.carcara.kotlinx.locale.number.NumberFormatOptions
+import dev.carcara.kotlinx.locale.number.NumberFormatSource
+import dev.carcara.kotlinx.locale.number.NumberNotation
 import dev.carcara.kotlinx.locale.number.NumberSymbols
+import dev.carcara.kotlinx.locale.number.NumberValue
+import dev.carcara.kotlinx.locale.number.PluralRuleSource
+import dev.carcara.kotlinx.locale.number.PluralType
+import dev.carcara.kotlinx.locale.number.cldr.runtime.AffixSubstitution
 import dev.carcara.kotlinx.locale.number.cldr.runtime.CompactPatternTable
 import dev.carcara.kotlinx.locale.number.cldr.runtime.FormattedNumberSelector
+import dev.carcara.kotlinx.locale.number.cldr.runtime.NumberPattern
 import dev.carcara.kotlinx.locale.number.cldr.runtime.digitStringsOf
+import dev.carcara.kotlinx.locale.number.cldr.runtime.formatCompact
+import dev.carcara.kotlinx.locale.number.cldr.runtime.isAlphaAdjacent
+import dev.carcara.kotlinx.locale.number.cldr.runtime.renderNumber
+import dev.carcara.kotlinx.locale.number.cldr.runtime.renderScientific
+import dev.carcara.kotlinx.locale.number.cldr.runtime.renderSpecialNumber
 
 /**
  * A [CurrencyNameSource] over a table of CLDR symbol and name records.
@@ -106,6 +120,8 @@ public class PayloadCurrencyFormats(
      * compact algorithm. Answers `other` when this build has no plural rules.
      */
     private val selectCategory: FormattedNumberSelector = NO_PLURAL_RULES,
+    private val numbers: NumberFormatSource? = null,
+    private val plurals: PluralRuleSource? = null,
 ) : CurrencyFormatSource {
 
     private val names = PayloadCurrencyNames(nameRecords)
@@ -128,7 +144,97 @@ public class PayloadCurrencyFormats(
     override fun formatOrNull(minorUnits: Long, currencyCode: String, locale: Locale, options: CurrencyFormatOptions): String? {
         val currency = Currency.forCodeOrNull(currencyCode) ?: return null
         val format = numberFormatFor(locale) ?: return null
-        return formatCurrency(format, names, compactFor(locale), selectCategory, minorUnits, currency, locale, options)
+        val selector = plurals?.let { source ->
+            FormattedNumberSelector { number ->
+                source.pluralCategoryOrNull(number, PluralType.CARDINAL, locale) ?: dev.carcara.kotlinx.locale.number.PluralCategory.OTHER
+            }
+        } ?: selectCategory
+        return formatCurrency(format, names, compactFor(locale), selector, minorUnits, currency, locale, options)
+    }
+
+    override fun render(
+        value: NumberValue,
+        currencyCode: String,
+        locale: Locale,
+        options: NumberFormatOptions,
+        style: CurrencySymbolStyle,
+    ): LocaleLookup<dev.carcara.kotlinx.locale.number.FormattedNumber> {
+        require(
+            currencyCode.length == 3 &&
+                currencyCode.all {
+                    it in 'A'..'Z' || it in 'a'..'z'
+                },
+        ) { "Currency code must be three ASCII letters" }
+        val code = currencyCode.uppercase()
+        val data = numberFormatFor(locale) ?: return LocaleLookup.MissingData
+        val currency = Currency.forCodeOrNull(code)
+        val digits = currency?.cldrFractionDigits ?: 2
+        val effective = options.copy(
+            minimumFractionDigits = options.minimumFractionDigits ?: minOf(digits, options.maximumFractionDigits ?: digits),
+            maximumFractionDigits = options.maximumFractionDigits ?: maxOf(digits, options.minimumFractionDigits ?: digits),
+        )
+        val requestedSystem = options.numberingSystem ?: locale.unicodeKeywordOrNull("nu")
+        val symbols = if (requestedSystem != null) {
+            numbers?.symbolsOrNull(locale, requestedSystem)
+                ?: return LocaleLookup.Unsupported("numbering system $requestedSystem")
+        } else {
+            numbers?.symbolsOrNull(locale) ?: data.symbols
+        }
+        val text = if (style == CurrencySymbolStyle.CODE) {
+            code
+        } else {
+            names.currencySymbolOrNull(code, locale, style)
+                ?: names.currencySymbolOrNull(code, locale) ?: code
+        }
+        val accounting = options.signDisplay.usesAccountingPattern
+        val base = if (accounting) data.accountingPattern else data.standardPattern
+        val alpha = if (accounting) data.accountingAlphaPattern else data.standardAlphaPattern
+        val plain = NumberPattern.parse(base)
+        val pattern = if (alpha != base && isAlphaAdjacent(plain, text)) NumberPattern.parse(alpha) else plain
+        val affix = AffixSubstitution { run ->
+            if (run ==
+                1
+            ) {
+                text
+            } else if (run == 2) {
+                code
+            } else {
+                names.currencyNameOrNull(code, locale) ?: code
+            }
+        }
+        if (value !is NumberValue.Finite) return LocaleLookup.Value(renderSpecialNumber(value, pattern, symbols, effective, affix, true))
+        val result = when (options.notation) {
+            NumberNotation.STANDARD -> renderNumber(
+                value.value,
+                pattern,
+                symbols,
+                effective,
+                useCurrencySeparators = true,
+                affix = affix,
+                currencySpacing = true,
+            )
+            NumberNotation.SCIENTIFIC, NumberNotation.ENGINEERING -> renderScientific(
+                value.value,
+                pattern,
+                symbols,
+                effective,
+                affix,
+                true,
+            )
+            else -> {
+                val compact = compactFor(locale)
+                if (compact.isEmpty) return LocaleLookup.Unsupported("compact currency data")
+                formatCompact(
+                    value.value, compact, pattern, symbols,
+                    FormattedNumberSelector {
+                        plurals?.pluralCategoryOrNull(it.operands, PluralType.CARDINAL, locale)
+                            ?: dev.carcara.kotlinx.locale.number.PluralCategory.OTHER
+                    },
+                    effective, useCurrencySeparators = true, currencyText = text, affix = affix, currencySpacing = true,
+                )
+            }
+        }
+        return LocaleLookup.Value(result)
     }
 
     private fun compactFor(locale: Locale): CompactPatternTable = compactCache.getOrPut(locale.toLanguageTag()) {

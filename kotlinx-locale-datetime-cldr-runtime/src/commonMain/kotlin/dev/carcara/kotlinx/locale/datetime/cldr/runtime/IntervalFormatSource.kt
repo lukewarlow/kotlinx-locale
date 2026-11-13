@@ -21,11 +21,23 @@ package dev.carcara.kotlinx.locale.datetime.cldr.runtime
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.RangePart
+import dev.carcara.kotlinx.locale.RangeSource
+import dev.carcara.kotlinx.locale.datetime.DateTimePart
+import dev.carcara.kotlinx.locale.datetime.DateTimePartKind
+import dev.carcara.kotlinx.locale.datetime.DateTimeRenderContext
+import dev.carcara.kotlinx.locale.datetime.FormattedDateTime
+import dev.carcara.kotlinx.locale.datetime.FormattedDateTimeRange
+import dev.carcara.kotlinx.locale.datetime.SelectedDateTimeFormat
+import dev.carcara.kotlinx.locale.datetime.format
 import dev.carcara.kotlinx.locale.internal.ENTRY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
+import dev.carcara.kotlinx.locale.number.NumberFormatSource
+import dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -46,6 +58,16 @@ public interface IntervalFormatSource : LocaleDataSource {
     public fun intervalFormatOrNull(start: LocalTime, end: LocalTime, skeleton: String, locale: Locale): String?
 
     public fun intervalFormatOrNull(start: LocalDateTime, end: LocalDateTime, skeleton: String, locale: Locale): String?
+
+    /** A selected format is retained verbatim for style ranges. */
+    public fun renderRange(
+        start: DateTimeRenderContext,
+        end: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        skeleton: String? = null,
+        numbers: NumberFormatSource? = null,
+        zones: TimeZoneNameSource? = null,
+    ): LocaleLookup<FormattedDateTimeRange> = LocaleLookup.Unsupported("Structured date/time intervals")
 
     public companion object
 }
@@ -214,6 +236,100 @@ public class PayloadIntervalFormats(private val records: Map<String, String>, pr
         if (first == second) return first
 
         return substitute(record.fallback, first, second)
+    }
+
+    override fun renderRange(
+        start: DateTimeRenderContext,
+        end: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        skeleton: String?,
+        numbers: NumberFormatSource?,
+        zones: TimeZoneNameSource?,
+    ): LocaleLookup<FormattedDateTimeRange> {
+        val locale = format.locale
+        val data = skeletons.skeletonsFor(locale) ?: return LocaleLookup.MissingData
+        val record = recordFor(locale) ?: return LocaleLookup.MissingData
+        fun render(tokens: List<PatternToken>, context: DateTimeRenderContext): LocaleLookup<FormattedDateTime> =
+            skeletons.renderTokens(tokens, context, format, numbers, zones)
+        val first = when (val result = render(parseDateTimePattern(format.pattern), start)) {
+            is LocaleLookup.Value -> result.value
+            is LocaleLookup.Unsupported -> return result
+            LocaleLookup.MissingData -> return LocaleLookup.MissingData
+        }
+        val last = when (val result = render(parseDateTimePattern(format.pattern), end)) {
+            is LocaleLookup.Value -> result.value
+            is LocaleLookup.Unsupported -> return result
+            LocaleLookup.MissingData -> return LocaleLookup.MissingData
+        }
+        if (first.parts ==
+            last.parts
+        ) {
+            return LocaleLookup.Value(FormattedDateTimeRange(first.parts.map { RangePart(it, RangeSource.SHARED) }))
+        }
+        val difference = greatestDifference(start.date, end.date, start.time, end.time)
+        // Only a skeleton request uses skeleton interval patterns. Style requests
+        // retain the exact selected style at both ends of the locale fallback.
+        val canonical = skeleton?.let { request ->
+            val hour = patternHourLetter(format.pattern) ?: 'H'
+            SkeletonFields.of(request.map { if (it in "jJC") hour else it }.joinToString(""))?.canonicalString()
+        }
+        val interval = if (canonical != null &&
+            difference != null &&
+            start.zone == end.zone
+        ) {
+            record.patternFor(canonical, difference, format.pattern)
+        } else {
+            null
+        }
+        val halves = interval?.let(::splitIntervalTokens)
+        if (halves != null) {
+            val repeated = halves.first.filterIsInstance<PatternToken.Field>().map { intervalFieldGroup(it.letter) }.toSet()
+                .intersect(halves.second.filterIsInstance<PatternToken.Field>().map { intervalFieldGroup(it.letter) }.toSet())
+            val output = ArrayList<RangePart<DateTimePart>>()
+            for ((tokens, context, endpoint) in listOf(
+                Triple(halves.first, start, RangeSource.START),
+                Triple(halves.second, end, RangeSource.END),
+            )) {
+                val sources = tokens.map { token ->
+                    if (token is PatternToken.Field && intervalFieldGroup(token.letter) in repeated) endpoint else RangeSource.SHARED
+                }.toMutableList()
+                for (i in tokens.indices) {
+                    if (tokens[i] !is PatternToken.Literal) continue
+                    val before = (i - 1 downTo 0).firstOrNull { tokens[it] is PatternToken.Field }?.let { sources[it] }
+                    val after = (i + 1 until tokens.size).firstOrNull { tokens[it] is PatternToken.Field }?.let { sources[it] }
+                    sources[i] = if (before == endpoint && after == endpoint) endpoint else RangeSource.SHARED
+                }
+                for ((i, token) in tokens.withIndex()) {
+                    when (val value = render(listOf(token), context)) {
+                        is LocaleLookup.Value -> output += value.value.parts.map { RangePart(it, sources[i]) }
+                        is LocaleLookup.Unsupported -> return value
+                        LocaleLookup.MissingData -> return LocaleLookup.MissingData
+                    }
+                }
+            }
+            return LocaleLookup.Value(FormattedDateTimeRange(output))
+        }
+        val output = ArrayList<RangePart<DateTimePart>>()
+        val template = record.fallback
+        var index = 0
+        while (index < template.length) {
+            when {
+                template.startsWith("{0}", index) -> {
+                    output += first.parts.map { RangePart(it, RangeSource.START) }
+                    index += 3
+                }
+                template.startsWith("{1}", index) -> {
+                    output += last.parts.map { RangePart(it, RangeSource.END) }
+                    index += 3
+                }
+                else -> {
+                    val begin = index++
+                    while (index < template.length && !template.startsWith("{0}", index) && !template.startsWith("{1}", index)) index++
+                    output += RangePart(DateTimePart(DateTimePartKind.LITERAL, template.substring(begin, index)), RangeSource.SHARED)
+                }
+            }
+        }
+        return LocaleLookup.Value(FormattedDateTimeRange(output))
     }
 
     private fun recordFor(locale: Locale): IntervalRecord? {

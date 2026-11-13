@@ -116,8 +116,21 @@ abstract class KotlinxLocaleExtension @Inject constructor(objects: ObjectFactory
 
     val collation: CollationFeatures = objects.newInstance(CollationFeatures::class.java)
 
+    val metadata: MetadataFeatures = objects.newInstance(MetadataFeatures::class.java)
+    val list: ListFeatures = objects.newInstance(ListFeatures::class.java)
+    val unit: UnitFeatures = objects.newInstance(UnitFeatures::class.java)
+    fun metadata(action: Action<MetadataFeatures>) {
+        action.execute(metadata)
+    }
+    fun list(action: Action<ListFeatures>) {
+        action.execute(list)
+    }
+    fun unit(action: Action<UnitFeatures>) {
+        action.execute(unit)
+    }
+
     private val blocks: List<FeatureBlock>
-        get() = listOf(country, currency, datetime, number, language, timezone, personName, collation)
+        get() = listOf(country, currency, datetime, number, language, timezone, personName, collation, metadata, list, unit)
 
     /** Adds locales by reference, which is the form the compiler checks. */
     fun locales(vararg refs: LocaleRef) {
@@ -436,4 +449,20 @@ abstract class CollationFeatures @Inject constructor(objects: ObjectFactory) : F
      * locales or a hundred.
      */
     val order: Property<Boolean> = flag(LocaleFeature.COLLATION_ORDER)
+}
+
+abstract class MetadataFeatures @Inject constructor(objects: ObjectFactory) : FeatureBlock(objects) {
+    val preferences: Property<Boolean> = flag(LocaleFeature.METADATA)
+
+    public companion object
+}
+abstract class ListFeatures @Inject constructor(objects: ObjectFactory) : FeatureBlock(objects) {
+    val formats: Property<Boolean> = flag(LocaleFeature.LIST_FORMATS)
+
+    public companion object
+}
+abstract class UnitFeatures @Inject constructor(objects: ObjectFactory) : FeatureBlock(objects) {
+    val formats: Property<Boolean> = flag(LocaleFeature.UNIT_FORMATS)
+
+    public companion object
 }

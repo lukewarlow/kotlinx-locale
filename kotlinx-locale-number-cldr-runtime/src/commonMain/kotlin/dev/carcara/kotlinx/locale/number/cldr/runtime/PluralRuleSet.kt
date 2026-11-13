@@ -17,6 +17,7 @@
 package dev.carcara.kotlinx.locale.number.cldr.runtime
 
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
+import dev.carcara.kotlinx.locale.number.Decimal
 import dev.carcara.kotlinx.locale.number.FormattedNumber
 import dev.carcara.kotlinx.locale.number.PluralCategory
 
@@ -60,6 +61,8 @@ import dev.carcara.kotlinx.locale.number.PluralCategory
  */
 @InternalKotlinxLocaleApi
 public class PluralRuleSet private constructor(private val rules: List<Rule>) {
+
+    public val categories: Set<PluralCategory> get() = rules.mapTo(linkedSetOf(PluralCategory.OTHER)) { it.category }
 
     /** The category [number] falls into. */
     public fun select(number: FormattedNumber): PluralCategory {
@@ -146,7 +149,7 @@ private fun parseRelation(text: String): Condition {
 
 private fun interface Expression {
     /** The operand's value, or `null` when it is not integral and so cannot match a range. */
-    fun evaluate(number: FormattedNumber): Long?
+    fun evaluate(number: FormattedNumber): Decimal?
 }
 
 private fun parseExpression(text: String): Expression {
@@ -154,7 +157,7 @@ private fun parseExpression(text: String): Expression {
     if (modulus < 0) return operandOf(text.trim())
     val operand = operandOf(text.substring(0, modulus).trim())
     val divisor = text.substring(modulus + 1).trim().toLong()
-    return Expression { number -> operand.evaluate(number)?.let { it % divisor } }
+    return Expression { number -> operand.evaluate(number)?.remainder(divisor.toInt()) }
 }
 
 private fun operandOf(name: String): Expression = when (name) {
@@ -163,18 +166,18 @@ private fun operandOf(name: String): Expression = when (name) {
     // anything with a non-zero fraction, so `f` and not `v` is the test. Amharic
     // is the locale that makes the difference visible, since its `one` rule is
     // `i = 0 or n = 1` and CLDR's own samples put 1.0 in it.
-    "n" -> Expression { number -> if (number.f == 0L) number.i else null }
+    "n" -> Expression { number -> if (number.n.isInteger) number.n else null }
     "i" -> Expression { number -> number.i }
-    "v" -> Expression { number -> number.v.toLong() }
-    "w" -> Expression { number -> number.w.toLong() }
+    "v" -> Expression { number -> Decimal.of(number.v.toLong()) }
+    "w" -> Expression { number -> Decimal.of(number.w.toLong()) }
     "f" -> Expression { number -> number.f }
     "t" -> Expression { number -> number.t }
-    "c", "e" -> Expression { number -> number.c.toLong() }
+    "c", "e" -> Expression { number -> Decimal.of(number.c.toLong()) }
     else -> error("unknown plural operand '$name'")
 }
 
 private class LongRange(val from: Long, val to: Long) {
-    fun contains(value: Long): Boolean = value in from..to
+    fun contains(value: Decimal): Boolean = value >= Decimal.of(from) && value <= Decimal.of(to)
 }
 
 private fun parseRanges(text: String): List<LongRange> = text.split(',').map { part ->

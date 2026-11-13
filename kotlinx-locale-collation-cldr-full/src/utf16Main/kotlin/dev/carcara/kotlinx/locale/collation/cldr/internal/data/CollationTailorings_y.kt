@@ -19,7 +19,13 @@
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
 internal val COLLATION_TAILORING_YI: String =
-    "007m㛨≣墄ी⼀㑤ቄ倏寈祩㍨弘擵芭ᙦ䗺涞㞞䪲ᜮ㐾涤庙䪪狊ᑍ缭๜ᶔ㻜蓍愚吪ⴶ笔燶⳺䌎⪘ᚋ᱗怈疅ഠớ㗤檽蕙滝䕚憺螏⵽唇嘖Ṻ篷潳㼮薊㊟᭣彼绩繧⛡忌ᝳ䕥┷拤㽁㢍挤㡷㦳枻ஏጨ櫼᪳䲬烪ᮯ橉ఋ樣⺰嗌䅍晧ᓅ兲⨓寳䢡ᝄ磠䳖告ჷ帚ᣲ縁㭮㬓㢍᭸䫅㵎㠪嶍⽕织䨽㪿薉㵶櫝蔤Ⴘ虏摾㾱䔮塬"
+    "008M㫨≤塤ी⼅ថబਥⱣ㳲⑒ⱅᛢㄼ蟛䲙牴ᏺ蘾暰ᰟ枎⊤⻦ᾷ㧭⸐呫櫒㤦ᆒ涣㥏㎨昰剴朁㊚჌员楉᝷沬䟴總葸檢䤇㰯儞苪犹⑗ㄽ徼㙧䚾崣⟳ⷶ䯲ᄏ培㷹䋶㞽䊅伾涰蓴獯依⦫萺祲氼䌵芩冠ᴺ巯ὥ⯷䔎ᔢ漛ኦ喔耽屎枌㪐➨亚栳䩳喽༹侒筌ᾥ殍⠟屡⢩嶸刁群㘡筨ࡦ瘒᭡㔆ゕ啠噦㊩ᕏ嵍䯄䕥䏭峑㵢瓼岈撾⻼䜷ಹ䌡挮萀"
 
 internal val COLLATION_TAILORING_YO: String =
-    "003l㻧ὂ堄ऀ⼀㘧匐ㅵᕉ刂ऴ䗳珫ⴾ᯷舱⇭恸翍舘䡀庛⼚ᷴ擡ᐜ⪼䵧笉棡ഗ乚⎲๊儙㏂ᾲ禡㔜写䍚䕎枛䈀撖玐坌⺛䛀㞈ฺ䑗怀"
+    "004B㻧ὂ堄ऀ⼅ᗒஐ緄丝⭒⪐䲍᝼苻䝎穟➳▱䨔灊且實紈湦఺㋚梹䮪ᢄ嬨担䏶⢐㥤吥ᄕ杜煾⑆继稲撿䭞薩瓪㍷蜙給萻㢑▛戡祜⮵昗犈⛜芮墜䠐"
+
+internal val COLLATION_TAILORING_YOR: String =
+    "0008左ⷍ渒᭳ࠠࠀ"
+
+internal val COLLATION_TAILORING_YUE: String =
+    "000D工㰽ㄙ䪹ᆹ䩄癠ఀ"

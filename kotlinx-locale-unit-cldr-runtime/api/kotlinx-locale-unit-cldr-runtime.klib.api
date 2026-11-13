@@ -1,0 +1,19 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-unit-cldr-runtime>
+final class dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats : dev.carcara.kotlinx.locale.unit/UnitFormatSource { // dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats|null[0]
+    constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, dev.carcara.kotlinx.locale.number/NumberFormatSource, dev.carcara.kotlinx.locale.number/PluralRuleSource) // dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.number.NumberFormatSource;dev.carcara.kotlinx.locale.number.PluralRuleSource){}[0]
+
+    final val supportedLocales // dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats.supportedLocales|{}supportedLocales[0]
+        final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
+
+    final fun compose(dev.carcara.kotlinx.locale.number/FormattedNumber, kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.unit/UnitWidth): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.number/FormattedNumber> // dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats.compose|compose(dev.carcara.kotlinx.locale.number.FormattedNumber;kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.unit.UnitWidth){}[0]
+    final fun render(dev.carcara.kotlinx.locale.number/NumberValue, kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.unit/UnitWidth, dev.carcara.kotlinx.locale.number/NumberFormatOptions): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.number/FormattedNumber> // dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats.render|render(dev.carcara.kotlinx.locale.number.NumberValue;kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.unit.UnitWidth;dev.carcara.kotlinx.locale.number.NumberFormatOptions){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.unit.cldr.runtime/PayloadUnitFormats.Companion|null[0]
+}

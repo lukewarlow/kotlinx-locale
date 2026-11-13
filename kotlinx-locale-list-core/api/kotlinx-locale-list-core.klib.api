@@ -1,0 +1,112 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-list-core>
+final enum class dev.carcara.kotlinx.locale.list/ListStyle : kotlin/Enum<dev.carcara.kotlinx.locale.list/ListStyle> { // dev.carcara.kotlinx.locale.list/ListStyle|null[0]
+    enum entry LONG // dev.carcara.kotlinx.locale.list/ListStyle.LONG|null[0]
+    enum entry NARROW // dev.carcara.kotlinx.locale.list/ListStyle.NARROW|null[0]
+    enum entry SHORT // dev.carcara.kotlinx.locale.list/ListStyle.SHORT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.list/ListStyle.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.list/ListStyle> // dev.carcara.kotlinx.locale.list/ListStyle.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.list/ListStyle // dev.carcara.kotlinx.locale.list/ListStyle.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.list/ListStyle> // dev.carcara.kotlinx.locale.list/ListStyle.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.list/ListStyle.Companion|null[0]
+}
+
+final enum class dev.carcara.kotlinx.locale.list/ListType : kotlin/Enum<dev.carcara.kotlinx.locale.list/ListType> { // dev.carcara.kotlinx.locale.list/ListType|null[0]
+    enum entry CONJUNCTION // dev.carcara.kotlinx.locale.list/ListType.CONJUNCTION|null[0]
+    enum entry DISJUNCTION // dev.carcara.kotlinx.locale.list/ListType.DISJUNCTION|null[0]
+    enum entry UNIT // dev.carcara.kotlinx.locale.list/ListType.UNIT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.list/ListType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.list/ListType> // dev.carcara.kotlinx.locale.list/ListType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.list/ListType // dev.carcara.kotlinx.locale.list/ListType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.list/ListType> // dev.carcara.kotlinx.locale.list/ListType.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.list/ListType.Companion|null[0]
+}
+
+abstract interface dev.carcara.kotlinx.locale.list/ListFormatSource : dev.carcara.kotlinx.locale/LocaleDataSource { // dev.carcara.kotlinx.locale.list/ListFormatSource|null[0]
+    abstract fun render(kotlin.collections/List<kotlin/String>, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.list/ListFormatOptions = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.list/FormattedList> // dev.carcara.kotlinx.locale.list/ListFormatSource.render|render(kotlin.collections.List<kotlin.String>;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.list.ListFormatOptions){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.list/ListFormatSource.Companion|null[0]
+}
+
+sealed interface dev.carcara.kotlinx.locale.list/ListPart { // dev.carcara.kotlinx.locale.list/ListPart|null[0]
+    abstract val value // dev.carcara.kotlinx.locale.list/ListPart.value|{}value[0]
+        abstract fun <get-value>(): kotlin/String // dev.carcara.kotlinx.locale.list/ListPart.value.<get-value>|<get-value>(){}[0]
+
+    final class Element : dev.carcara.kotlinx.locale.list/ListPart { // dev.carcara.kotlinx.locale.list/ListPart.Element|null[0]
+        constructor <init>(kotlin/Int, kotlin/String) // dev.carcara.kotlinx.locale.list/ListPart.Element.<init>|<init>(kotlin.Int;kotlin.String){}[0]
+
+        final val index // dev.carcara.kotlinx.locale.list/ListPart.Element.index|{}index[0]
+            final fun <get-index>(): kotlin/Int // dev.carcara.kotlinx.locale.list/ListPart.Element.index.<get-index>|<get-index>(){}[0]
+        final val value // dev.carcara.kotlinx.locale.list/ListPart.Element.value|{}value[0]
+            final fun <get-value>(): kotlin/String // dev.carcara.kotlinx.locale.list/ListPart.Element.value.<get-value>|<get-value>(){}[0]
+
+        final fun component1(): kotlin/Int // dev.carcara.kotlinx.locale.list/ListPart.Element.component1|component1(){}[0]
+        final fun component2(): kotlin/String // dev.carcara.kotlinx.locale.list/ListPart.Element.component2|component2(){}[0]
+        final fun copy(kotlin/Int = ..., kotlin/String = ...): dev.carcara.kotlinx.locale.list/ListPart.Element // dev.carcara.kotlinx.locale.list/ListPart.Element.copy|copy(kotlin.Int;kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.list/ListPart.Element.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.list/ListPart.Element.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.list/ListPart.Element.toString|toString(){}[0]
+
+        final object Companion // dev.carcara.kotlinx.locale.list/ListPart.Element.Companion|null[0]
+    }
+
+    final class Literal : dev.carcara.kotlinx.locale.list/ListPart { // dev.carcara.kotlinx.locale.list/ListPart.Literal|null[0]
+        constructor <init>(kotlin/String) // dev.carcara.kotlinx.locale.list/ListPart.Literal.<init>|<init>(kotlin.String){}[0]
+
+        final val value // dev.carcara.kotlinx.locale.list/ListPart.Literal.value|{}value[0]
+            final fun <get-value>(): kotlin/String // dev.carcara.kotlinx.locale.list/ListPart.Literal.value.<get-value>|<get-value>(){}[0]
+
+        final fun component1(): kotlin/String // dev.carcara.kotlinx.locale.list/ListPart.Literal.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.carcara.kotlinx.locale.list/ListPart.Literal // dev.carcara.kotlinx.locale.list/ListPart.Literal.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.list/ListPart.Literal.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.list/ListPart.Literal.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.list/ListPart.Literal.toString|toString(){}[0]
+
+        final object Companion // dev.carcara.kotlinx.locale.list/ListPart.Literal.Companion|null[0]
+    }
+
+    final object Companion // dev.carcara.kotlinx.locale.list/ListPart.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.list/FormattedList { // dev.carcara.kotlinx.locale.list/FormattedList|null[0]
+    constructor <init>(kotlin.collections/List<dev.carcara.kotlinx.locale.list/ListPart>) // dev.carcara.kotlinx.locale.list/FormattedList.<init>|<init>(kotlin.collections.List<dev.carcara.kotlinx.locale.list.ListPart>){}[0]
+
+    final val parts // dev.carcara.kotlinx.locale.list/FormattedList.parts|{}parts[0]
+        final fun <get-parts>(): kotlin.collections/List<dev.carcara.kotlinx.locale.list/ListPart> // dev.carcara.kotlinx.locale.list/FormattedList.parts.<get-parts>|<get-parts>(){}[0]
+    final val text // dev.carcara.kotlinx.locale.list/FormattedList.text|{}text[0]
+        final fun <get-text>(): kotlin/String // dev.carcara.kotlinx.locale.list/FormattedList.text.<get-text>|<get-text>(){}[0]
+
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.list/FormattedList.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.list/FormattedList.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.list/ListFormatOptions { // dev.carcara.kotlinx.locale.list/ListFormatOptions|null[0]
+    constructor <init>(dev.carcara.kotlinx.locale.list/ListType = ..., dev.carcara.kotlinx.locale.list/ListStyle = ...) // dev.carcara.kotlinx.locale.list/ListFormatOptions.<init>|<init>(dev.carcara.kotlinx.locale.list.ListType;dev.carcara.kotlinx.locale.list.ListStyle){}[0]
+
+    final val style // dev.carcara.kotlinx.locale.list/ListFormatOptions.style|{}style[0]
+        final fun <get-style>(): dev.carcara.kotlinx.locale.list/ListStyle // dev.carcara.kotlinx.locale.list/ListFormatOptions.style.<get-style>|<get-style>(){}[0]
+    final val type // dev.carcara.kotlinx.locale.list/ListFormatOptions.type|{}type[0]
+        final fun <get-type>(): dev.carcara.kotlinx.locale.list/ListType // dev.carcara.kotlinx.locale.list/ListFormatOptions.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): dev.carcara.kotlinx.locale.list/ListType // dev.carcara.kotlinx.locale.list/ListFormatOptions.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale.list/ListStyle // dev.carcara.kotlinx.locale.list/ListFormatOptions.component2|component2(){}[0]
+    final fun copy(dev.carcara.kotlinx.locale.list/ListType = ..., dev.carcara.kotlinx.locale.list/ListStyle = ...): dev.carcara.kotlinx.locale.list/ListFormatOptions // dev.carcara.kotlinx.locale.list/ListFormatOptions.copy|copy(dev.carcara.kotlinx.locale.list.ListType;dev.carcara.kotlinx.locale.list.ListStyle){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.list/ListFormatOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.list/ListFormatOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.list/ListFormatOptions.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.list/ListFormatOptions.Companion|null[0]
+}

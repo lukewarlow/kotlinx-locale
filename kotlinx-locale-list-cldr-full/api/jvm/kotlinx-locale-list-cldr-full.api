@@ -1,0 +1,12 @@
+public final class dev/carcara/kotlinx/locale/list/cldr/CldrListFormats : dev/carcara/kotlinx/locale/list/ListFormatSource {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/list/cldr/CldrListFormats;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun render (Ljava/util/List;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/list/ListFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/list/cldr/ListFormatKt {
+	public static final fun listFormat (Ljava/util/List;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/list/ListFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun listFormat$default (Ljava/util/List;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/list/ListFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+

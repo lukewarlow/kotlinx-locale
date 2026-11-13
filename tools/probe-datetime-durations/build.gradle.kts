@@ -19,11 +19,8 @@ plugins {
 }
 
 sizeProbe {
-    // Measured at 117.3 KB. Most of it is the wording, and the number and plural
-    // tables it renders counts through are the rest. Smaller than the relative
-    // probe next door because fourteen units of seven slots is less than eight
-    // units of eighteen.
-    budgetBytes = 150 * 1024
+    // Structured rendering adds exact number options, calendar name widths and zone-name context.
+    budgetBytes = 180 * 1024
 }
 
 kotlin {

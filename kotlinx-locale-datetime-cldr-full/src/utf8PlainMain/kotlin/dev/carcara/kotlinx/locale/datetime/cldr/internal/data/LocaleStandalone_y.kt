@@ -18,11 +18,26 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.datetime.cldr.internal.data
 
+internal val LOCALE_STANDALONE_YAV: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001Dk.Y.\u001Eera/abbreviated/1\u001D+J.C.\u001Eera/wide/0\u001Dkatikupíen Yésuse\u001Eera/wide/1\u001Dékélémkúnupíén n\u001Eperiod/format/abbreviated/am\u001Dkiɛmɛ́ɛm\u001Eperiod/format/abbreviated/pm\u001Dkisɛ́ndɛ"
+
 internal val LOCALE_STANDALONE_YI: String =
-    "\u001Fיאַנ\u001Eפֿעב\u001Eמערץ\u001Eאַפּר\u001Eמיי\u001Eיוני\u001Eיולי\u001Eאויג\u001Eסעפּ\u001Eאקט\u001Eנאוו\u001Eדעצ\u001F\u001F\u001F\u001F\u001F0"
+    "\u001Fיאַנ\u001Eפֿעב\u001Eמערץ\u001Eאַפּר\u001Eמיי\u001Eיוני\u001Eיולי\u001Eאויג\u001Eסעפּ\u001Eאקט\u001Eנאוו\u001Eדעצ\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBCE\u001Eera/abbreviated/1\u001DCE\u001Eperiod/format/abbreviated/am\u001Dפֿאַרמיטאָג\u001Eperiod/format/abbreviated/pm\u001Dנאָכמיטאָג"
 
 internal val LOCALE_STANDALONE_YO: String =
-    "\u001F\u001F\u001FAjé\u001EÌsẹ́gun\u001EỌjọ́rú\u001EỌjọ́bọ\u001EẸtì\u001EÀbámẹ́ta\u001EÀìkú\u001F\u001F\u001F0"
+    "\u001F\u001F\u001FAjé\u001EÌsẹ́gun\u001EỌjọ́rú\u001EỌjọ́bọ\u001EẸtì\u001EÀbámẹ́ta\u001EÀìkú\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBCE\u001Eera/abbreviated/1\u001DAD\u001Eera/wide/0\u001DSaju Kristi\u001Eera/wide/1\u001DLehin Kristi\u001Eperiod/format/abbreviated/am\u001DÀárọ̀\u001Eperiod/format/abbreviated/pm\u001DỌ̀sán"
 
 internal val LOCALE_STANDALONE_YO_BJ: String =
-    "\u001F\u001F\u001FAjé\u001EÌsɛ́gun\u001EƆjɔ́rú\u001EƆjɔ́bɔ\u001EƐtì\u001EÀbámɛ́ta\u001EÀìkú\u001F\u001F\u001F0"
+    "\u001F\u001F\u001FAjé\u001EÌsɛ́gun\u001EƆjɔ́rú\u001EƆjɔ́bɔ\u001EƐtì\u001EÀbámɛ́ta\u001EÀìkú\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBCE\u001Eera/abbreviated/1\u001DAD\u001Eera/wide/0\u001DSaju Kristi\u001Eera/wide/1\u001DLehin Kristi\u001Eperiod/format/abbreviated/am\u001DÀárɔ̀\u001Eperiod/format/abbreviated/pm\u001DƆ̀sán"
+
+internal val LOCALE_STANDALONE_YRL: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001Fc3f0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DK.s.\u001Eera/abbreviated/1\u001DK.a.\u001Eera/wide/0\u001DKiristu senũdé\u001Eera/wide/1\u001DKiristu ariré\u001Eperiod/format/abbreviated/afternoon1\u001Dkaruka ramẽ\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/evening1\u001Dpituna ramẽ\u001Eperiod/format/abbreviated/midnight\u001Dpituna pyterupé\u001Eperiod/format/abbreviated/morning1\u001Dkuêma ramẽ\u001Eperiod/format/abbreviated/night1\u001Dpitunaeté ramẽ\u001Eperiod/format/abbreviated/noon\u001Diandé-ara-pyturepé\u001Eperiod/format/abbreviated/pm\u001DPM"
+
+internal val LOCALE_STANDALONE_YRL_CO: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001Fc3f0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DK.s.\u001Eera/abbreviated/1\u001DK.a.\u001Eera/wide/0\u001DKiristu senũdé\u001Eera/wide/1\u001DKiristu ariré\u001Eperiod/format/abbreviated/afternoon1\u001Dkaruka ramẽ\u001Eperiod/format/abbreviated/am\u001Da. m.\u001Eperiod/format/abbreviated/evening1\u001Dpituna ramẽ\u001Eperiod/format/abbreviated/midnight\u001Dpituna pyterupé\u001Eperiod/format/abbreviated/morning1\u001Dkuêma ramẽ\u001Eperiod/format/abbreviated/night1\u001Dpitunaeté ramẽ\u001Eperiod/format/abbreviated/noon\u001Diandé-ara-pyturepé\u001Eperiod/format/abbreviated/pm\u001Dp. m.\u001Eperiod/format/narrow/am\u001Da. m.\u001Eperiod/format/narrow/pm\u001Dp. m.\u001Eperiod/format/wide/am\u001Da. m.\u001Eperiod/format/wide/pm\u001Dp. m.\u001Eperiod/stand-alone/abbreviated/am\u001Da. m.\u001Eperiod/stand-alone/abbreviated/pm\u001Dp. m.\u001Eperiod/stand-alone/narrow/am\u001Da. m.\u001Eperiod/stand-alone/narrow/pm\u001Dp. m.\u001Eperiod/stand-alone/wide/am\u001Da. m.\u001Eperiod/stand-alone/wide/pm\u001Dp. m."
+
+internal val LOCALE_STANDALONE_YUE: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001D西元前\u001Eera/abbreviated/1\u001D西元\u001Eperiod/format/abbreviated/afternoon1\u001D中午\u001Eperiod/format/abbreviated/afternoon2\u001D下晝\u001Eperiod/format/abbreviated/am\u001D上晝\u001Eperiod/format/abbreviated/evening1\u001D夜晚\u001Eperiod/format/abbreviated/midnight\u001D午夜\u001Eperiod/format/abbreviated/morning1\u001D清晨\u001Eperiod/format/abbreviated/morning2\u001D朝早\u001Eperiod/format/abbreviated/night1\u001D凌晨\u001Eperiod/format/abbreviated/pm\u001D下晝\u001Eperiod/format/narrow/am\u001D上晝\u001Eperiod/format/narrow/pm\u001D下晝\u001Eperiod/format/wide/am\u001D上晝\u001Eperiod/format/wide/pm\u001D下晝\u001Eperiod/stand-alone/abbreviated/am\u001D上晝\u001Eperiod/stand-alone/abbreviated/pm\u001D下晝\u001Eperiod/stand-alone/narrow/am\u001D上晝\u001Eperiod/stand-alone/narrow/pm\u001D下晝"
+
+internal val LOCALE_STANDALONE_YUE_HANS: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001D西元前\u001Eera/abbreviated/1\u001D西元\u001Eperiod/format/abbreviated/afternoon1\u001D中午\u001Eperiod/format/abbreviated/afternoon2\u001D下昼\u001Eperiod/format/abbreviated/am\u001D上昼\u001Eperiod/format/abbreviated/evening1\u001D夜晚\u001Eperiod/format/abbreviated/midnight\u001D午夜\u001Eperiod/format/abbreviated/morning1\u001D清晨\u001Eperiod/format/abbreviated/morning2\u001D朝早\u001Eperiod/format/abbreviated/night1\u001D凌晨\u001Eperiod/format/abbreviated/pm\u001D下昼\u001Eperiod/format/narrow/am\u001D上昼\u001Eperiod/format/narrow/pm\u001D下昼\u001Eperiod/format/wide/am\u001D上昼\u001Eperiod/format/wide/pm\u001D下昼\u001Eperiod/stand-alone/abbreviated/am\u001D上昼\u001Eperiod/stand-alone/abbreviated/pm\u001D下昼\u001Eperiod/stand-alone/narrow/am\u001D上昼\u001Eperiod/stand-alone/narrow/pm\u001D下昼"

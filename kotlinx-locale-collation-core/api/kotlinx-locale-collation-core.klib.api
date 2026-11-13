@@ -1,11 +1,40 @@
 // Klib ABI Dump
-// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
 // - Show declarations: true
 
 // Library unique name: <dev.carcara:kotlinx-locale-collation-core>
+final enum class dev.carcara.kotlinx.locale.collation/CollationCaseFirst : kotlin/Enum<dev.carcara.kotlinx.locale.collation/CollationCaseFirst> { // dev.carcara.kotlinx.locale.collation/CollationCaseFirst|null[0]
+    enum entry LOWER // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.LOWER|null[0]
+    enum entry OFF // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.OFF|null[0]
+    enum entry UPPER // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.UPPER|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.collation/CollationCaseFirst> // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.collation/CollationCaseFirst // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.collation/CollationCaseFirst> // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.collation/CollationCaseFirst.Companion|null[0]
+}
+
+final enum class dev.carcara.kotlinx.locale.collation/CollationSensitivity : kotlin/Enum<dev.carcara.kotlinx.locale.collation/CollationSensitivity> { // dev.carcara.kotlinx.locale.collation/CollationSensitivity|null[0]
+    enum entry ACCENT // dev.carcara.kotlinx.locale.collation/CollationSensitivity.ACCENT|null[0]
+    enum entry BASE // dev.carcara.kotlinx.locale.collation/CollationSensitivity.BASE|null[0]
+    enum entry CASE // dev.carcara.kotlinx.locale.collation/CollationSensitivity.CASE|null[0]
+    enum entry VARIANT // dev.carcara.kotlinx.locale.collation/CollationSensitivity.VARIANT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.collation/CollationSensitivity.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.collation/CollationSensitivity> // dev.carcara.kotlinx.locale.collation/CollationSensitivity.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.collation/CollationSensitivity // dev.carcara.kotlinx.locale.collation/CollationSensitivity.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.collation/CollationSensitivity> // dev.carcara.kotlinx.locale.collation/CollationSensitivity.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.collation/CollationSensitivity.Companion|null[0]
+}
+
 final enum class dev.carcara.kotlinx.locale.collation/CollationStrength : kotlin/Enum<dev.carcara.kotlinx.locale.collation/CollationStrength> { // dev.carcara.kotlinx.locale.collation/CollationStrength|null[0]
     enum entry PRIMARY // dev.carcara.kotlinx.locale.collation/CollationStrength.PRIMARY|null[0]
     enum entry SECONDARY // dev.carcara.kotlinx.locale.collation/CollationStrength.SECONDARY|null[0]
@@ -20,8 +49,117 @@ final enum class dev.carcara.kotlinx.locale.collation/CollationStrength : kotlin
     final object Companion // dev.carcara.kotlinx.locale.collation/CollationStrength.Companion|null[0]
 }
 
+final enum class dev.carcara.kotlinx.locale.collation/CollationUsage : kotlin/Enum<dev.carcara.kotlinx.locale.collation/CollationUsage> { // dev.carcara.kotlinx.locale.collation/CollationUsage|null[0]
+    enum entry SEARCH // dev.carcara.kotlinx.locale.collation/CollationUsage.SEARCH|null[0]
+    enum entry SORT // dev.carcara.kotlinx.locale.collation/CollationUsage.SORT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.collation/CollationUsage.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.collation/CollationUsage> // dev.carcara.kotlinx.locale.collation/CollationUsage.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.collation/CollationUsage // dev.carcara.kotlinx.locale.collation/CollationUsage.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.collation/CollationUsage> // dev.carcara.kotlinx.locale.collation/CollationUsage.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.collation/CollationUsage.Companion|null[0]
+}
+
 abstract interface dev.carcara.kotlinx.locale.collation/CollationSource { // dev.carcara.kotlinx.locale.collation/CollationSource|null[0]
     abstract fun comparatorOrNull(dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.collation/CollationStrength): kotlin/Comparator<kotlin/String>? // dev.carcara.kotlinx.locale.collation/CollationSource.comparatorOrNull|comparatorOrNull(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.collation.CollationStrength){}[0]
+    open fun capabilities(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale.collation/CollationCapabilities // dev.carcara.kotlinx.locale.collation/CollationSource.capabilities|capabilities(dev.carcara.kotlinx.locale.Locale){}[0]
+    open fun collations(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.collation/CollationSource.collations|collations(){}[0]
+    open fun resolve(dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.collation/CollationOptions = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.collation/ResolvedCollation> // dev.carcara.kotlinx.locale.collation/CollationSource.resolve|resolve(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.collation.CollationOptions){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.collation/CollationSource.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.collation/CollationCapabilities { // dev.carcara.kotlinx.locale.collation/CollationCapabilities|null[0]
+    constructor <init>(dev.carcara.kotlinx.locale/LocaleCoverage, kotlin.collections/Set<kotlin/String>, kotlin.collections/Set<dev.carcara.kotlinx.locale.collation/CollationUsage>, kotlin/Boolean, kotlin/Boolean) // dev.carcara.kotlinx.locale.collation/CollationCapabilities.<init>|<init>(dev.carcara.kotlinx.locale.LocaleCoverage;kotlin.collections.Set<kotlin.String>;kotlin.collections.Set<dev.carcara.kotlinx.locale.collation.CollationUsage>;kotlin.Boolean;kotlin.Boolean){}[0]
+
+    final val caseFirst // dev.carcara.kotlinx.locale.collation/CollationCapabilities.caseFirst|{}caseFirst[0]
+        final fun <get-caseFirst>(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/CollationCapabilities.caseFirst.<get-caseFirst>|<get-caseFirst>(){}[0]
+    final val collations // dev.carcara.kotlinx.locale.collation/CollationCapabilities.collations|{}collations[0]
+        final fun <get-collations>(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.collation/CollationCapabilities.collations.<get-collations>|<get-collations>(){}[0]
+    final val coverage // dev.carcara.kotlinx.locale.collation/CollationCapabilities.coverage|{}coverage[0]
+        final fun <get-coverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.collation/CollationCapabilities.coverage.<get-coverage>|<get-coverage>(){}[0]
+    final val numeric // dev.carcara.kotlinx.locale.collation/CollationCapabilities.numeric|{}numeric[0]
+        final fun <get-numeric>(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/CollationCapabilities.numeric.<get-numeric>|<get-numeric>(){}[0]
+    final val usages // dev.carcara.kotlinx.locale.collation/CollationCapabilities.usages|{}usages[0]
+        final fun <get-usages>(): kotlin.collections/Set<dev.carcara.kotlinx.locale.collation/CollationUsage> // dev.carcara.kotlinx.locale.collation/CollationCapabilities.usages.<get-usages>|<get-usages>(){}[0]
+
+    final fun component1(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.collation/CollationCapabilities.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.collation/CollationCapabilities.component2|component2(){}[0]
+    final fun component3(): kotlin.collections/Set<dev.carcara.kotlinx.locale.collation/CollationUsage> // dev.carcara.kotlinx.locale.collation/CollationCapabilities.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/CollationCapabilities.component4|component4(){}[0]
+    final fun component5(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/CollationCapabilities.component5|component5(){}[0]
+    final fun copy(dev.carcara.kotlinx.locale/LocaleCoverage = ..., kotlin.collections/Set<kotlin/String> = ..., kotlin.collections/Set<dev.carcara.kotlinx.locale.collation/CollationUsage> = ..., kotlin/Boolean = ..., kotlin/Boolean = ...): dev.carcara.kotlinx.locale.collation/CollationCapabilities // dev.carcara.kotlinx.locale.collation/CollationCapabilities.copy|copy(dev.carcara.kotlinx.locale.LocaleCoverage;kotlin.collections.Set<kotlin.String>;kotlin.collections.Set<dev.carcara.kotlinx.locale.collation.CollationUsage>;kotlin.Boolean;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/CollationCapabilities.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.collation/CollationCapabilities.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.collation/CollationCapabilities.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.collation/CollationCapabilities.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.collation/CollationOptions { // dev.carcara.kotlinx.locale.collation/CollationOptions|null[0]
+    constructor <init>(dev.carcara.kotlinx.locale.collation/CollationUsage = ..., dev.carcara.kotlinx.locale.collation/CollationSensitivity? = ..., kotlin/String? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., dev.carcara.kotlinx.locale.collation/CollationCaseFirst? = ...) // dev.carcara.kotlinx.locale.collation/CollationOptions.<init>|<init>(dev.carcara.kotlinx.locale.collation.CollationUsage;dev.carcara.kotlinx.locale.collation.CollationSensitivity?;kotlin.String?;kotlin.Boolean?;kotlin.Boolean?;dev.carcara.kotlinx.locale.collation.CollationCaseFirst?){}[0]
+
+    final val caseFirst // dev.carcara.kotlinx.locale.collation/CollationOptions.caseFirst|{}caseFirst[0]
+        final fun <get-caseFirst>(): dev.carcara.kotlinx.locale.collation/CollationCaseFirst? // dev.carcara.kotlinx.locale.collation/CollationOptions.caseFirst.<get-caseFirst>|<get-caseFirst>(){}[0]
+    final val collation // dev.carcara.kotlinx.locale.collation/CollationOptions.collation|{}collation[0]
+        final fun <get-collation>(): kotlin/String? // dev.carcara.kotlinx.locale.collation/CollationOptions.collation.<get-collation>|<get-collation>(){}[0]
+    final val ignorePunctuation // dev.carcara.kotlinx.locale.collation/CollationOptions.ignorePunctuation|{}ignorePunctuation[0]
+        final fun <get-ignorePunctuation>(): kotlin/Boolean? // dev.carcara.kotlinx.locale.collation/CollationOptions.ignorePunctuation.<get-ignorePunctuation>|<get-ignorePunctuation>(){}[0]
+    final val numeric // dev.carcara.kotlinx.locale.collation/CollationOptions.numeric|{}numeric[0]
+        final fun <get-numeric>(): kotlin/Boolean? // dev.carcara.kotlinx.locale.collation/CollationOptions.numeric.<get-numeric>|<get-numeric>(){}[0]
+    final val sensitivity // dev.carcara.kotlinx.locale.collation/CollationOptions.sensitivity|{}sensitivity[0]
+        final fun <get-sensitivity>(): dev.carcara.kotlinx.locale.collation/CollationSensitivity? // dev.carcara.kotlinx.locale.collation/CollationOptions.sensitivity.<get-sensitivity>|<get-sensitivity>(){}[0]
+    final val usage // dev.carcara.kotlinx.locale.collation/CollationOptions.usage|{}usage[0]
+        final fun <get-usage>(): dev.carcara.kotlinx.locale.collation/CollationUsage // dev.carcara.kotlinx.locale.collation/CollationOptions.usage.<get-usage>|<get-usage>(){}[0]
+
+    final fun component1(): dev.carcara.kotlinx.locale.collation/CollationUsage // dev.carcara.kotlinx.locale.collation/CollationOptions.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale.collation/CollationSensitivity? // dev.carcara.kotlinx.locale.collation/CollationOptions.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.carcara.kotlinx.locale.collation/CollationOptions.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean? // dev.carcara.kotlinx.locale.collation/CollationOptions.component4|component4(){}[0]
+    final fun component5(): kotlin/Boolean? // dev.carcara.kotlinx.locale.collation/CollationOptions.component5|component5(){}[0]
+    final fun component6(): dev.carcara.kotlinx.locale.collation/CollationCaseFirst? // dev.carcara.kotlinx.locale.collation/CollationOptions.component6|component6(){}[0]
+    final fun copy(dev.carcara.kotlinx.locale.collation/CollationUsage = ..., dev.carcara.kotlinx.locale.collation/CollationSensitivity? = ..., kotlin/String? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., dev.carcara.kotlinx.locale.collation/CollationCaseFirst? = ...): dev.carcara.kotlinx.locale.collation/CollationOptions // dev.carcara.kotlinx.locale.collation/CollationOptions.copy|copy(dev.carcara.kotlinx.locale.collation.CollationUsage;dev.carcara.kotlinx.locale.collation.CollationSensitivity?;kotlin.String?;kotlin.Boolean?;kotlin.Boolean?;dev.carcara.kotlinx.locale.collation.CollationCaseFirst?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/CollationOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.collation/CollationOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.collation/CollationOptions.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.collation/CollationOptions.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.collation/ResolvedCollation { // dev.carcara.kotlinx.locale.collation/ResolvedCollation|null[0]
+    constructor <init>(kotlin/Comparator<kotlin/String>, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.collation/CollationUsage, dev.carcara.kotlinx.locale.collation/CollationSensitivity, kotlin/String, kotlin/Boolean, kotlin/Boolean, dev.carcara.kotlinx.locale.collation/CollationCaseFirst) // dev.carcara.kotlinx.locale.collation/ResolvedCollation.<init>|<init>(kotlin.Comparator<kotlin.String>;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.collation.CollationUsage;dev.carcara.kotlinx.locale.collation.CollationSensitivity;kotlin.String;kotlin.Boolean;kotlin.Boolean;dev.carcara.kotlinx.locale.collation.CollationCaseFirst){}[0]
+
+    final val caseFirst // dev.carcara.kotlinx.locale.collation/ResolvedCollation.caseFirst|{}caseFirst[0]
+        final fun <get-caseFirst>(): dev.carcara.kotlinx.locale.collation/CollationCaseFirst // dev.carcara.kotlinx.locale.collation/ResolvedCollation.caseFirst.<get-caseFirst>|<get-caseFirst>(){}[0]
+    final val collation // dev.carcara.kotlinx.locale.collation/ResolvedCollation.collation|{}collation[0]
+        final fun <get-collation>(): kotlin/String // dev.carcara.kotlinx.locale.collation/ResolvedCollation.collation.<get-collation>|<get-collation>(){}[0]
+    final val comparator // dev.carcara.kotlinx.locale.collation/ResolvedCollation.comparator|{}comparator[0]
+        final fun <get-comparator>(): kotlin/Comparator<kotlin/String> // dev.carcara.kotlinx.locale.collation/ResolvedCollation.comparator.<get-comparator>|<get-comparator>(){}[0]
+    final val ignorePunctuation // dev.carcara.kotlinx.locale.collation/ResolvedCollation.ignorePunctuation|{}ignorePunctuation[0]
+        final fun <get-ignorePunctuation>(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/ResolvedCollation.ignorePunctuation.<get-ignorePunctuation>|<get-ignorePunctuation>(){}[0]
+    final val locale // dev.carcara.kotlinx.locale.collation/ResolvedCollation.locale|{}locale[0]
+        final fun <get-locale>(): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.collation/ResolvedCollation.locale.<get-locale>|<get-locale>(){}[0]
+    final val numeric // dev.carcara.kotlinx.locale.collation/ResolvedCollation.numeric|{}numeric[0]
+        final fun <get-numeric>(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/ResolvedCollation.numeric.<get-numeric>|<get-numeric>(){}[0]
+    final val sensitivity // dev.carcara.kotlinx.locale.collation/ResolvedCollation.sensitivity|{}sensitivity[0]
+        final fun <get-sensitivity>(): dev.carcara.kotlinx.locale.collation/CollationSensitivity // dev.carcara.kotlinx.locale.collation/ResolvedCollation.sensitivity.<get-sensitivity>|<get-sensitivity>(){}[0]
+    final val usage // dev.carcara.kotlinx.locale.collation/ResolvedCollation.usage|{}usage[0]
+        final fun <get-usage>(): dev.carcara.kotlinx.locale.collation/CollationUsage // dev.carcara.kotlinx.locale.collation/ResolvedCollation.usage.<get-usage>|<get-usage>(){}[0]
+
+    final fun component1(): kotlin/Comparator<kotlin/String> // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component2|component2(){}[0]
+    final fun component3(): dev.carcara.kotlinx.locale.collation/CollationUsage // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component3|component3(){}[0]
+    final fun component4(): dev.carcara.kotlinx.locale.collation/CollationSensitivity // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component4|component4(){}[0]
+    final fun component5(): kotlin/String // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component6|component6(){}[0]
+    final fun component7(): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component7|component7(){}[0]
+    final fun component8(): dev.carcara.kotlinx.locale.collation/CollationCaseFirst // dev.carcara.kotlinx.locale.collation/ResolvedCollation.component8|component8(){}[0]
+    final fun copy(kotlin/Comparator<kotlin/String> = ..., dev.carcara.kotlinx.locale/Locale = ..., dev.carcara.kotlinx.locale.collation/CollationUsage = ..., dev.carcara.kotlinx.locale.collation/CollationSensitivity = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., dev.carcara.kotlinx.locale.collation/CollationCaseFirst = ...): dev.carcara.kotlinx.locale.collation/ResolvedCollation // dev.carcara.kotlinx.locale.collation/ResolvedCollation.copy|copy(kotlin.Comparator<kotlin.String>;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.collation.CollationUsage;dev.carcara.kotlinx.locale.collation.CollationSensitivity;kotlin.String;kotlin.Boolean;kotlin.Boolean;dev.carcara.kotlinx.locale.collation.CollationCaseFirst){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.collation/ResolvedCollation.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.collation/ResolvedCollation.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.collation/ResolvedCollation.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.collation/ResolvedCollation.Companion|null[0]
 }

@@ -55,17 +55,11 @@ and the same names appear in ECMA-402's
 
 ## Why ICU settles what CLDR leaves open
 
-ECMA-402 is a JavaScript standard, and a JavaScript standard cannot take a
-breaking change. Every page ever written is a compatibility constraint, so a
-decision it got wrong stays wrong and the specification ossifies around it. That
-makes it useful as corroboration and a poor choice as an authority.
-
-So where the two disagree about something LDML leaves open, this library follows
-ICU. ICU is where the LDML committee's own reference implementation lives, and
-this repository already cross-checks against ICU4J goldens that `:codegen`
-extracts and commits under `conformance-test-suite/`. An answer settled that way
-is pinned as a fixture rather than as a sentence in a document, which is the only
-kind of agreement that fails a build when it stops being true.
+The Kotlin convenience defaults follow ICU where LDML leaves a choice open.
+Rounding and precision are explicit options, so an ECMA-402 embedding can select
+the behavior its specification requires. ICU4J goldens remain pinned regression
+fixtures for the existing convenience functions; they do not make a different
+explicit rounding mode unsupported.
 
 ## Where each default came from
 
@@ -87,10 +81,9 @@ there.
 This is the one place the algorithm departs from a literal reading of the
 document, which is why it has goldens rather than only a comment.
 
-**Rounding mode.** Half to even, everywhere, including the divide in
-`rescaleFraction`. LDML says nothing about it. ICU's number formatter defaults to
-half-even and so does `java.text.DecimalFormat`; ECMA-402 rounds half away from
-zero, so `0.125` as a percentage is `12%` here and `13%` in a browser.
+**Rounding mode.** Half-even remains the default. NumberFormatOptions supports
+all nine ECMA-402 rounding modes, with HALF_EXPAND selecting ties away from zero.
+A pre-rounded value keeps its visible digits and receives no second rounding.
 
 **Grouping in compact notation.** Compact raises the locale's
 `minimumGroupingDigits` to two, so German writes 1000 as `1000` and 12000 as

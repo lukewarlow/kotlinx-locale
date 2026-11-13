@@ -22,6 +22,10 @@ public abstract interface class dev/carcara/kotlinx/locale/country/CountryNameSo
 public final class dev/carcara/kotlinx/locale/country/CountryNameSource$Companion {
 }
 
+public final class dev/carcara/kotlinx/locale/country/CountryNameSource$DefaultImpls {
+	public static fun getLocaleCoverage (Ldev/carcara/kotlinx/locale/country/CountryNameSource;)Ldev/carcara/kotlinx/locale/LocaleCoverage;
+}
+
 public final class dev/carcara/kotlinx/locale/country/CountryNameSourceKt {
 	public static final fun countryForDisplayNameOrNull (Ldev/carcara/kotlinx/locale/country/CountryNameSource;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/country/Country;
 	public static final fun displayName (Ldev/carcara/kotlinx/locale/country/CountryNameSource;Ldev/carcara/kotlinx/locale/country/Country;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
@@ -31,6 +35,7 @@ public final class dev/carcara/kotlinx/locale/country/FallbackCountryNames : dev
 	public static final field Companion Ldev/carcara/kotlinx/locale/country/FallbackCountryNames$Companion;
 	public fun <init> (Ldev/carcara/kotlinx/locale/country/CountryNameSource;Ldev/carcara/kotlinx/locale/country/CountryNameSource;)V
 	public fun countryNameOrNull (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 }
 

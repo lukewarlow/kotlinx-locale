@@ -1,0 +1,28 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-unit-core>
+final enum class dev.carcara.kotlinx.locale.unit/UnitWidth : kotlin/Enum<dev.carcara.kotlinx.locale.unit/UnitWidth> { // dev.carcara.kotlinx.locale.unit/UnitWidth|null[0]
+    enum entry LONG // dev.carcara.kotlinx.locale.unit/UnitWidth.LONG|null[0]
+    enum entry NARROW // dev.carcara.kotlinx.locale.unit/UnitWidth.NARROW|null[0]
+    enum entry SHORT // dev.carcara.kotlinx.locale.unit/UnitWidth.SHORT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.unit/UnitWidth.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.unit/UnitWidth> // dev.carcara.kotlinx.locale.unit/UnitWidth.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.unit/UnitWidth // dev.carcara.kotlinx.locale.unit/UnitWidth.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.unit/UnitWidth> // dev.carcara.kotlinx.locale.unit/UnitWidth.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.unit/UnitWidth.Companion|null[0]
+}
+
+abstract interface dev.carcara.kotlinx.locale.unit/UnitFormatSource : dev.carcara.kotlinx.locale/LocaleDataSource { // dev.carcara.kotlinx.locale.unit/UnitFormatSource|null[0]
+    abstract fun compose(dev.carcara.kotlinx.locale.number/FormattedNumber, kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.unit/UnitWidth = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.number/FormattedNumber> // dev.carcara.kotlinx.locale.unit/UnitFormatSource.compose|compose(dev.carcara.kotlinx.locale.number.FormattedNumber;kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.unit.UnitWidth){}[0]
+    abstract fun render(dev.carcara.kotlinx.locale.number/NumberValue, kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.unit/UnitWidth = ..., dev.carcara.kotlinx.locale.number/NumberFormatOptions = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.number/FormattedNumber> // dev.carcara.kotlinx.locale.unit/UnitFormatSource.render|render(dev.carcara.kotlinx.locale.number.NumberValue;kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.unit.UnitWidth;dev.carcara.kotlinx.locale.number.NumberFormatOptions){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.unit/UnitFormatSource.Companion|null[0]
+}

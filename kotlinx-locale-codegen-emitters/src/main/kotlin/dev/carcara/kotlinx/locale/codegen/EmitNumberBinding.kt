@@ -27,7 +27,14 @@ import java.io.File
  * to the standard pattern and an ordinal degrades to its digits, which is what
  * those calls fall back to anyway when a locale has no data.
  */
-public fun emitNumberBinding(outputRoot: File, spec: BindingSpec, hasCompact: Boolean, hasOrdinals: Boolean) {
+public fun emitNumberBinding(
+    outputRoot: File,
+    spec: BindingSpec,
+    hasCompact: Boolean,
+    hasOrdinals: Boolean,
+    hasPluralRanges: Boolean = false,
+    hasNumberSystems: Boolean = false,
+) {
     val file = outputRoot.packageFile(spec.packageName, "NumberFormat.kt")
     val imports = buildList {
         add("dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi")
@@ -53,6 +60,8 @@ public fun emitNumberBinding(outputRoot: File, spec: BindingSpec, hasCompact: Bo
         add("dev.carcara.kotlinx.locale.number.symbols")
         add("${spec.registryPackage}.numberPatternsRegistry")
         add("${spec.registryPackage}.numberSymbolsRegistry")
+        if (hasNumberSystems) add("${spec.registryPackage}.numberSystemsRegistry")
+        if (hasPluralRanges) add("${spec.registryPackage}.pluralRangesRegistry")
         add("${spec.registryPackage}.pluralRuleIndexRegistry")
         add("${spec.registryPackage}.pluralRuleSetsRegistry")
         if (hasCompact) {
@@ -64,6 +73,8 @@ public fun emitNumberBinding(outputRoot: File, spec: BindingSpec, hasCompact: Bo
             add("${spec.registryPackage}.ordinalRuleSetsRegistry")
         }
     }
+    val systems = if (hasNumberSystems) "numberSystemsRegistry" else "emptyMap()"
+    val ranges = if (hasPluralRanges) "pluralRangesRegistry" else "emptyMap()"
     val compactShort = if (hasCompact) "compactShortRegistry" else "emptyMap()"
     val compactLong = if (hasCompact) "compactLongRegistry" else "emptyMap()"
     val ordinalSets = if (hasOrdinals) "ordinalRuleSetsRegistry" else "emptyMap()"
@@ -82,6 +93,7 @@ public fun emitNumberBinding(outputRoot: File, spec: BindingSpec, hasCompact: Bo
         |public object ${spec.objectName}Plurals : PluralRuleSource by PayloadPluralRules(
         |    pluralRuleSetsRegistry,
         |    pluralRuleIndexRegistry,
+        |    $ranges,
         |)
         |
         |/**
@@ -96,6 +108,7 @@ public fun emitNumberBinding(outputRoot: File, spec: BindingSpec, hasCompact: Bo
         |    $compactShort,
         |    $compactLong,
         |    ${spec.objectName}Plurals,
+        |    $systems,
         |) {
         |
         |    /**

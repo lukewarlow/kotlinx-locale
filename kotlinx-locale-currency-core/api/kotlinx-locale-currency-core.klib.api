@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -26,6 +26,7 @@ abstract interface dev.carcara.kotlinx.locale.currency/CurrencyFormatSource : de
     abstract fun formatOrNull(kotlin/Long, kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.currency/CurrencyFormatOptions): kotlin/String? // dev.carcara.kotlinx.locale.currency/CurrencyFormatSource.formatOrNull|formatOrNull(kotlin.Long;kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.currency.CurrencyFormatOptions){}[0]
     abstract fun parseToMinorUnitsOrNull(kotlin/String, kotlin/String, dev.carcara.kotlinx.locale/Locale): kotlin/Long? // dev.carcara.kotlinx.locale.currency/CurrencyFormatSource.parseToMinorUnitsOrNull|parseToMinorUnitsOrNull(kotlin.String;kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
     open fun currencyCodeOrNull(kotlin/String, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.currency/CurrencyFormatSource.currencyCodeOrNull|currencyCodeOrNull(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
+    open fun render(dev.carcara.kotlinx.locale.number/NumberValue, kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.number/NumberFormatOptions = ..., dev.carcara.kotlinx.locale.currency/CurrencySymbolStyle = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.number/FormattedNumber> // dev.carcara.kotlinx.locale.currency/CurrencyFormatSource.render|render(dev.carcara.kotlinx.locale.number.NumberValue;kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.number.NumberFormatOptions;dev.carcara.kotlinx.locale.currency.CurrencySymbolStyle){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.currency/CurrencyFormatSource.Companion|null[0]
 }
@@ -34,6 +35,7 @@ abstract interface dev.carcara.kotlinx.locale.currency/CurrencyNameSource : dev.
     abstract fun currencyNameOrNull(kotlin/String, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.currency/CurrencyNameSource.currencyNameOrNull|currencyNameOrNull(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
     abstract fun currencySymbolOrNull(kotlin/String, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.currency/CurrencyNameSource.currencySymbolOrNull|currencySymbolOrNull(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
     open fun currencySymbolOrNull(kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.currency/CurrencySymbolStyle): kotlin/String? // dev.carcara.kotlinx.locale.currency/CurrencyNameSource.currencySymbolOrNull|currencySymbolOrNull(kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.currency.CurrencySymbolStyle){}[0]
+    open fun lookupName(kotlin/String, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale/NameWidth = ..., dev.carcara.kotlinx.locale/NameFallback = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale/DisplayName> // dev.carcara.kotlinx.locale.currency/CurrencyNameSource.lookupName|lookupName(kotlin.String;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.NameWidth;dev.carcara.kotlinx.locale.NameFallback){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.currency/CurrencyNameSource.Companion|null[0]
 }

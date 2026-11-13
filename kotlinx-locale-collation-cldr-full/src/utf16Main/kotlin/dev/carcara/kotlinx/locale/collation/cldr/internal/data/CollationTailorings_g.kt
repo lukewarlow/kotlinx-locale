@@ -18,5 +18,20 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
+internal val COLLATION_TAILORING_GAZ: String =
+    "0008淧浍渒᭳ࠠࠀ"
+
+internal val COLLATION_TAILORING_GL: String =
+    "00cS嫪苳層ऀ㼁睧昍∖〕纪蘾䏃珂ᅂ曽ྶⴝ碫疦⺝᤾ଭ࢕朴祃昍ᇹ欜恚䳘嚭ㆴ♘搃旙悑氀ᄳṪ傟ቆ榥孏胨堡⃍᳚岳䯽ຉ⸭戱ᬑ⡁䘓⬅熝ከ渥㠱唯疶則⹭岪း咗眽䊕咆臆ᇓ十⡉ᦶ剕䦃㲤洅傤ⰳ嬋ᱽ蛁ℵ䜿䘏焙⥬䳇穽᮴⌣႐ㆦ⊃揍眳爾曃兇㕍⃗ኬ澘⹈爱௩変乥嗨䣞ᨶ⭇渓⍓娠薮猱庵⤰脵䀮摷咓჉菿䶴孰⅓ᇞ惘蓤櫦㡱䝾勡姓羽⦯挍眱冷匪䀍伔掳伧䙐ᚑ绱煞ᕓ甓收哌珰绣稝ㅺ偿ᆋṡ峡ተ湴䴻⪜ℜ慝慔⹜徹皵爞฾⏽莾෕⊕Ⓚ掕㻴蕶⳶噑Ⳣ࿺⟫莩খ䁚獄弔敠主㋃‮猑㍥ฃ池㗻⊕稼抵卬䳋偶⇊萘眻ᖰ⽱幝ୢ➭籚⬵瞰⠮礒攕嘲ᗮᗏ中↔燒᳤Ꮬ᚜䋛寔੔紊䘄洘关比Ꮽྻ浟睚ⅶ☍妰✩㟸᣿索␐蟔敋胡㟊嗫縻森放絪蔿㕴ᵶ昊呂瞤᮹泄粷痸㽦᏾恈墧薐楔⒪䦔୓വ⢦尲根晁඀ೕಒべ恚䳥ណ祄堟叿䇼⿈࿐柠᠀"
+
+internal val COLLATION_TAILORING_GLG: String =
+    "0008ⷧ汍渒᭳ࠠࠀ"
+
+internal val COLLATION_TAILORING_GOM: String =
+    "0009淧㯥仦ᄓ䆀᠀"
+
 internal val COLLATION_TAILORING_GU: String =
-    "007R㋈聤塤ࣈ⫾⫄痪ಯ⾑炬㉈戂皭⛽⏾糮㎓῍和稐巿ᥴ礎᭍擳䳪⮉ᥴ⻜摼矻深槔螩翫狿⼟嫌嵒╹耒孏⎵⠥燧版絖䓠曗綯倆荸ल尌㔬㺾ࢦ咎沟揄㹢掼㒿⠻䔤㌌⺬燧㐩暵㩬催垞↦睋⋅柾䩀↻祄瓷䇣⚸ↁ቗Ω䨉洮〙㇉ᓣ录ळ疚腲䃻兙蜥⚴榐㕲咏弼　嵥臮惵㠭瘀᏶㠊⨩桖癄萄肐᫪耖哴仑⺮उ巎ᯖ䤫懔氉❁瞏₼ᚠ䲕໘ᦗᢌᓆⓄ虍以擄䎸俍ᩳ决嗻栽㲖㙋厙␤㰪綅࿼䣀"
+    "007h㚨廜塦ࣃ橑䜀儜䪱㲧⣌㬜ဋ೮ᠶ埞㈿绺᫨瞫ா昣篽⤔まჃ昢僳Ⲯ葽᤬䳦尕烻㫻ዾ䅴卼⎩蜽句⥏硏⊐▭ၻ窃᪞弘甘荿㠧㉱圅㵝庾榛㗀ᖪ栰牔相শ瑞僺䒦耕䧁㵽侰聉囚ᖎ暨昴茬怼⾎ᮀ痺粰◟໒ᣍ濶୥敎ૻ㡶䩩䛒㑨䧜窃牾漸ᗔ⣌署䑹婛䴼篔❢㿍ᱰᚍ㑌絀㊄蝿㘳㜊ᐃᏈ᧨尋⠫䦭搉磝⩂獫࡜澬㦂㵨ᆙ䛆芴㔱ົᤧᨳ囵ᾁ漞媠背媖ᶀ哇₳䮷媴౏碖䁌秚⹻䇹Ꮁ㬮煳竝艔ᕜ噄◲妦ᜀ"
+
+internal val COLLATION_TAILORING_GUJ: String =
+    "0008⶗浍渒᭳ࠠࠀ"

@@ -40,6 +40,19 @@ import dev.carcara.kotlinx.locale.codegen.GeneratedTable
  * than the enum constant.
  */
 enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, val bindings: Set<GeneratedBinding>) {
+    METADATA("metadata.preferences", setOf(GeneratedTable.LOCALE_METADATA), setOf(GeneratedBinding.METADATA)),
+    LIST_FORMATS("list.formats", setOf(GeneratedTable.LIST_PATTERNS), setOf(GeneratedBinding.LIST)),
+    UNIT_FORMATS(
+        "unit.formats",
+        setOf(
+            GeneratedTable.UNIT_PATTERNS,
+            GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
+            GeneratedTable.PLURALS,
+            GeneratedTable.PLURAL_RANGES,
+        ),
+        setOf(GeneratedBinding.UNIT, GeneratedBinding.NUMBER),
+    ),
 
     COUNTRY_NAMES(
         dslName = "country.names",
@@ -141,7 +154,13 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
      */
     DATETIME_RELATIVE_TIME(
         dslName = "datetime.relativeTime",
-        tables = setOf(GeneratedTable.RELATIVE_TIME, GeneratedTable.NUMBER, GeneratedTable.PLURALS),
+        tables = setOf(
+            GeneratedTable.RELATIVE_TIME,
+            GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
+            GeneratedTable.PLURALS,
+            GeneratedTable.PLURAL_RANGES,
+        ),
         bindings = setOf(GeneratedBinding.RELATIVE_TIME, GeneratedBinding.NUMBER),
     ),
 
@@ -154,8 +173,15 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
      */
     DATETIME_DURATION_UNITS(
         dslName = "datetime.durationUnits",
-        tables = setOf(GeneratedTable.DURATION_UNITS, GeneratedTable.NUMBER, GeneratedTable.PLURALS),
-        bindings = setOf(GeneratedBinding.DURATION_UNITS, GeneratedBinding.NUMBER),
+        tables = setOf(
+            GeneratedTable.LIST_PATTERNS,
+            GeneratedTable.DURATION_UNITS,
+            GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
+            GeneratedTable.PLURALS,
+            GeneratedTable.PLURAL_RANGES,
+        ),
+        bindings = setOf(GeneratedBinding.LIST, GeneratedBinding.DURATION_UNITS, GeneratedBinding.NUMBER),
     ),
 
     /**
@@ -172,7 +198,7 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
         // `regionName` reads it for anything CLDR calls a country and its own
         // table only for the macro-regions, so a build with one and not the
         // other would answer null for `BR` while answering for `419`.
-        tables = setOf(GeneratedTable.LANGUAGE_NAMES, GeneratedTable.COUNTRY_NAMES),
+        tables = setOf(GeneratedTable.LANGUAGE_NAMES, GeneratedTable.EXTENDED_DISPLAY_NAMES, GeneratedTable.COUNTRY_NAMES),
         bindings = setOf(GeneratedBinding.LANGUAGE, GeneratedBinding.COUNTRY),
     ),
 
@@ -185,7 +211,7 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
      */
     NUMBER_FORMATS(
         dslName = "number.formats",
-        tables = setOf(GeneratedTable.NUMBER, GeneratedTable.PLURALS),
+        tables = setOf(GeneratedTable.NUMBER, GeneratedTable.NUMBER_SYSTEMS, GeneratedTable.PLURALS, GeneratedTable.PLURAL_RANGES),
         bindings = setOf(GeneratedBinding.NUMBER),
     ),
 
@@ -199,7 +225,13 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
      */
     NUMBER_COMPACT(
         dslName = "number.compact",
-        tables = setOf(GeneratedTable.NUMBER, GeneratedTable.NUMBER_COMPACT, GeneratedTable.PLURALS),
+        tables = setOf(
+            GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
+            GeneratedTable.NUMBER_COMPACT,
+            GeneratedTable.PLURALS,
+            GeneratedTable.PLURAL_RANGES,
+        ),
         bindings = setOf(GeneratedBinding.NUMBER),
     ),
 
@@ -209,7 +241,7 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
      */
     NUMBER_PLURALS(
         dslName = "number.plurals",
-        tables = setOf(GeneratedTable.NUMBER, GeneratedTable.PLURALS),
+        tables = setOf(GeneratedTable.NUMBER, GeneratedTable.NUMBER_SYSTEMS, GeneratedTable.PLURALS, GeneratedTable.PLURAL_RANGES),
         bindings = setOf(GeneratedBinding.NUMBER),
     ),
 
@@ -222,7 +254,13 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
      */
     NUMBER_ORDINALS(
         dslName = "number.ordinals",
-        tables = setOf(GeneratedTable.NUMBER, GeneratedTable.ORDINALS, GeneratedTable.PLURALS),
+        tables = setOf(
+            GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
+            GeneratedTable.ORDINALS,
+            GeneratedTable.PLURALS,
+            GeneratedTable.PLURAL_RANGES,
+        ),
         bindings = setOf(GeneratedBinding.NUMBER),
     ),
 
@@ -238,7 +276,13 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
      */
     TIMEZONE_FORMATS(
         dslName = "timezone.formats",
-        tables = setOf(GeneratedTable.TIME_ZONE_FORMATS, GeneratedTable.NUMBER, GeneratedTable.PLURALS),
+        tables = setOf(
+            GeneratedTable.TIME_ZONE_FORMATS,
+            GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
+            GeneratedTable.PLURALS,
+            GeneratedTable.PLURAL_RANGES,
+        ),
         bindings = setOf(GeneratedBinding.TIME_ZONE, GeneratedBinding.NUMBER),
     ),
 
@@ -253,6 +297,7 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
             GeneratedTable.TIME_ZONE_FORMATS,
             GeneratedTable.TIME_ZONE_NAMES,
             GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
             GeneratedTable.PLURALS,
         ),
         bindings = setOf(GeneratedBinding.TIME_ZONE, GeneratedBinding.NUMBER),
@@ -278,6 +323,7 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
             GeneratedTable.TIME_ZONE_NAMES,
             GeneratedTable.TIME_ZONE_CITIES,
             GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
             GeneratedTable.PLURALS,
         ),
         bindings = setOf(GeneratedBinding.TIME_ZONE, GeneratedBinding.TIME_ZONE_CITIES, GeneratedBinding.NUMBER),
@@ -296,6 +342,7 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
             GeneratedTable.CURRENCY_FORMATS,
             GeneratedTable.CURRENCY_COMPACT,
             GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
             GeneratedTable.PLURALS,
         ),
         bindings = setOf(GeneratedBinding.CURRENCY, GeneratedBinding.NUMBER),
@@ -315,6 +362,7 @@ enum class LocaleFeature(val dslName: String, val tables: Set<GeneratedTable>, v
             GeneratedTable.CURRENCY_NAMES,
             GeneratedTable.CURRENCY_PLURAL_NAMES,
             GeneratedTable.NUMBER,
+            GeneratedTable.NUMBER_SYSTEMS,
             GeneratedTable.PLURALS,
         ),
         bindings = setOf(GeneratedBinding.CURRENCY, GeneratedBinding.CURRENCY_PLURALS, GeneratedBinding.NUMBER),

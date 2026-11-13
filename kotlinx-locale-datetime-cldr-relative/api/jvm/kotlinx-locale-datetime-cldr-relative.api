@@ -1,9 +1,16 @@
 public final class dev/carcara/kotlinx/locale/datetime/cldr/relative/CldrRelativeTime : dev/carcara/kotlinx/locale/datetime/RelativeTimeFormatSource {
 	public static final field INSTANCE Ldev/carcara/kotlinx/locale/datetime/cldr/relative/CldrRelativeTime;
 	public fun formatOrNull (JLdev/carcara/kotlinx/locale/datetime/RelativeTimeUnit;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeStyle;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeNumbering;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public fun literalOrNull (ILdev/carcara/kotlinx/locale/datetime/RelativeTimeUnit;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public fun render (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeUnit;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeStyle;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeNumbering;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun unitNameOrNull (Ldev/carcara/kotlinx/locale/datetime/RelativeTimeUnit;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/cldr/relative/IntlRelativeTimeKt {
+	public static final fun relativeTimeFormat (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeUnit;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeStyle;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeNumbering;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun relativeTimeFormat$default (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeUnit;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeStyle;Ldev/carcara/kotlinx/locale/datetime/RelativeTimeNumbering;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/cldr/relative/RelativeTimeKt {

@@ -63,6 +63,9 @@ dependencies {
     testImplementation(project(":kotlinx-locale-personname-cldr-runtime"))
     testImplementation(project(":kotlinx-locale-timezone-cldr-runtime"))
     testImplementation(project(":kotlinx-locale-collation-cldr-runtime"))
+    testImplementation(project(":kotlinx-locale-metadata-cldr-runtime"))
+    testImplementation(project(":kotlinx-locale-list-cldr-runtime"))
+    testImplementation(project(":kotlinx-locale-unit-cldr-runtime"))
 }
 
 gradlePlugin {

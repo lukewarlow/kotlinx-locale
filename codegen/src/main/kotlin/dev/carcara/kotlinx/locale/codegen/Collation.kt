@@ -34,7 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory
  * them, and a tailoring inserting a letter between two others would have to
  * break that; ranking each distinct weight sidesteps it and orders the same.
  */
-class CollationElement(val primary: List<Int>, val secondary: List<Int>, val tertiary: List<Int>)
+class CollationElement(val primary: List<Int>, val secondary: List<Int>, val tertiary: List<Int>, val caseBits: Int = 0)
 
 class CollationRoot(
     val entries: Map<List<Int>, List<CollationElement>>,
@@ -156,6 +156,7 @@ fun parseFractionalUca(file: File): CollationRoot {
                                         emptyList(),
                                         parseWeight(parts[1]),
                                         parseWeight(parts[2]).map { it and 0x3F },
+                                        (parseWeight(parts[2]).firstOrNull() ?: 0) ushr 6,
                                     ),
                                 )
                             } else {
@@ -171,6 +172,7 @@ fun parseFractionalUca(file: File): CollationRoot {
                                 parseWeight(parts[0]),
                                 parseWeight(parts[1]),
                                 parseWeight(parts[2]).map { it and 0x3F },
+                                (parseWeight(parts[2]).firstOrNull() ?: 0) ushr 6,
                             ),
                         )
                     }
@@ -326,6 +328,7 @@ class WeightRanks(
         if (element.primary.isEmpty()) 0 else primary.getValue(element.primary),
         if (element.secondary.isEmpty()) 0 else secondary.getValue(element.secondary),
         if (element.tertiary.isEmpty()) 0 else tertiary.getValue(element.tertiary),
+        element.caseBits,
     )
 }
 
@@ -420,7 +423,7 @@ fun encodeReorderPlan(plan: List<IntArray>): String = plan.joinToString(",") { b
 private fun base36(value: Int): String = value.toString(36)
 
 private fun encodeElements(ranked: List<IntArray>): String {
-    val levels = Array(3) { level -> ranked.mapNotNull { if (it[level] != 0) base36(it[level]) else null } }
+    val levels = Array(4) { level -> ranked.map { base36(it.getOrElse(level) { 0 }) } }
     return levels.joinToString("/") { it.joinToString(".") }
 }
 
@@ -521,7 +524,23 @@ fun encodeCollationRoot(root: CollationRoot, ranks: WeightRanks): String {
         base36(ranks.defaultTertiary()),
         base36(WeightRanks.BASE_GAP),
     ).joinToString(",")
-    return listOf(header, singles.joinToString(","), contractions.joinToString(","), prefixes.joinToString(","), hanEncoded)
+    val variable = groupRanges(root, ranks).filter {
+        it.group.split('+').any { group -> group == "SPACE" || group == "PUNCTUATION" }
+    }.joinToString(",") { "${base36(it.from)}.${base36(it.to)}" }
+    val digits = checkNotNull(object {}.javaClass.getResourceAsStream("/ucd/UnicodeData.txt")).bufferedReader().useLines { lines ->
+        lines.map {
+            it.split(';')
+        }.filter { it.size > 6 && it[2] == "Nd" }.map { "${base36(it[0].toInt(16))}.${it[6]}" }.toList().joinToString(",")
+    }
+    return listOf(
+        header,
+        singles.joinToString(","),
+        contractions.joinToString(","),
+        prefixes.joinToString(","),
+        hanEncoded,
+        variable,
+        digits,
+    )
         .joinToString(";")
 }
 

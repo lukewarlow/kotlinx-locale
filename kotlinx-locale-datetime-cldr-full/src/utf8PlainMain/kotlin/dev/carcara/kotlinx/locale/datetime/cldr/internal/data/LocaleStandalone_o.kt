@@ -18,5 +18,17 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.datetime.cldr.internal.data
 
+internal val LOCALE_STANDALONE_OC_ES: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBCE\u001Eera/abbreviated/1\u001DCE\u001Eera/narrow/0\u001Da. C.\u001Eera/narrow/1\u001Dd. C.\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM"
+
+internal val LOCALE_STANDALONE_OM: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DDhKD\u001Eera/abbreviated/1\u001DBA\u001Eera/narrow/0\u001DDh\u001Eera/narrow/1\u001DB\u001Eera/wide/0\u001DDhaloota Kiristoos Dura\u001Eera/wide/1\u001DBara Araaraa\u001Eperiod/format/abbreviated/am\u001DWD\u001Eperiod/format/abbreviated/pm\u001DWB"
+
+internal val LOCALE_STANDALONE_OM_KE: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DKD\u001Eera/abbreviated/1\u001DBA\u001Eera/narrow/0\u001DDh\u001Eera/narrow/1\u001DB\u001Eera/wide/0\u001DDhaloota Kiristoos Dura\u001Eera/wide/1\u001DBara Araaraa\u001Eperiod/format/abbreviated/am\u001DWD\u001Eperiod/format/abbreviated/pm\u001DWB"
+
+internal val LOCALE_STANDALONE_OR: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBC\u001Eera/abbreviated/1\u001DAD\u001Eera/wide/0\u001Dଖ୍ରୀଷ୍ଟପୂର୍ବ\u001Eera/wide/1\u001Dଖ୍ରୀଷ୍ଟାବ୍ଦ\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM\u001Eperiod/stand-alone/narrow/am\u001DAM\u001Eperiod/stand-alone/narrow/pm\u001DPM\u001Eperiod/stand-alone/wide/am\u001DAM\u001Eperiod/stand-alone/wide/pm\u001DPM"
+
 internal val LOCALE_STANDALONE_OS: String =
-    "Январь\u001EФевраль\u001EМартъи\u001EАпрель\u001EМай\u001EИюнь\u001EИюль\u001EАвгуст\u001EСентябрь\u001EОктябрь\u001EНоябрь\u001EДекабрь\u001FЯнв.\u001EФевр.\u001EМарт.\u001EАпр.\u001EМай\u001EИюнь\u001EИюль\u001EАвг.\u001EСент.\u001EОкт.\u001EНояб.\u001EДек.\u001F\u001FКъуырисӕр\u001EДыццӕг\u001EӔртыццӕг\u001EЦыппӕрӕм\u001EМайрӕмбон\u001EСабат\u001EХуыцаубон\u001FКрс\u001EДцг\u001EӔрт\u001EЦпр\u001EМрб\u001EСбт\u001EХцб\u001F\u001F0"
+    "Январь\u001EФевраль\u001EМартъи\u001EАпрель\u001EМай\u001EИюнь\u001EИюль\u001EАвгуст\u001EСентябрь\u001EОктябрь\u001EНоябрь\u001EДекабрь\u001FЯнв.\u001EФевр.\u001EМарт.\u001EАпр.\u001EМай\u001EИюнь\u001EИюль\u001EАвг.\u001EСент.\u001EОкт.\u001EНояб.\u001EДек.\u001F\u001FКъуырисӕр\u001EДыццӕг\u001EӔртыццӕг\u001EЦыппӕрӕм\u001EМайрӕмбон\u001EСабат\u001EХуыцаубон\u001FКрс\u001EДцг\u001EӔрт\u001EЦпр\u001EМрб\u001EСбт\u001EХцб\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001Dн.д.а.\u001Eera/abbreviated/1\u001Dн.д.\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM\u001Eperiod/format/wide/am\u001Dӕмбисбоны размӕ\u001Eperiod/format/wide/pm\u001Dӕмбисбоны фӕстӕ"

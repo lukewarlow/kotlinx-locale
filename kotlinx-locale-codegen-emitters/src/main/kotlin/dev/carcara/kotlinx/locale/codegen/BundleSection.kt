@@ -129,6 +129,11 @@ public class BundleSection(
             BundleSection("dateTimeStandalone"),
             BundleSection("localeDisplayNames", sparseFields = 4),
             BundleSection("relativeTime"),
+            BundleSection("pluralRanges"),
+            BundleSection("numberSystems", sparseFields = 1),
+            BundleSection("extendedDisplayNames", sparseFields = 1),
+            BundleSection("listPatterns", sparseFields = 1),
+            BundleSection("unitPatterns", sparseFields = 1),
             BundleSection("durationUnits"),
             BundleSection("personNames"),
             BundleSection("timeZoneFormats"),
@@ -153,7 +158,7 @@ public class BundleSection(
             // Narrowed, and the reason the domain is three modules: a tailoring
             // belongs to one locale, so a build that ships eight locales has no
             // use for the other hundred.
-            BundleSection("collationTailorings"),
+            BundleSection("collationTailorings", sparseFields = 2),
             // Not narrowed. The plural tables are four kilobytes for every locale
             // in CLDR, so dropping rows saves nothing, and a build that asked for
             // a locale it did not generate would fall back to root's other-only
@@ -179,6 +184,9 @@ public class BundleSection(
  * resistance.
  */
 public object BundleTables {
+
+    /** Locale aliases, likely subtags and preferences; never narrowed by formatter locale. */
+    public const val LOCALE_METADATA: String = "localeMetadata"
 
     /** Which metazone a zone uses, which region it is in, and the single-zone regions. */
     public const val TIME_ZONE_METADATA: String = "timeZoneMetadata"
@@ -231,6 +239,7 @@ public object BundleTables {
     public const val WORD_BREAK_MID: String = "wordBreakMid"
 
     public val ALL: Set<String> = setOf(
+        LOCALE_METADATA,
         TIME_ZONE_METADATA,
         PHONE_TERRITORIES,
         PHONE_FORMATS,

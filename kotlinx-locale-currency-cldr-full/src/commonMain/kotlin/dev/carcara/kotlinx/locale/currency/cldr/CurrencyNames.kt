@@ -62,6 +62,8 @@ public object CldrCurrency : CurrencyNameSource, CurrencyFormatSource {
             dev.carcara.kotlinx.locale.number.cldr.CldrNumberPlurals.pluralCategoryOrNull(it, PluralType.CARDINAL, Locale.current)
                 ?: PluralCategory.OTHER
         },
+        numbers = dev.carcara.kotlinx.locale.number.cldr.CldrNumber,
+        plurals = dev.carcara.kotlinx.locale.number.cldr.CldrNumberPlurals,
     )
 
     // The two tables cover the same locale set, so either answer is the same.
@@ -76,6 +78,9 @@ public object CldrCurrency : CurrencyNameSource, CurrencyFormatSource {
 
     override fun currencyNameOrNull(currencyCode: String, locale: Locale): String? =
         names.currencyNameOrNull(currencyCode, locale)
+
+    override fun render(value: dev.carcara.kotlinx.locale.number.NumberValue, currencyCode: String, locale: Locale, options: dev.carcara.kotlinx.locale.number.NumberFormatOptions, style: CurrencySymbolStyle): dev.carcara.kotlinx.locale.LocaleLookup<dev.carcara.kotlinx.locale.number.FormattedNumber> =
+        formats.render(value, currencyCode, locale, options, style)
 
     override fun formatOrNull(
         minorUnits: Long,

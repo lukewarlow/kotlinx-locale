@@ -220,7 +220,7 @@ private fun formatField(
     skeletons: SkeletonRecord?,
 ) {
     when (letter) {
-        'G' -> if (date != null) sb.append(if (date.year > 0) data.era1 else data.era0)
+        'G' -> if (date != null) sb.append(data.eraName(if (date.year > 0) 1 else 0, count))
         'y' -> if (date != null) {
             val eraYear = if (date.year > 0) date.year else 1 - date.year
             if (count == 2) {
@@ -273,33 +273,38 @@ private fun formatField(
                 else -> sb.append(data.dayOfWeek(index, TextStyle.ABBREVIATED, context))
             }
         }
-        'a' -> if (time != null) sb.append(data.amPm(time))
-        'b' -> if (time != null) sb.append(amPmNoonMidnight(time, data))
-        'B' -> if (time != null) sb.append(flexibleDayPeriod(time, data))
+        'a' -> if (time != null) sb.append(data.amPm(time, count))
+        'b' -> if (time != null) sb.append(amPmNoonMidnight(time, data, count))
+        'B' -> if (time != null) sb.append(flexibleDayPeriod(time, data, count))
         'h' -> if (time != null) sb.appendNumber(((time.hour + 11) % 12) + 1, count, data.digits)
         'H' -> if (time != null) sb.appendNumber(time.hour, count, data.digits)
         'K' -> if (time != null) sb.appendNumber(time.hour % 12, count, data.digits)
         'k' -> if (time != null) sb.appendNumber(if (time.hour == 0) 24 else time.hour, count, data.digits)
         'm' -> if (time != null) sb.appendNumber(time.minute, count, data.digits)
         's' -> if (time != null) sb.appendNumber(time.second, count, data.digits)
-        // Unsupported fields (week numbers, fractional seconds, ...) are omitted
+        'S' -> if (time != null) {
+            val digits = time.nanosecond.toString().padStart(9, '0').take(count).padEnd(count, '0')
+            for (digit in digits) sb.appendNumber(digit - '0', 1, data.digits)
+        }
+        // Unsupported fields (week numbers, ...) are omitted
         // rather than crashing; they do not occur in CLDR standard style patterns.
         else -> {}
     }
 }
 
-private fun DateTimeRecord.amPm(time: LocalTime): String = if (time.hour < 12) am else pm
+private fun DateTimeRecord.amPm(time: LocalTime, count: Int): String =
+    dayPeriodName(if (time.hour < 12) DayPeriodCodes.AM else DayPeriodCodes.PM, count) ?: if (time.hour < 12) am else pm
 
 /**
  * The `b` field: AM/PM, except that exactly 00:00:00 and 12:00:00 use the
  * locale's midnight/noon names when it has them.
  */
-private fun amPmNoonMidnight(time: LocalTime, data: DateTimeRecord): String {
-    if (time.minute == 0 && time.second == 0) {
-        if (time.hour == 0) data.dayPeriodName(DayPeriodCodes.MIDNIGHT)?.let { return it }
-        if (time.hour == 12) data.dayPeriodName(DayPeriodCodes.NOON)?.let { return it }
+private fun amPmNoonMidnight(time: LocalTime, data: DateTimeRecord, count: Int): String {
+    if (time.minute == 0 && time.second == 0 && time.nanosecond == 0) {
+        if (time.hour == 0) data.dayPeriodName(DayPeriodCodes.MIDNIGHT, count)?.let { return it }
+        if (time.hour == 12) data.dayPeriodName(DayPeriodCodes.NOON, count)?.let { return it }
     }
-    return data.amPm(time)
+    return data.amPm(time, count)
 }
 
 /**
@@ -308,17 +313,17 @@ private fun amPmNoonMidnight(time: LocalTime, data: DateTimeRecord): String {
  * the exact time (zero seconds); a period the locale has no name for falls
  * back to AM/PM, per UTS #35.
  */
-private fun flexibleDayPeriod(time: LocalTime, data: DateTimeRecord): String {
+private fun flexibleDayPeriod(time: LocalTime, data: DateTimeRecord, count: Int): String {
     val minuteOfDay = time.hour * 60 + time.minute
     for (rule in data.dayPeriodRules) {
         val matches = when {
-            rule.isPoint -> minuteOfDay == rule.start && time.second == 0
+            rule.isPoint -> minuteOfDay == rule.start && time.second == 0 && time.nanosecond == 0
             rule.start < rule.end -> minuteOfDay >= rule.start && minuteOfDay < rule.end
             else -> minuteOfDay >= rule.start || minuteOfDay < rule.end
         }
-        if (matches) return data.dayPeriodName(rule.code) ?: data.amPm(time)
+        if (matches) return data.dayPeriodName(rule.code, count) ?: data.amPm(time, count)
     }
-    return data.amPm(time)
+    return data.amPm(time, count)
 }
 
 private fun StringBuilder.appendNumber(value: Int, minWidth: Int, digits: String) {

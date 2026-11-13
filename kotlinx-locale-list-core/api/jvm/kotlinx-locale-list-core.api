@@ -1,0 +1,110 @@
+public final class dev/carcara/kotlinx/locale/list/FormattedList {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/FormattedList$Companion;
+	public fun <init> (Ljava/util/List;)V
+	public final fun getParts ()Ljava/util/List;
+	public final fun getText ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/list/FormattedList$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListFormatOptions {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/ListFormatOptions$Companion;
+	public fun <init> ()V
+	public fun <init> (Ldev/carcara/kotlinx/locale/list/ListType;Ldev/carcara/kotlinx/locale/list/ListStyle;)V
+	public synthetic fun <init> (Ldev/carcara/kotlinx/locale/list/ListType;Ldev/carcara/kotlinx/locale/list/ListStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ldev/carcara/kotlinx/locale/list/ListType;
+	public final fun component2 ()Ldev/carcara/kotlinx/locale/list/ListStyle;
+	public final fun copy (Ldev/carcara/kotlinx/locale/list/ListType;Ldev/carcara/kotlinx/locale/list/ListStyle;)Ldev/carcara/kotlinx/locale/list/ListFormatOptions;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/list/ListFormatOptions;Ldev/carcara/kotlinx/locale/list/ListType;Ldev/carcara/kotlinx/locale/list/ListStyle;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/list/ListFormatOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getStyle ()Ldev/carcara/kotlinx/locale/list/ListStyle;
+	public final fun getType ()Ldev/carcara/kotlinx/locale/list/ListType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListFormatOptions$Companion {
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/list/ListFormatSource : dev/carcara/kotlinx/locale/LocaleDataSource {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/ListFormatSource$Companion;
+	public abstract fun render (Ljava/util/List;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/list/ListFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun render$default (Ldev/carcara/kotlinx/locale/list/ListFormatSource;Ljava/util/List;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/list/ListFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListFormatSource$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListFormatSource$DefaultImpls {
+	public static fun getLocaleCoverage (Ldev/carcara/kotlinx/locale/list/ListFormatSource;)Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public static synthetic fun render$default (Ldev/carcara/kotlinx/locale/list/ListFormatSource;Ljava/util/List;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/list/ListFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/list/ListPart {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/ListPart$Companion;
+	public abstract fun getValue ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListPart$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListPart$Element : dev/carcara/kotlinx/locale/list/ListPart {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/ListPart$Element$Companion;
+	public fun <init> (ILjava/lang/String;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (ILjava/lang/String;)Ldev/carcara/kotlinx/locale/list/ListPart$Element;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/list/ListPart$Element;ILjava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/list/ListPart$Element;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIndex ()I
+	public fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListPart$Element$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListPart$Literal : dev/carcara/kotlinx/locale/list/ListPart {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/ListPart$Literal$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/list/ListPart$Literal;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/list/ListPart$Literal;Ljava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/list/ListPart$Literal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListPart$Literal$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListStyle : java/lang/Enum {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/ListStyle$Companion;
+	public static final field LONG Ldev/carcara/kotlinx/locale/list/ListStyle;
+	public static final field NARROW Ldev/carcara/kotlinx/locale/list/ListStyle;
+	public static final field SHORT Ldev/carcara/kotlinx/locale/list/ListStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/list/ListStyle;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/list/ListStyle;
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListStyle$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListType : java/lang/Enum {
+	public static final field CONJUNCTION Ldev/carcara/kotlinx/locale/list/ListType;
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/ListType$Companion;
+	public static final field DISJUNCTION Ldev/carcara/kotlinx/locale/list/ListType;
+	public static final field UNIT Ldev/carcara/kotlinx/locale/list/ListType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/list/ListType;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/list/ListType;
+}
+
+public final class dev/carcara/kotlinx/locale/list/ListType$Companion {
+}
+

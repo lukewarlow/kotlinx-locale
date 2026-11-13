@@ -19,8 +19,14 @@
 package dev.carcara.kotlinx.locale.language.cldr.runtime
 
 import dev.carcara.kotlinx.locale.Capitalization
+import dev.carcara.kotlinx.locale.DisplayName
+import dev.carcara.kotlinx.locale.DisplayNameType
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.NameFallback
+import dev.carcara.kotlinx.locale.NameOrigin
+import dev.carcara.kotlinx.locale.NameWidth
 import dev.carcara.kotlinx.locale.internal.ENTRY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
@@ -69,9 +75,75 @@ public class PayloadLanguageNames(
      * build that generated no territory table needs.
      */
     private val territoryNames: (String, Locale) -> String? = { _, _ -> null },
+    private val extendedRecords: Map<String, String> = emptyMap(),
 ) : LanguageNameSource {
 
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
+
+    override fun lookupName(
+        type: DisplayNameType,
+        code: String,
+        locale: Locale,
+        width: NameWidth,
+        fallback: NameFallback,
+    ): LocaleLookup<DisplayName> {
+        if (type == DisplayNameType.CURRENCY) return LocaleLookup.Unsupported("currency names use CurrencyNameSource")
+        if (extendedRecords.isEmpty() &&
+            (width == NameWidth.NARROW || type in setOf(DisplayNameType.CALENDAR, DisplayNameType.DATE_TIME_FIELD, DisplayNameType.VARIANT))
+        ) {
+            return LocaleLookup.Unsupported("extended display names")
+        }
+        val canonical = when (type) {
+            DisplayNameType.SCRIPT -> code.lowercase().replaceFirstChar(Char::uppercaseChar)
+            DisplayNameType.REGION -> code.uppercase()
+            DisplayNameType.VARIANT, DisplayNameType.CALENDAR -> code.lowercase()
+            else -> code
+        }
+        val widths = when (width) {
+            NameWidth.LONG -> listOf(NameWidth.LONG)
+            NameWidth.SHORT -> listOf(NameWidth.SHORT, NameWidth.LONG)
+            NameWidth.NARROW -> listOf(NameWidth.NARROW, NameWidth.SHORT, NameWidth.LONG)
+        }
+        for (candidate in widths) {
+            val extra =
+                sparseRecordValue(extendedRecords, locale, 1, 2, "${type.name.lowercase()}/$canonical/${candidate.name.lowercase()}")
+            val text = extra ?: when {
+                type == DisplayNameType.LANGUAGE && candidate == NameWidth.SHORT -> sparseRecordValue(
+                    records,
+                    locale,
+                    1,
+                    FIELD_COUNT,
+                    canonical.replace('-', '_') + SHORT_SUFFIX,
+                )
+                type == DisplayNameType.LANGUAGE && candidate == NameWidth.LONG -> languageNameOrNull(
+                    canonical,
+                    LanguageNameStyle.STANDARD,
+                    locale,
+                )
+                type == DisplayNameType.SCRIPT && candidate == NameWidth.LONG -> scriptNameOrNull(canonical, locale)
+                type == DisplayNameType.REGION && candidate == NameWidth.LONG -> regionNameOrNull(canonical, locale)
+                else -> null
+            }
+            if (text !=
+                null
+            ) {
+                return LocaleLookup.Value(
+                    DisplayName(
+                        text,
+                        if (candidate ==
+                            width
+                        ) {
+                            NameOrigin.LOCALIZED
+                        } else {
+                            NameOrigin.WIDTH_FALLBACK
+                        },
+                        candidate,
+                    ),
+                )
+            }
+        }
+        return if (fallback == NameFallback.CODE) LocaleLookup.Value(DisplayName(code, NameOrigin.CODE, null)) else LocaleLookup.MissingData
+    }
 
     override fun languageNameOrNull(subtag: String, style: LanguageNameStyle, locale: Locale): String? {
         val key = subtag.replace('-', '_')

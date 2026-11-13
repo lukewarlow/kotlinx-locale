@@ -20,6 +20,7 @@ package dev.carcara.kotlinx.locale.timezone.cldr.runtime
 
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.LocaleLookup
 import dev.carcara.kotlinx.locale.internal.ENTRY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR
@@ -28,6 +29,7 @@ import dev.carcara.kotlinx.locale.internal.sparseRecordValue
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
 import dev.carcara.kotlinx.locale.number.NumberFormatSource
 import dev.carcara.kotlinx.locale.number.NumberSymbols
+import dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext
 import dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource
 import dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle
 import kotlinx.datetime.TimeZone
@@ -103,11 +105,44 @@ public class PayloadTimeZoneNames(
         val zoneId = metadata.cldrId(zone.id)
 
         return when (style) {
-            TimeZoneNameStyle.OFFSET_LONG -> localizedGmt(zoneFormats, offset, locale, short = false)
-            TimeZoneNameStyle.OFFSET_SHORT -> localizedGmt(zoneFormats, offset, locale, short = true)
-            TimeZoneNameStyle.LOCATION -> locationName(zoneId, zoneFormats, offset, locale)
+            TimeZoneNameStyle.OFFSET_LONG -> localizedGmt(zoneFormats, offset?.totalSeconds, locale, short = false)
+            TimeZoneNameStyle.OFFSET_SHORT -> localizedGmt(zoneFormats, offset?.totalSeconds, locale, short = true)
+            TimeZoneNameStyle.LOCATION -> locationName(zoneId, zoneFormats, offset?.totalSeconds, locale)
             else -> metazoneName(zoneId, style, locale)
         }
+    }
+
+    override fun render(context: TimeZoneNameContext, style: TimeZoneNameStyle, locale: Locale): LocaleLookup<String> {
+        val formats = resolvedRecord(formats, locale)?.let(::TimeZoneFormats) ?: return LocaleLookup.MissingData
+        val id = metadata.cldrId(context.identifier)
+        if (context.numberingSystem?.let { numbers?.symbolsOrNull(locale, it) == null } == true) {
+            return LocaleLookup.Unsupported("Numbering system ${context.numberingSystem}")
+        }
+        val resolvedStyle = if (context.observesDaylight == false) {
+            when (style) {
+                TimeZoneNameStyle.GENERIC_LONG -> TimeZoneNameStyle.STANDARD_LONG
+                TimeZoneNameStyle.GENERIC_SHORT -> TimeZoneNameStyle.STANDARD_SHORT
+                else -> style
+            }
+        } else {
+            style
+        }
+        val value = when (style) {
+            TimeZoneNameStyle.OFFSET_LONG -> localizedGmt(formats, context.offsetSeconds, locale, false, context.numberingSystem)
+            TimeZoneNameStyle.OFFSET_SHORT -> localizedGmt(formats, context.offsetSeconds, locale, true, context.numberingSystem)
+            TimeZoneNameStyle.LOCATION -> locationName(id, formats, context.offsetSeconds, locale)
+            else -> metazoneName(id, resolvedStyle, locale, context.epochSeconds, context.observesDaylight != true)
+                ?: localizedGmt(
+                    formats,
+                    context.offsetSeconds,
+                    locale,
+                    style == TimeZoneNameStyle.GENERIC_SHORT ||
+                        style == TimeZoneNameStyle.STANDARD_SHORT ||
+                        style == TimeZoneNameStyle.DAYLIGHT_SHORT,
+                    context.numberingSystem,
+                )
+        }
+        return if (value == null) LocaleLookup.MissingData else LocaleLookup.Value(value)
     }
 
     override fun exemplarCityOrNull(zone: TimeZone, locale: Locale): String? =
@@ -121,7 +156,7 @@ public class PayloadTimeZoneNames(
      * region's primary, is named for the region rather than the city, which is
      * why Japan reads `Japan Time` and not `Tokyo Time`.
      */
-    private fun locationName(zoneId: String, zoneFormats: TimeZoneFormats, offset: UtcOffset?, locale: Locale): String? {
+    private fun locationName(zoneId: String, zoneFormats: TimeZoneFormats, offset: Int?, locale: Locale): String? {
         val region = metadata.regionOf(zoneId)
         // A zone with no location has no location name. UTS #35 sends `Etc/GMT+5`
         // and `UTC` to the offset format rather than inventing a place for them.
@@ -135,26 +170,32 @@ public class PayloadTimeZoneNames(
         return zoneFormats.regionFormat.replace("{0}", city)
     }
 
-    private fun metazoneName(zoneId: String, style: TimeZoneNameStyle, locale: Locale): String? {
+    private fun metazoneName(
+        zoneId: String,
+        style: TimeZoneNameStyle,
+        locale: Locale,
+        epochSeconds: Long? = null,
+        allowStandardFallback: Boolean = true,
+    ): String? {
         val key = styleKey(style) ?: return null
         // A zone's own override wins over its metazone's, which is what lets
         // one zone in a metazone carry a different name.
         sparseRecordValue(names, locale, field = 2, fieldCount = NAME_FIELD_COUNT, key = "$zoneId#$key")
             ?.let { return it.takeIf(String::isNotEmpty) }
-        val metazone = metadata.metazoneOf(zoneId) ?: return null
+        val metazone = metadata.metazoneOf(zoneId, epochSeconds) ?: return null
         val name = sparseRecordValue(names, locale, field = 3, fieldCount = NAME_FIELD_COUNT, key = "$metazone#$key")
         if (name != null) return name.takeIf(String::isNotEmpty)
 
         // Per UTS #35 a generic name falls back to the standard one when the
         // zone does not observe daylight time, which is why Japan has no
         // separate generic form.
-        if (style == TimeZoneNameStyle.GENERIC_LONG || style == TimeZoneNameStyle.GENERIC_SHORT) {
+        if (allowStandardFallback && (style == TimeZoneNameStyle.GENERIC_LONG || style == TimeZoneNameStyle.GENERIC_SHORT)) {
             val standard = if (style == TimeZoneNameStyle.GENERIC_LONG) {
                 TimeZoneNameStyle.STANDARD_LONG
             } else {
                 TimeZoneNameStyle.STANDARD_SHORT
             }
-            return metazoneName(zoneId, standard, locale)
+            return metazoneName(zoneId, standard, locale, epochSeconds, false)
         }
         return null
     }
@@ -176,17 +217,25 @@ public class PayloadTimeZoneNames(
      * zero form and the digits all vary, so `GMT-08:00` in English is
      * `UTC−08:00` in several other locales.
      */
-    private fun localizedGmt(zoneFormats: TimeZoneFormats, offset: UtcOffset?, locale: Locale, short: Boolean): String {
+    private fun localizedGmt(
+        zoneFormats: TimeZoneFormats,
+        offset: Int?,
+        locale: Locale,
+        short: Boolean,
+        numberingSystem: String? = null,
+    ): String {
         if (offset == null) return zoneFormats.gmtUnknownFormat
-        val seconds = offset.totalSeconds
+        val seconds = offset
         if (seconds == 0) return zoneFormats.gmtZeroFormat
 
-        val symbols = numbers?.symbolsOrNull(locale) ?: NumberSymbols.Root
+        val symbols =
+            (if (numberingSystem == null) numbers?.symbolsOrNull(locale) else numbers?.symbolsOrNull(locale, numberingSystem))
+                ?: NumberSymbols.Root
         val pattern = if (seconds < 0) zoneFormats.hourNegative else zoneFormats.hourPositive
         val magnitude = if (seconds < 0) -seconds else seconds
         val hours = magnitude / 3600
         val minutes = (magnitude % 3600) / 60
-        val body = renderHourPattern(pattern, hours, minutes, symbols, short)
+        val body = renderHourPattern(pattern, hours, minutes, symbols, short, magnitude % 60)
         return zoneFormats.gmtFormat.replace("{0}", body)
     }
 
@@ -194,14 +243,14 @@ public class PayloadTimeZoneNames(
      * Renders `+HH:mm` or `+H:mm`, dropping a zero minute field in the short
      * form the way the spec's `-8` example does.
      */
-    private fun renderHourPattern(pattern: String, hours: Int, minutes: Int, symbols: NumberSymbols, short: Boolean): String =
+    private fun renderHourPattern(pattern: String, hours: Int, minutes: Int, symbols: NumberSymbols, short: Boolean, seconds: Int): String =
         buildString(pattern.length + 4) {
             var index = 0
             while (index < pattern.length) {
                 val ch = pattern[index]
                 if (ch != 'H' && ch != 'm') {
                     // The minute separator goes with the minutes it introduces.
-                    if (short && minutes == 0 && index + 1 < pattern.length && pattern[index + 1] == 'm') {
+                    if (short && minutes == 0 && seconds == 0 && index + 1 < pattern.length && pattern[index + 1] == 'm') {
                         index++
                         continue
                     }
@@ -218,7 +267,7 @@ public class PayloadTimeZoneNames(
                 // resuming after them. Hebrew writes its negative hour format
                 // as `-HH:mm` followed by a left-to-right mark, and that mark
                 // goes with the field it was placed to protect.
-                if (ch == 'm' && short && minutes == 0) break
+                if (ch == 'm' && short && minutes == 0 && seconds == 0) break
                 val value = if (ch == 'H') hours else minutes
                 // The long form always writes two hour digits. A locale whose
                 // `hourFormat` says `H` rather than `HH`, as Czech's does, is
@@ -231,6 +280,12 @@ public class PayloadTimeZoneNames(
                 }
                 val digits = value.toString().padStart(width, '0')
                 for (digit in digits) append(symbols.digits[digit - '0'])
+                if (ch == 'm' && seconds != 0) {
+                    val minuteAt = pattern.indexOf('m')
+                    val hourEnd = pattern.lastIndexOf('H') + 1
+                    append(pattern.substring(hourEnd, minuteAt))
+                    for (digit in seconds.toString().padStart(2, '0')) append(symbols.digits[digit - '0'])
+                }
             }
         }
 
@@ -249,6 +304,7 @@ public class TimeZoneMetadata(encoded: String) {
 
     private val metazones = HashMap<String, String>()
     private val regions = HashMap<String, String>()
+    private val histories = HashMap<String, List<Triple<Long?, Long?, String>>>()
     private val singleZoneRegions = HashSet<String>()
     private val primaryZones = HashSet<String>()
     private val cldrIds = HashMap<String, String>()
@@ -269,6 +325,14 @@ public class TimeZoneMetadata(encoded: String) {
             val separator = entry.indexOf(KEY_SEPARATOR)
             if (separator > 0) cldrIds[entry.substring(0, separator)] = entry.substring(separator + 1)
         }
+        for (entry in blocks.getOrNull(5).orEmpty().split(ENTRY_SEPARATOR)) {
+            val separator = entry.indexOf(KEY_SEPARATOR)
+            if (separator <= 0) continue
+            histories[entry.substring(0, separator)] = entry.substring(separator + 1).split(';').map { row ->
+                val fields = row.split(',')
+                Triple(fields[0].toLongOrNull(), fields[1].toLongOrNull(), fields[2])
+            }
+        }
     }
 
     /**
@@ -281,7 +345,12 @@ public class TimeZoneMetadata(encoded: String) {
      */
     public fun cldrId(zoneId: String): String = cldrIds[zoneId] ?: zoneId
 
-    public fun metazoneOf(zoneId: String): String? = metazones[zoneId]
+    public fun metazoneOf(zoneId: String, epochSeconds: Long? = null): String? {
+        if (epochSeconds == null) return metazones[zoneId]
+        return histories[zoneId]?.firstOrNull { (from, to, _) ->
+            (from == null || epochSeconds >= from) && (to == null || epochSeconds < to)
+        }?.third
+    }
 
     public fun regionOf(zoneId: String): String? = regions[zoneId]
 

@@ -18,8 +18,8 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
-internal val COLLATION_TAILORING_WAE: String =
-    "004U7t*1u\u000Da\u000D#u\"V)\u0019|,s1n+\u001125KVIHaW(U2\u0009iaA\u007F|JI^\u0010%m\u0014\u0014c\u001D{vGhA \u007FkQ1BPiDt\u000FK>|f?\u0009V\u0013*@\u0003|\u0011Nn\u000C8#\u001DQzMc\\\u0015>k<qKTf_^:I\"\u0003lF;R2R+wR\\s3U\u0003\u000AYF\u007F\u000A[h\u0019\u001A\u0019\u000Flxth1\u0001"
-
 internal val COLLATION_TAILORING_WO: String =
-    "004s7u\u000C\u0011U\u0001a\u000D#u\"YP\u000AgIVkc\u0015>D\u000B\u0002[w[[YU\u0009lzg:9\u0009B\u001D\u001A\u0015\u0018KBf\u0002'f\u000Ea\u001BAh\u001CdU0\u0008r\u0012dK\u001A?\u0015\u000DeDkpW0\u0005\u0006i|M7\u0010,+\u0016{\u0016W\u000Df<Rp\u0015h{,w8`YJA#}jgv\u001C@\"V\u0013\u001EsM3\u000CE\u0005\u0015J\\I)t\u0002\u007Frg\u0003"
+    "005O7u\u0010Qu\u0009a\u000DDy58\u0001\u0008\u0006G8Q\u0001\u0015{\u000E!1\u0001ME^\u001F&\u001D0z%4\u000BpxpJNn\u0014\\*[\$\u0015\u000Bv5\u000Dgb\u001Aa87li\u00083\u0019Se/\u0006(cdeJ\u0006X\u001F\u0005G\u001BmG &\u0016zY\u007FL\u0007Yp2<\u000Fjk6tH\u0011/w\u00101`\u001C|\u001Bh\u001BvAHTe\u0012Nl\\\u0008|u^f\u0002Bmx6wQZU\$\u0006\u0010\u000D\u000F`\u0015j\u0014'0"
+
+internal val COLLATION_TAILORING_WOL: String =
+    "0008\u0016tst:C#8\u0019\u0002\u0001\u0001"

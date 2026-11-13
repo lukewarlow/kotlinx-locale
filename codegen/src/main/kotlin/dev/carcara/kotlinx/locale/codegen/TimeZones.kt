@@ -38,23 +38,29 @@ private val FORMAT_ELEMENTS = listOf(
  * None of it varies by language, so it rides in the bundle once rather than
  * eleven hundred times.
  *
- * Only the current metazone is kept. The full history with its date ranges is
- * what a formatter needs to name a zone at a past instant, and this library
- * names a zone rather than a zoned instant, so the ranges would be carried for
- * nobody.
+ * Historical metazone periods use UTC epoch seconds and half-open intervals.
+ * An absent endpoint is unbounded.
  */
 fun encodeTimeZoneMetadata(cldrDir: File): String {
     val supplemental = parseXml(cldrDir.resolve("common/supplemental/metaZones.xml")).documentElement
     val metaZones = supplemental.child("metaZones") ?: error("metaZones.xml: no <metaZones>")
 
     val currentMetazone = LinkedHashMap<String, String>()
+    val historicalMetazones = LinkedHashMap<String, String>()
     metaZones.child("metazoneInfo")?.let { info ->
         for (timezone in info.childElements("timezone")) {
             val id = timezone.getAttribute("type")
             // Last wins: the entries are in date order and the final one has no
             // `to`, which is the metazone the zone uses now.
-            for (uses in timezone.childElements("usesMetazone")) {
-                currentMetazone[id] = uses.getAttribute("mzone")
+            val periods = timezone.childElements("usesMetazone")
+            for (uses in periods) currentMetazone[id] = uses.getAttribute("mzone")
+            fun epoch(value: String): String = if (value.isEmpty()) {
+                ""
+            } else {
+                java.time.LocalDateTime.parse(value.replace(' ', 'T')).toEpochSecond(java.time.ZoneOffset.UTC).toString()
+            }
+            historicalMetazones[id] = periods.joinToString(";") { uses ->
+                "${epoch(uses.getAttribute("from"))},${epoch(uses.getAttribute("to"))},${uses.getAttribute("mzone")}"
             }
         }
     }
@@ -149,6 +155,7 @@ fun encodeTimeZoneMetadata(cldrDir: File): String {
         singleZoneRegions.sorted().joinToString(LIST_SEPARATOR),
         primaryZones.sorted().joinToString(LIST_SEPARATOR),
         entries(cldrIdOfZone),
+        entries(historicalMetazones),
     ).joinToString(FIELD_SEPARATOR)
 }
 

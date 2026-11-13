@@ -111,6 +111,8 @@ public enum class NumberNotation {
     STANDARD,
     COMPACT_SHORT,
     COMPACT_LONG,
+    SCIENTIFIC,
+    ENGINEERING,
     ;
 
     public companion object
@@ -128,6 +130,7 @@ public enum class NumberGrouping {
     AUTO,
     ALWAYS,
     NEVER,
+    MIN2,
     ;
 
     public companion object
@@ -166,7 +169,7 @@ public enum class PercentScale {
  * implementor and every fallback composer. The public extensions still take flat
  * named parameters, which is what a consumer types.
  */
-public class NumberFormatOptions(
+public data class NumberFormatOptions(
     public val notation: NumberNotation = NumberNotation.STANDARD,
     public val signDisplay: SignDisplay = SignDisplay.AUTO,
     public val grouping: NumberGrouping = NumberGrouping.AUTO,
@@ -175,9 +178,27 @@ public class NumberFormatOptions(
     /** `null` takes the pattern's own maximum, or the compact default. */
     public val maximumFractionDigits: Int? = null,
     public val minimumIntegerDigits: Int = 1,
+    public val minimumSignificantDigits: Int? = null,
+    public val maximumSignificantDigits: Int? = null,
+    public val roundingMode: NumberRoundingMode = NumberRoundingMode.HALF_EVEN,
+    public val roundingPriority: NumberRoundingPriority = NumberRoundingPriority.AUTO,
+    public val roundingIncrement: Int = 1,
+    public val trailingZeroDisplay: TrailingZeroDisplay = TrailingZeroDisplay.AUTO,
+    public val numberingSystem: String? = null,
+    /** The caller supplied the displayed value; skip pattern scaling and rounding. */
+    public val preRounded: Boolean = false,
+    public val notationExponent: Int? = null,
+    public val compactExponent: Int = 0,
+
 ) {
 
     init {
+        require(roundingIncrement > 0)
+        require(minimumSignificantDigits == null || minimumSignificantDigits > 0)
+        require(maximumSignificantDigits == null || maximumSignificantDigits > 0)
+        require(
+            minimumSignificantDigits == null || maximumSignificantDigits == null || minimumSignificantDigits <= maximumSignificantDigits,
+        )
         require(minimumIntegerDigits >= 0) { "minimumIntegerDigits cannot be negative" }
         require(minimumFractionDigits == null || minimumFractionDigits >= 0) {
             "minimumFractionDigits cannot be negative"

@@ -21,6 +21,7 @@ package dev.carcara.kotlinx.locale.currency.cldr.runtime
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
 import dev.carcara.kotlinx.locale.currency.Currency
 import dev.carcara.kotlinx.locale.currency.CurrencyAmount
 import dev.carcara.kotlinx.locale.currency.CurrencyNameSource
@@ -29,11 +30,17 @@ import dev.carcara.kotlinx.locale.currency.forCodeOrNull
 import dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.sparseRecordValue
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
+import dev.carcara.kotlinx.locale.number.FormattedNumber
 import dev.carcara.kotlinx.locale.number.NumberFormatOptions
+import dev.carcara.kotlinx.locale.number.NumberFormatSource
 import dev.carcara.kotlinx.locale.number.NumberGrouping
+import dev.carcara.kotlinx.locale.number.NumberPart
+import dev.carcara.kotlinx.locale.number.NumberPartKind
 import dev.carcara.kotlinx.locale.number.NumberSymbols
+import dev.carcara.kotlinx.locale.number.NumberValue
 import dev.carcara.kotlinx.locale.number.PluralCategory
 import dev.carcara.kotlinx.locale.number.PluralRuleSource
+import dev.carcara.kotlinx.locale.number.PluralType
 import dev.carcara.kotlinx.locale.number.SignDisplay
 import dev.carcara.kotlinx.locale.number.cldr.runtime.NumberPattern
 import dev.carcara.kotlinx.locale.number.cldr.runtime.digitStringsOf
@@ -122,6 +129,9 @@ public interface CurrencyPluralNameSource : LocaleDataSource {
      * words, or `null` when this source cannot render it.
      */
     public fun formatPluralNameOrNull(minorUnits: Long, currencyCode: String, locale: Locale, options: CurrencyPluralFormatOptions): String?
+
+    public fun compose(number: FormattedNumber, currencyCode: String, locale: Locale): LocaleLookup<FormattedNumber> =
+        LocaleLookup.Unsupported("Structured currency names")
 
     public companion object
 }
@@ -278,6 +288,50 @@ public class PayloadCurrencyPluralNames(
             ?: nameOrNull(currencyCode, PluralCategory.OTHER.cldrName, locale)
             ?: names.currencyNameOrNull(currencyCode, locale)
 
+    override fun compose(number: FormattedNumber, currencyCode: String, locale: Locale): LocaleLookup<FormattedNumber> {
+        require(currencyCode.length == 3 && currencyCode.all { it in 'a'..'z' || it in 'A'..'Z' })
+        val code = currencyCode.uppercase()
+        val category = if (number.isFinite) {
+            plurals.pluralCategoryOrNull(number.quantityOperands, PluralType.CARDINAL, locale)
+                ?: return LocaleLookup.MissingData
+        } else {
+            PluralCategory.OTHER
+        }
+        val name = currencyPluralNameOrNull(code, category, locale) ?: code
+        val pattern = formatFor(locale).unitPattern(category)
+        val parts = ArrayList<NumberPart>()
+        var index = 0
+        while (index < pattern.length) {
+            when {
+                pattern.startsWith("{0}", index) -> {
+                    parts += number.parts
+                    index += 3
+                }
+                pattern.startsWith("{1}", index) -> {
+                    parts += NumberPart(NumberPartKind.CURRENCY, name)
+                    index += 3
+                }
+                else -> {
+                    val begin = index++
+                    while (index < pattern.length && !pattern.startsWith("{0}", index) && !pattern.startsWith("{1}", index)) index++
+                    parts += NumberPart(NumberPartKind.LITERAL, pattern.substring(begin, index))
+                }
+            }
+        }
+        return LocaleLookup.Value(
+            FormattedNumber(
+                parts.joinToString("") {
+                    it.value
+                },
+                number.operands.integerDigits,
+                number.operands.fractionDigits,
+                number.operands.c,
+                parts,
+                number.notationExponent,
+            ),
+        )
+    }
+
     override fun formatPluralNameOrNull(
         minorUnits: Long,
         currencyCode: String,
@@ -350,5 +404,50 @@ private fun substitute(pattern: String, number: String, name: String): String = 
             else -> append(pattern, open, open + 3)
         }
         index = open + 3
+    }
+}
+
+/** Exact currency-name rendering; [options] determines visible digits and notation. */
+public fun currencyFormatName(
+    value: NumberValue,
+    currencyCode: String,
+    locale: Locale,
+    names: CurrencyPluralNameSource,
+    numbers: NumberFormatSource,
+    options: NumberFormatOptions = NumberFormatOptions.Default,
+): LocaleLookup<FormattedNumber> {
+    val digits = Currency.forCodeOrNull(currencyCode)?.cldrFractionDigits ?: 2
+    val precision = options.copy(
+        minimumFractionDigits = options.minimumFractionDigits ?: minOf(digits, options.maximumFractionDigits ?: digits),
+        maximumFractionDigits = options.maximumFractionDigits ?: maxOf(digits, options.minimumFractionDigits ?: digits),
+    )
+    return when (val number = numbers.render(value, locale, precision)) {
+        is LocaleLookup.Value -> {
+            val system = options.numberingSystem ?: locale.unicodeKeywordOrNull("nu")
+            val symbols = (if (system == null) numbers.symbolsOrNull(locale) else numbers.symbolsOrNull(locale, system))
+                ?: return LocaleLookup.Unsupported("Monetary number symbols")
+            val formatted = number.value
+            val parts = formatted.parts.map { part ->
+                when (part.kind) {
+                    NumberPartKind.DECIMAL -> part.copy(value = symbols.currencyDecimal)
+                    NumberPartKind.GROUP -> part.copy(value = symbols.currencyGroup)
+                    else -> part
+                }
+            }
+            val monetary =
+                FormattedNumber(
+                    parts.joinToString("") {
+                        it.value
+                    },
+                    formatted.operands.integerDigits,
+                    formatted.operands.fractionDigits,
+                    formatted.c,
+                    parts,
+                    formatted.notationExponent,
+                )
+            names.compose(monetary, currencyCode, locale)
+        }
+        is LocaleLookup.Unsupported -> number
+        LocaleLookup.MissingData -> LocaleLookup.MissingData
     }
 }

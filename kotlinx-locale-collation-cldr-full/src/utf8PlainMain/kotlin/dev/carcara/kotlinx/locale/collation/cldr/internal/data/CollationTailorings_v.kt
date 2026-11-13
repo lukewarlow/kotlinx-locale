@@ -19,7 +19,13 @@
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
 internal val COLLATION_TAILORING_VI: String =
-    "ll:/18y9ds/27wr28,lf:/18ycjg/27wr28,ld:/18yfp0/27wr28,mb:/18yiug/27wr28,7l:25vhxq/2hwcg/27wr28,7k:25vhxq/2hwcg/27y5mo;2p.li:25k8ue/2hwcg/27wr28,1t.li:25k8ue/2hwcg/27y5mo,2p.le:25k8us/2hwcg/27wr28,1t.le:25k8us/2hwcg/27y5mo,2t.le:25zzz2/2hwcg/27wr28,1x.le:25zzz2/2hwcg/27y5mo,33.le:27am7q/2hwcg/27wr28,27.le:27am7q/2hwcg/27y5mo,33.m3:27am84/2hwcg/27wr28,27.m3:27am84/2hwcg/27y5mo,39.m3:28cjye/2hwcg/27wr28,2d.m3:28cjye/2hwcg/27y5mo;;;;;"
+    "root\u001F05ll:0/18y9ds/27wr28/0,lf:0/18ycjg/27wr28/0,ld:0/18yfp0/27wr28/0,mb:0/18yiug/27wr28/0,7l:25vhxq/2hwcg/27wr28/0,7k:25vhxq/2hwcg/27y5mo/2;2p.li:25k8ue/2hwcg/27wr28/0,1t.li:25k8ue/2hwcg/27y5mo/2,2p.le:25k8us/2hwcg/27wr28/0,1t.le:25k8us/2hwcg/27y5mo/2,2t.le:25zzz2/2hwcg/27wr28/0,1x.le:25zzz2/2hwcg/27y5mo/2,33.le:27am7q/2hwcg/27wr28/0,27.le:27am7q/2hwcg/27y5mo/2,33.m3:27am84/2hwcg/27wr28/0,27.m3:27am84/2hwcg/27y5mo/2,39.m3:28cjye/2hwcg/27wr28/0,2d.m3:28cjye/2hwcg/27y5mo/2;;;;;\u001Ell:0/18y9ds/27wr28/0,lf:0/18ycjg/27wr28/0,ld:0/18yfp0/27wr28/0,mb:0/18yiug/27wr28/0,7l:25vhxq/2hwcg/27wr28/0,7k:25vhxq/2hwcg/27y5mo/2;2p.li:25k8ue/2hwcg/27wr28/0,1t.li:25k8ue/2hwcg/27y5mo/2,2p.le:25k8us/2hwcg/27wr28/0,1t.le:25k8us/2hwcg/27y5mo/2,2r.2w:25sa72/2hwcg/27wr28/0,1v.2w:25sa72/2hwcg/27y5mo/1,1v.20:25sa72/2hwcg/27zk5c/2,2t.le:25zzz2/2hwcg/27wr28/0,1x.le:25zzz2/2hwcg/27y5mo/2,2v.2w:26aace/2hwcg/27wr28/0,1z.2w:26aace/2hwcg/27y5mo/1,1z.20:26aace/2hwcg/27zk5c/2,2v.2x:26aacs/2hwcg/27wr28/0,1z.2x:26aacs/2hwcg/27y5mo/1,1z.21:26aacs/2hwcg/27zk5c/2,2z.2w:26pebq/2hwcg/27wr28/0,23.2w:26pebq/2hwcg/27y5mo/1,23.20:26pebq/2hwcg/27zk5c/2,32.2w:274tvq/2hwcg/27wr28/0,26.2w:274tvq/2hwcg/27y5mo/1,26.20:274tvq/2hwcg/27zk5c/2,32.2v:274tw4/2hwcg/27wr28/0,26.2v:274tw4/2hwcg/27y5mo/1,26.1z:274tw4/2hwcg/27zk5c/2,32.2v.2w:274twi/2hwcg/27wr28/0,26.2v.2w:274twi/2hwcg/27y5mo/1,26.1z.2w:274twi/2hwcg/27zk5c/1,26.1z.20:274twi/2hwcg/280ym8/2,33.le:27am7q/2hwcg/27wr28/0,27.le:27am7q/2hwcg/27y5mo/2,33.m3:27am84/2hwcg/27wr28/0,27.m3:27am84/2hwcg/27y5mo/2,34.2w:27k9fq/2hwcg/27wr28/0,28.2w:27k9fq/2hwcg/27y5mo/1,28.20:27k9fq/2hwcg/27zk5c/2,35.39:27o4bq/2hwcg/27wr28/0,29.39:27o4bq/2hwcg/27y5mo/1,29.2d:27o4bq/2hwcg/27zk5c/2,38.2w:2881x2/2hwcg/27wr28/0,2c.2w:2881x2/2hwcg/27y5mo/1,2c.20:2881x2/2hwcg/27zk5c/2,38.36:2881xg/2hwcg/27wr28/0,2c.36:2881xg/2hwcg/27y5mo/1,2c.2a:2881xg/2hwcg/27zk5c/2,39.m3:28cjye/2hwcg/27wr28/0,2d.m3:28cjye/2hwcg/27y5mo/2;;;;;\u001F01"
+
+internal val COLLATION_TAILORING_VIE: String =
+    "vi\u001F04\u001F01"
 
 internal val COLLATION_TAILORING_VO: String =
-    ";2p.lk:25k8ue/2hwcg/27wr28,1t.lk:25k8ue/2hwcg/27y5mo,33.lk:27am7q/2hwcg/27wr28,27.lk:27am7q/2hwcg/27y5mo,39.lk:28cjye/2hwcg/27wr28,2d.lk:28cjye/2hwcg/27y5mo;;;;;"
+    "root\u001F00;2p.lk:25k8ue/2hwcg/27wr28/0,1t.lk:25k8ue/2hwcg/27y5mo/2,33.lk:27am7q/2hwcg/27wr28/0,27.lk:27am7q/2hwcg/27y5mo/2,39.lk:28cjye/2hwcg/27wr28/0,2d.lk:28cjye/2hwcg/27y5mo/2;;;;;\u001F01"
+
+internal val COLLATION_TAILORING_VOL: String =
+    "vo\u001F04\u001F01"

@@ -74,40 +74,60 @@ fun buildCollationPayloads(cldrDir: File): CollationPayloads {
 
     val collationDir = cldrDir.resolve("common/collation")
     val deltas = LinkedHashMap<String, String>()
-    val files = collationDir.listFiles()?.filter { it.name.endsWith(".xml") }?.sortedBy(File::getName).orEmpty()
+    val files = collationDir.listFiles()?.filter { it.extension == "xml" }?.sortedBy(File::getName).orEmpty()
     val resolveImport: (String) -> String? = { id -> importedRules(collationDir, id) }
-    for (file in files) {
-        val rules = collationRules(file)
-        if (rules.isEmpty()) continue
-        val tag = canonicalTag(file.nameWithoutExtension)
-        deltas[tag] = try {
-            tailoringFor(root, ranks, normalization, rules, resolveImport).encodeDelta()
-        } catch (e: Exception) {
-            throw IllegalStateException("collation tailoring for ${file.name} could not be built", e)
+    val typeRegistry = parseXml(cldrDir.resolve("common/bcp47/collation.xml")).documentElement
+    val aliases = typeRegistry.getElementsByTagName("type").let { nodes ->
+        buildMap<String, String> {
+            for (i in 0 until nodes.length) {
+                val entry = nodes.item(i) as org.w3c.dom.Element
+                for (alias in entry.getAttribute("alias").split(' ').filter(String::isNotEmpty)) put(alias, entry.getAttribute("name"))
+            }
         }
     }
-    println("[codegen] built ${deltas.size} collation tailorings from ${files.size} CLDR files")
-
-    // One entry per tailoring, and root, and nothing else.
-    //
-    // Writing an empty entry for every locale in the build looks tidier and is
-    // wrong: `resolvedRecord` takes the first of a locale's lookup tags that the
-    // registry carries, so an empty `as-IN` shadows the real `as` and Assamese
-    // falls back to root order. CLDR tailors 112 locales and the other thousand
-    // reach one of them, or root, by the ordinary parent walk.
-    val payloads = LinkedHashMap<String, String>(deltas.size + 1)
-    payloads["root"] = ""
-    payloads.putAll(deltas)
-
-    // CLDR's language aliases, which the collation directory is named by and a
-    // BCP 47 tag is not. `nb.xml` is empty because CLDR files Norwegian Bokmål
-    // under `no`, and the parent walk cannot find it: `no` is not an ancestor of
-    // `nb`, it is another name for it. Without this Norwegian sorts å second
-    // rather than last.
-    for ((from, to) in languageAliases(cldrDir)) {
-        val delta = deltas[to] ?: continue
-        if (from !in payloads) payloads[from] = delta
+    val variants = linkedMapOf<String, Map<String, String>>()
+    val metadata = linkedMapOf<String, Map<String, String>>()
+    for (file in files) {
+        val tag = canonicalTag(file.nameWithoutExtension)
+        val document = parseXml(file).documentElement.child("collations") ?: continue
+        val entries = linkedMapOf<String, String>()
+        val settings = linkedMapOf<String, String>()
+        settings["default"] = document.child("defaultCollation")?.textContent?.trim()?.let { aliases[it] ?: it } ?: ""
+        for (collation in document.childElements("collation")) {
+            if (collation.hasAttribute("alt")) continue
+            val original = collation.getAttribute("type")
+            if (original.startsWith("private-")) continue
+            val type = aliases[original] ?: original
+            val rules = collation.child("cr")?.textContent.orEmpty()
+            if (rules.isEmpty() && type != "standard") continue
+            entries[type] = if (rules.isEmpty()) {
+                ""
+            } else {
+                try {
+                    tailoringFor(root, ranks, normalization, rules, resolveImport).encodeDelta()
+                } catch (e: Exception) {
+                    throw IllegalStateException("collation ${file.name}/$type", e)
+                }
+            }
+            for ((name, pattern) in listOf("caseFirst" to "caseFirst", "ignorePunctuation" to "alternate", "sensitivity" to "strength")) {
+                Regex("\\[$pattern ([^]]+)\\]").find(rules)?.groupValues?.get(1)?.let { settings["$name/$type"] = it }
+            }
+        }
+        variants[tag] = entries
+        metadata[tag] = settings
     }
+    fun encode(map: Map<String, String>): String = map.entries.sortedBy { it.key }
+        .joinToString(LIST_SEPARATOR) { (key, value) -> key + KEY_SEPARATOR + value }
+    for (tag in variants.keys + "root") {
+        val parent = if (tag == "root") "" else tag.substringBeforeLast('-', "root")
+        deltas[tag] = listOf(parent, encode(variants[tag].orEmpty()), encode(metadata[tag].orEmpty().filterValues(String::isNotEmpty)))
+            .joinToString(FIELD_SEPARATOR)
+    }
+    val payloads = LinkedHashMap(deltas)
+    for ((from, to) in languageAliases(cldrDir)) {
+        if (from !in payloads && to in deltas) payloads[from] = to + FIELD_SEPARATOR + FIELD_SEPARATOR
+    }
+    println("[codegen] built ${payloads.size} collation locale records with variant/search data")
 
     return CollationPayloads(
         root = encodeCollationRoot(root, ranks),

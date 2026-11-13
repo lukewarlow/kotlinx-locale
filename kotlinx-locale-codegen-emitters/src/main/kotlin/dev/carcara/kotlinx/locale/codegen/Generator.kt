@@ -51,6 +51,12 @@ public class BindingTarget(
  * a package exists for every table.
  */
 public enum class GeneratedTable {
+    LOCALE_METADATA,
+    EXTENDED_DISPLAY_NAMES,
+    NUMBER_SYSTEMS,
+    PLURAL_RANGES,
+    LIST_PATTERNS,
+    UNIT_PATTERNS,
     LOCALE_CATALOG,
     COUNTRY_ENUM,
     COUNTRY_CURRENCIES,
@@ -164,6 +170,9 @@ public enum class GeneratedBinding(public val objectSuffix: String) {
 
     /** Locale-independent Unicode grapheme properties, initialized by the segmentation backend. */
     SEGMENTATION("Segmentation"),
+    METADATA("LocaleMetadata"),
+    LIST("ListFormats"),
+    UNIT("UnitFormats"),
     ;
 
     public companion object
@@ -247,6 +256,12 @@ public class RegistryPackages private constructor(
                 GeneratedTable.ORDINALS to "dev.carcara.kotlinx.locale.number.cldr.internal.data",
                 GeneratedTable.LANGUAGE_NAMES to "dev.carcara.kotlinx.locale.language.cldr.internal.data",
                 GeneratedTable.RELATIVE_TIME to "dev.carcara.kotlinx.locale.datetime.cldr.relative.internal.data",
+                GeneratedTable.EXTENDED_DISPLAY_NAMES to "dev.carcara.kotlinx.locale.language.cldr.internal.data",
+                GeneratedTable.LOCALE_METADATA to "dev.carcara.kotlinx.locale.metadata.cldr.internal.data",
+                GeneratedTable.NUMBER_SYSTEMS to "dev.carcara.kotlinx.locale.number.cldr.internal.data",
+                GeneratedTable.PLURAL_RANGES to "dev.carcara.kotlinx.locale.number.cldr.internal.data",
+                GeneratedTable.LIST_PATTERNS to "dev.carcara.kotlinx.locale.list.cldr.internal.data",
+                GeneratedTable.UNIT_PATTERNS to "dev.carcara.kotlinx.locale.unit.cldr.internal.data",
                 GeneratedTable.DURATION_UNITS to "dev.carcara.kotlinx.locale.datetime.cldr.durations.internal.data",
                 GeneratedTable.TIME_ZONE_FORMATS to "dev.carcara.kotlinx.locale.timezone.cldr.internal.data",
                 GeneratedTable.TIME_ZONE_NAMES to "dev.carcara.kotlinx.locale.timezone.cldr.internal.data",
@@ -413,6 +428,17 @@ private val PAYLOAD_TABLES = listOf(
         "relativeTimeRegistry",
         "RELATIVE_TIME_CLDR_VERSION",
     ),
+    PayloadTableSpec(
+        GeneratedTable.EXTENDED_DISPLAY_NAMES,
+        "extendedDisplayNames",
+        "ExtendedDisplayNames",
+        "EXTENDED_DISPLAY_NAMES",
+        "extendedDisplayNamesRegistry",
+    ),
+    PayloadTableSpec(GeneratedTable.NUMBER_SYSTEMS, "numberSystems", "NumberSystems", "NUMBER_SYSTEMS", "numberSystemsRegistry"),
+    PayloadTableSpec(GeneratedTable.PLURAL_RANGES, "pluralRanges", "PluralRanges", "PLURAL_RANGES", "pluralRangesRegistry"),
+    PayloadTableSpec(GeneratedTable.LIST_PATTERNS, "listPatterns", "ListPatterns", "LIST_PATTERNS", "listPatternsRegistry"),
+    PayloadTableSpec(GeneratedTable.UNIT_PATTERNS, "unitPatterns", "UnitPatterns", "UNIT_PATTERNS", "unitPatternsRegistry"),
     PayloadTableSpec(
         GeneratedTable.DURATION_UNITS,
         "durationUnits",
@@ -762,7 +788,13 @@ public fun generateSources(
     }
 
     roots[GeneratedBinding.COLLATION]?.let { target ->
-        emitCollationBinding(target.root, target.spec(packages[GeneratedTable.COLLATION], cldr))
+        emitCollationBinding(
+            target.root,
+            target.spec(packages[GeneratedTable.COLLATION], cldr),
+            availableCollations = bundle.section("collationTailorings").values.flatMap { record ->
+                record.split(FIELD_SEPARATOR).getOrNull(1).orEmpty().split(LIST_SEPARATOR).map { it.substringBefore(KEY_SEPARATOR) }
+            }.filter { it.isNotEmpty() && it != "standard" && it != "search" }.toSet(),
+        )
     }
 
     roots[GeneratedBinding.COUNTRY]?.let { target ->
@@ -808,6 +840,8 @@ public fun generateSources(
             target.spec(packages[GeneratedTable.DATE_TIME], cldr),
             hasStandalone = roots[GeneratedTable.DATE_TIME_STANDALONE] != null,
             weekData = bundle.tables[BundleTables.WEEK_DATA].orEmpty(),
+            numberObject = roots[GeneratedBinding.NUMBER]?.let { it.packageName + "." + it.objectName },
+            zoneObject = roots[GeneratedBinding.TIME_ZONE]?.let { it.packageName + "." + it.objectName },
         )
     }
 
@@ -817,11 +851,18 @@ public fun generateSources(
             target.spec(packages[GeneratedTable.NUMBER], cldr),
             hasCompact = roots[GeneratedTable.NUMBER_COMPACT] != null,
             hasOrdinals = roots[GeneratedTable.ORDINALS] != null,
+            hasPluralRanges = roots[GeneratedTable.PLURAL_RANGES] != null,
+            hasNumberSystems = roots[GeneratedTable.NUMBER_SYSTEMS] != null,
         )
     }
 
     roots[GeneratedBinding.LANGUAGE]?.let { target ->
-        emitLanguageBinding(target.root, target.spec(packages[GeneratedTable.LANGUAGE_NAMES], cldr))
+        emitLanguageBinding(
+            target.root,
+            target.spec(packages[GeneratedTable.LANGUAGE_NAMES], cldr),
+            hasExtendedNames =
+            roots[GeneratedTable.EXTENDED_DISPLAY_NAMES] != null,
+        )
     }
 
     roots[GeneratedBinding.RELATIVE_TIME]?.let { target ->
@@ -875,6 +916,43 @@ public fun generateSources(
             target.root,
             target.spec(packages[GeneratedTable.SKELETONS], cldr),
             dateTimeObject = "${dateTime.packageName}.${dateTime.objectName}",
+            numberObject = roots[GeneratedBinding.NUMBER]?.let { it.packageName + "." + it.objectName },
+            zoneObject = roots[GeneratedBinding.TIME_ZONE]?.let { it.packageName + "." + it.objectName },
+        )
+    }
+
+    roots[GeneratedBinding.LIST]?.let { target ->
+        emitListBinding(target.root, target.spec(packages[GeneratedTable.LIST_PATTERNS], cldr))
+    }
+    roots[GeneratedBinding.UNIT]?.let { target ->
+        val number = requireNotNull(roots[GeneratedBinding.NUMBER]) { "Unit formatting needs a number source" }
+        emitUnitBinding(
+            target.root,
+            target.spec(packages[GeneratedTable.UNIT_PATTERNS], cldr),
+            number.packageName + "." + number.objectName,
+        )
+    }
+
+    for (binding in GeneratedBinding.entries) {
+        roots[binding]?.let { target ->
+            emitIntlFacade(
+                target.root,
+                target.spec("", cldr),
+                binding,
+                GeneratedTable.entries.filter { roots[it] != null }.toSet(),
+                numberObject = roots[GeneratedBinding.NUMBER]?.let { it.packageName + "." + it.objectName },
+                listObject = roots[GeneratedBinding.LIST]?.let { it.packageName + "." + it.objectName },
+            )
+        }
+    }
+
+    roots[GeneratedBinding.METADATA]?.let { target ->
+        emitMetadataBinding(
+            target.root,
+            target.packageName,
+            target.objectName,
+            bundle.cldrVersion,
+            bundle.tables[BundleTables.LOCALE_METADATA].orEmpty(),
         )
     }
 

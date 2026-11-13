@@ -429,7 +429,38 @@ class TailoredTable(
                         beforeLevel = tokens[i].text.split(' ')[1].toInt()
                         i++
                     }
-                    if (i < tokens.size && tokens[i].kind == KIND_TEXT) {
+                    if (i < tokens.size &&
+                        tokens[i].kind == KIND_DIRECTIVE &&
+                        (tokens[i].text.startsWith("first ") || tokens[i].text.startsWith("last "))
+                    ) {
+                        val name = tokens[i].text
+                        val all = root.entries.values.flatten().map(ranks::rank)
+                        val matching = when {
+                            "tertiary ignorable" in name -> listOf(intArrayOf(0, 0, 0, 0))
+                            "secondary ignorable" in name -> all.filter { it[0] == 0 && it[1] == 0 }
+                            "primary ignorable" in name -> all.filter { it[0] == 0 && it[1] != 0 }
+                            "regular" in name -> all.filter { it[0] != 0 }
+                            else -> error("Unsupported logical collation reset [$name]")
+                        }
+                        val order = Comparator<IntArray> { a, b ->
+                            var comparison = 0
+                            for (level in 0..2) {
+                                comparison = a[level].compareTo(b[level])
+                                if (comparison != 0) break
+                            }
+                            comparison
+                        }
+                        anchor =
+                            listOf(
+                                if (name.startsWith("first")) {
+                                    matching.minWithOrNull(order) ?: intArrayOf(0, 0, 0, 0)
+                                } else {
+                                    matching.maxWithOrNull(order)
+                                        ?: intArrayOf(0, 0, 0, 0)
+                                },
+                            )
+                        i++
+                    } else if (i < tokens.size && tokens[i].kind == KIND_TEXT) {
                         anchor = elementsFor(tokens[i].text)
                         i++
                     }
@@ -491,7 +522,14 @@ class TailoredTable(
                 },
             )
         }
-        var elements = if (strength >= 2) listOf(minted) + anchor.drop(1) else listOf(minted)
+        val caseBits = when {
+            token.text.codePoints().anyMatch { Character.isUpperCase(it) || Character.isTitleCase(it) } &&
+                token.text.codePoints().anyMatch { Character.isLowerCase(it) } -> 1
+            token.text.codePoints().anyMatch { Character.isUpperCase(it) || Character.isTitleCase(it) } -> 2
+            else -> 0
+        }
+        val casedMinted = minted.copyOf(4).also { it[3] = caseBits }
+        var elements = if (strength >= 2) listOf(casedMinted) + anchor.drop(1) else listOf(casedMinted)
         token.extension?.let { elements = elements + elementsFor(it) }
 
         // Keyed on the decomposed form, because lookup happens after NFD. CLDR
@@ -646,6 +684,6 @@ fun tailoringFor(
 }
 
 internal fun encodeRankedElements(elements: List<IntArray>): String {
-    val levels = Array(3) { level -> elements.mapNotNull { if (it[level] != 0) it[level].toString(36) else null } }
+    val levels = Array(4) { level -> elements.map { it.getOrElse(level) { 0 }.toString(36) } }
     return levels.joinToString("/") { it.joinToString(".") }
 }

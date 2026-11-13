@@ -22,9 +22,10 @@ import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.number.Decimal
 import dev.carcara.kotlinx.locale.number.FormattedNumber
 import dev.carcara.kotlinx.locale.number.NumberFormatOptions
+import dev.carcara.kotlinx.locale.number.NumberPart
+import dev.carcara.kotlinx.locale.number.NumberPartKind
 import dev.carcara.kotlinx.locale.number.NumberSymbols
 import dev.carcara.kotlinx.locale.number.PluralCategory
-import dev.carcara.kotlinx.locale.number.internal.roundToSignificantDigits
 
 /**
  * How many significant digits compact notation keeps when nobody says otherwise.
@@ -94,7 +95,7 @@ public fun formatCompact(
         return renderPlain(value, standardPattern, symbols, options, fixedFractionDigits, useCurrencySeparators, affix, currencySpacing)
     }
 
-    var magnitude = magnitudeOf(value)
+    var magnitude = magnitudeOf(value) + if (options.preRounded) options.compactExponent else 0
     if (magnitude < 3) {
         // Below the smallest bucket CLDR declares, compact output is the plain
         // number: the tables start at 1000 for every locale. The precision rule
@@ -127,7 +128,7 @@ public fun formatCompact(
 
     val interim = renderNumber(divided, standardPattern, symbols, options, fixedFractionDigits, useCurrencySeparators)
     val category = selectCategory.categoryOf(interim)
-    val exact = if (divided.scale == 0) divided.unscaled else null
+    val exact = if (divided.scale == 0) divided.unscaledOrNull() else null
     val pattern = table.patternOrNull(magnitude, category, false, exact)
         ?: return renderPlain(value, standardPattern, symbols, options, fixedFractionDigits, useCurrencySeparators, affix, currencySpacing)
 
@@ -148,7 +149,13 @@ public fun formatCompact(
     // a number and a word, so appending the digits would write `mille1`.
     if (!hasDigitPlaceholder(chosen)) {
         val literal = renderAffix(unquote(chosen), affix)
-        return FormattedNumber(literal, divided.absoluteDigits(), "", magnitude)
+        return FormattedNumber(
+            literal,
+            divided.integerDigits,
+            divided.fractionDigits,
+            divisor,
+            listOf(NumberPart(NumberPartKind.COMPACT, literal)),
+        )
     }
 
     // The pattern's own zeros say how many integer digits the divided value has,
@@ -163,7 +170,8 @@ public fun formatCompact(
         fixedFractionDigits = fixedFractionDigits ?: divided.scale,
         useCurrencySeparators = useCurrencySeparators,
         affix = affix,
-        compactExponent = magnitude,
+        compactExponent = divisor,
+        affixLiteralKind = NumberPartKind.COMPACT,
         groupingFloor = COMPACT_GROUPING_FLOOR,
         currencySpacing = currencySpacing,
     )
@@ -205,51 +213,18 @@ private fun renderPlain(
 }
 
 /** The power of ten of [value]'s integer part: 0 for anything under ten. */
-private fun magnitudeOf(value: Decimal): Int {
-    var remaining = value.integerPart
-    if (remaining < 0) remaining = -remaining
-    var magnitude = 0
-    while (remaining >= 10) {
-        remaining /= 10
-        magnitude++
-    }
-    return magnitude
-}
+private fun magnitudeOf(value: Decimal): Int = maxOf(value.magnitude, 0)
 
 private fun divideAndRound(value: Decimal, divisor: Int, options: NumberFormatOptions, fixedFractionDigits: Int?): Decimal {
-    // Dividing by lowering the scale keeps the value exact: 123456 at scale 0
-    // divided by 1000 is 123456 at scale 3, which is 123.456.
-    val divided = Decimal.ofUnscaled(value.unscaled, value.scale + divisor)
-
+    if (options.preRounded) return value
+    val divided = value.shifted(-divisor)
     val explicit = fixedFractionDigits ?: options.maximumFractionDigits
-    if (explicit != null) return divided.rescaled(explicit)
-
-    // The pinned default: whichever of zero fraction digits and two significant
-    // digits keeps more information.
-    val atInteger = divided.rescaled(0)
-    if (significantDigitsOf(atInteger) >= COMPACT_SIGNIFICANT_DIGITS) return atInteger
-    val rounded = Decimal.ofUnscaled(
-        roundToSignificantDigits(divided.unscaled, divided.scale, COMPACT_SIGNIFICANT_DIGITS),
-        divided.scale,
-    )
-    // Trailing zeros beyond the significant digits come off, so 1.20 prints 1.2.
-    var trimmed = rounded
-    while (trimmed.scale > 0 && trimmed.unscaled % 10L == 0L) {
-        trimmed = Decimal.ofUnscaled(trimmed.unscaled / 10, trimmed.scale - 1)
+    if (explicit != null) return dev.carcara.kotlinx.locale.number.numberRound(divided, options, 0, explicit)
+    if (options.maximumSignificantDigits != null || options.minimumSignificantDigits != null) {
+        return dev.carcara.kotlinx.locale.number.numberRound(divided, options)
     }
-    return trimmed
-}
-
-private fun significantDigitsOf(value: Decimal): Int {
-    if (value.isZero) return 1
-    var remaining = value.unscaled
-    if (remaining < 0) remaining = -remaining
-    var digits = 0
-    while (remaining > 0) {
-        remaining /= 10
-        digits++
-    }
-    return digits
+    val scale = maxOf(0, COMPACT_SIGNIFICANT_DIGITS - divided.magnitude - 1)
+    return divided.rescaled(scale, options.roundingMode, options.roundingIncrement).trimmed()
 }
 
 /**

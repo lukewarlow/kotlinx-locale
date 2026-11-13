@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -24,9 +24,84 @@ final enum class dev.carcara.kotlinx.locale/Capitalization : kotlin/Enum<dev.car
     final object Companion // dev.carcara.kotlinx.locale/Capitalization.Companion|null[0]
 }
 
+final enum class dev.carcara.kotlinx.locale/DisplayNameType : kotlin/Enum<dev.carcara.kotlinx.locale/DisplayNameType> { // dev.carcara.kotlinx.locale/DisplayNameType|null[0]
+    enum entry CALENDAR // dev.carcara.kotlinx.locale/DisplayNameType.CALENDAR|null[0]
+    enum entry CURRENCY // dev.carcara.kotlinx.locale/DisplayNameType.CURRENCY|null[0]
+    enum entry DATE_TIME_FIELD // dev.carcara.kotlinx.locale/DisplayNameType.DATE_TIME_FIELD|null[0]
+    enum entry LANGUAGE // dev.carcara.kotlinx.locale/DisplayNameType.LANGUAGE|null[0]
+    enum entry REGION // dev.carcara.kotlinx.locale/DisplayNameType.REGION|null[0]
+    enum entry SCRIPT // dev.carcara.kotlinx.locale/DisplayNameType.SCRIPT|null[0]
+    enum entry VARIANT // dev.carcara.kotlinx.locale/DisplayNameType.VARIANT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale/DisplayNameType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale/DisplayNameType> // dev.carcara.kotlinx.locale/DisplayNameType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale/DisplayNameType // dev.carcara.kotlinx.locale/DisplayNameType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale/DisplayNameType> // dev.carcara.kotlinx.locale/DisplayNameType.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale/DisplayNameType.Companion|null[0]
+}
+
+final enum class dev.carcara.kotlinx.locale/NameFallback : kotlin/Enum<dev.carcara.kotlinx.locale/NameFallback> { // dev.carcara.kotlinx.locale/NameFallback|null[0]
+    enum entry CODE // dev.carcara.kotlinx.locale/NameFallback.CODE|null[0]
+    enum entry NONE // dev.carcara.kotlinx.locale/NameFallback.NONE|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale/NameFallback.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale/NameFallback> // dev.carcara.kotlinx.locale/NameFallback.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale/NameFallback // dev.carcara.kotlinx.locale/NameFallback.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale/NameFallback> // dev.carcara.kotlinx.locale/NameFallback.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale/NameFallback.Companion|null[0]
+}
+
+final enum class dev.carcara.kotlinx.locale/NameOrigin : kotlin/Enum<dev.carcara.kotlinx.locale/NameOrigin> { // dev.carcara.kotlinx.locale/NameOrigin|null[0]
+    enum entry CODE // dev.carcara.kotlinx.locale/NameOrigin.CODE|null[0]
+    enum entry LOCALIZED // dev.carcara.kotlinx.locale/NameOrigin.LOCALIZED|null[0]
+    enum entry WIDTH_FALLBACK // dev.carcara.kotlinx.locale/NameOrigin.WIDTH_FALLBACK|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale/NameOrigin.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale/NameOrigin> // dev.carcara.kotlinx.locale/NameOrigin.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale/NameOrigin // dev.carcara.kotlinx.locale/NameOrigin.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale/NameOrigin> // dev.carcara.kotlinx.locale/NameOrigin.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale/NameOrigin.Companion|null[0]
+}
+
+final enum class dev.carcara.kotlinx.locale/NameWidth : kotlin/Enum<dev.carcara.kotlinx.locale/NameWidth> { // dev.carcara.kotlinx.locale/NameWidth|null[0]
+    enum entry LONG // dev.carcara.kotlinx.locale/NameWidth.LONG|null[0]
+    enum entry NARROW // dev.carcara.kotlinx.locale/NameWidth.NARROW|null[0]
+    enum entry SHORT // dev.carcara.kotlinx.locale/NameWidth.SHORT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale/NameWidth.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale/NameWidth> // dev.carcara.kotlinx.locale/NameWidth.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale/NameWidth // dev.carcara.kotlinx.locale/NameWidth.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale/NameWidth> // dev.carcara.kotlinx.locale/NameWidth.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale/NameWidth.Companion|null[0]
+}
+
+final enum class dev.carcara.kotlinx.locale/RangeSource : kotlin/Enum<dev.carcara.kotlinx.locale/RangeSource> { // dev.carcara.kotlinx.locale/RangeSource|null[0]
+    enum entry END // dev.carcara.kotlinx.locale/RangeSource.END|null[0]
+    enum entry SHARED // dev.carcara.kotlinx.locale/RangeSource.SHARED|null[0]
+    enum entry START // dev.carcara.kotlinx.locale/RangeSource.START|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale/RangeSource.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale/RangeSource> // dev.carcara.kotlinx.locale/RangeSource.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale/RangeSource // dev.carcara.kotlinx.locale/RangeSource.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale/RangeSource> // dev.carcara.kotlinx.locale/RangeSource.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale/RangeSource.Companion|null[0]
+}
+
 abstract interface dev.carcara.kotlinx.locale/LocaleDataSource { // dev.carcara.kotlinx.locale/LocaleDataSource|null[0]
     abstract val supportedLocales // dev.carcara.kotlinx.locale/LocaleDataSource.supportedLocales|{}supportedLocales[0]
         abstract fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale/LocaleDataSource.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
+    open val localeCoverage // dev.carcara.kotlinx.locale/LocaleDataSource.localeCoverage|{}localeCoverage[0]
+        open fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale/LocaleDataSource.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale/LocaleDataSource.Companion|null[0]
 }
@@ -36,6 +111,110 @@ abstract interface dev.carcara.kotlinx.locale/LocaleRef { // dev.carcara.kotlinx
         abstract fun <get-tag>(): kotlin/String // dev.carcara.kotlinx.locale/LocaleRef.tag.<get-tag>|<get-tag>(){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale/LocaleRef.Companion|null[0]
+}
+
+sealed interface <#A: out kotlin/Any?> dev.carcara.kotlinx.locale/LocaleLookup { // dev.carcara.kotlinx.locale/LocaleLookup|null[0]
+    final class <#A1: kotlin/Any?> Value : dev.carcara.kotlinx.locale/LocaleLookup<#A1> { // dev.carcara.kotlinx.locale/LocaleLookup.Value|null[0]
+        constructor <init>(#A1) // dev.carcara.kotlinx.locale/LocaleLookup.Value.<init>|<init>(1:0){}[0]
+
+        final val value // dev.carcara.kotlinx.locale/LocaleLookup.Value.value|{}value[0]
+            final fun <get-value>(): #A1 // dev.carcara.kotlinx.locale/LocaleLookup.Value.value.<get-value>|<get-value>(){}[0]
+
+        final fun component1(): #A1 // dev.carcara.kotlinx.locale/LocaleLookup.Value.component1|component1(){}[0]
+        final fun copy(#A1 = ...): dev.carcara.kotlinx.locale/LocaleLookup.Value<#A1> // dev.carcara.kotlinx.locale/LocaleLookup.Value.copy|copy(1:0){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/LocaleLookup.Value.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/LocaleLookup.Value.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/LocaleLookup.Value.toString|toString(){}[0]
+
+        final object Companion // dev.carcara.kotlinx.locale/LocaleLookup.Value.Companion|null[0]
+    }
+
+    final class Unsupported : dev.carcara.kotlinx.locale/LocaleLookup<kotlin/Nothing> { // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported|null[0]
+        constructor <init>(kotlin/String) // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.<init>|<init>(kotlin.String){}[0]
+
+        final val operation // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.operation|{}operation[0]
+            final fun <get-operation>(): kotlin/String // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.operation.<get-operation>|<get-operation>(){}[0]
+
+        final fun component1(): kotlin/String // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.carcara.kotlinx.locale/LocaleLookup.Unsupported // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.toString|toString(){}[0]
+
+        final object Companion // dev.carcara.kotlinx.locale/LocaleLookup.Unsupported.Companion|null[0]
+    }
+
+    final object Companion // dev.carcara.kotlinx.locale/LocaleLookup.Companion|null[0]
+
+    final object MissingData : dev.carcara.kotlinx.locale/LocaleLookup<kotlin/Nothing> { // dev.carcara.kotlinx.locale/LocaleLookup.MissingData|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/LocaleLookup.MissingData.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/LocaleLookup.MissingData.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/LocaleLookup.MissingData.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.carcara.kotlinx.locale/LocaleCoverage { // dev.carcara.kotlinx.locale/LocaleCoverage|null[0]
+    final class Enumerated : dev.carcara.kotlinx.locale/LocaleCoverage { // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated|null[0]
+        constructor <init>(kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale>) // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.<init>|<init>(kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+
+        final val locales // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.locales|{}locales[0]
+            final fun <get-locales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.locales.<get-locales>|<get-locales>(){}[0]
+
+        final fun component1(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.component1|component1(){}[0]
+        final fun copy(kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> = ...): dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.copy|copy(kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.toString|toString(){}[0]
+
+        final object Companion // dev.carcara.kotlinx.locale/LocaleCoverage.Enumerated.Companion|null[0]
+    }
+
+    final class RootFallback : dev.carcara.kotlinx.locale/LocaleCoverage { // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback|null[0]
+        constructor <init>(kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale>) // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.<init>|<init>(kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+
+        final val locales // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.locales|{}locales[0]
+            final fun <get-locales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.locales.<get-locales>|<get-locales>(){}[0]
+
+        final fun component1(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.component1|component1(){}[0]
+        final fun copy(kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> = ...): dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.copy|copy(kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.toString|toString(){}[0]
+
+        final object Companion // dev.carcara.kotlinx.locale/LocaleCoverage.RootFallback.Companion|null[0]
+    }
+
+    final object Companion // dev.carcara.kotlinx.locale/LocaleCoverage.Companion|null[0]
+
+    final object Universal : dev.carcara.kotlinx.locale/LocaleCoverage { // dev.carcara.kotlinx.locale/LocaleCoverage.Universal|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/LocaleCoverage.Universal.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/LocaleCoverage.Universal.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/LocaleCoverage.Universal.toString|toString(){}[0]
+    }
+
+    final object Unknown : dev.carcara.kotlinx.locale/LocaleCoverage { // dev.carcara.kotlinx.locale/LocaleCoverage.Unknown|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/LocaleCoverage.Unknown.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/LocaleCoverage.Unknown.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/LocaleCoverage.Unknown.toString|toString(){}[0]
+    }
+}
+
+final class <#A: kotlin/Any?> dev.carcara.kotlinx.locale/RangePart { // dev.carcara.kotlinx.locale/RangePart|null[0]
+    constructor <init>(#A, dev.carcara.kotlinx.locale/RangeSource) // dev.carcara.kotlinx.locale/RangePart.<init>|<init>(1:0;dev.carcara.kotlinx.locale.RangeSource){}[0]
+
+    final val part // dev.carcara.kotlinx.locale/RangePart.part|{}part[0]
+        final fun <get-part>(): #A // dev.carcara.kotlinx.locale/RangePart.part.<get-part>|<get-part>(){}[0]
+    final val source // dev.carcara.kotlinx.locale/RangePart.source|{}source[0]
+        final fun <get-source>(): dev.carcara.kotlinx.locale/RangeSource // dev.carcara.kotlinx.locale/RangePart.source.<get-source>|<get-source>(){}[0]
+
+    final fun component1(): #A // dev.carcara.kotlinx.locale/RangePart.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale/RangeSource // dev.carcara.kotlinx.locale/RangePart.component2|component2(){}[0]
+    final fun copy(#A = ..., dev.carcara.kotlinx.locale/RangeSource = ...): dev.carcara.kotlinx.locale/RangePart<#A> // dev.carcara.kotlinx.locale/RangePart.copy|copy(1:0;dev.carcara.kotlinx.locale.RangeSource){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/RangePart.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/RangePart.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/RangePart.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale/RangePart.Companion|null[0]
 }
 
 final class dev.carcara.kotlinx.locale.internal/GraphemeBreakRules { // dev.carcara.kotlinx.locale.internal/GraphemeBreakRules|null[0]
@@ -48,7 +227,30 @@ final class dev.carcara.kotlinx.locale.internal/GraphemeBreakRules { // dev.carc
     final object Companion // dev.carcara.kotlinx.locale.internal/GraphemeBreakRules.Companion|null[0]
 }
 
+final class dev.carcara.kotlinx.locale/DisplayName { // dev.carcara.kotlinx.locale/DisplayName|null[0]
+    constructor <init>(kotlin/String, dev.carcara.kotlinx.locale/NameOrigin, dev.carcara.kotlinx.locale/NameWidth?) // dev.carcara.kotlinx.locale/DisplayName.<init>|<init>(kotlin.String;dev.carcara.kotlinx.locale.NameOrigin;dev.carcara.kotlinx.locale.NameWidth?){}[0]
+
+    final val origin // dev.carcara.kotlinx.locale/DisplayName.origin|{}origin[0]
+        final fun <get-origin>(): dev.carcara.kotlinx.locale/NameOrigin // dev.carcara.kotlinx.locale/DisplayName.origin.<get-origin>|<get-origin>(){}[0]
+    final val text // dev.carcara.kotlinx.locale/DisplayName.text|{}text[0]
+        final fun <get-text>(): kotlin/String // dev.carcara.kotlinx.locale/DisplayName.text.<get-text>|<get-text>(){}[0]
+    final val width // dev.carcara.kotlinx.locale/DisplayName.width|{}width[0]
+        final fun <get-width>(): dev.carcara.kotlinx.locale/NameWidth? // dev.carcara.kotlinx.locale/DisplayName.width.<get-width>|<get-width>(){}[0]
+
+    final fun component1(): kotlin/String // dev.carcara.kotlinx.locale/DisplayName.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale/NameOrigin // dev.carcara.kotlinx.locale/DisplayName.component2|component2(){}[0]
+    final fun component3(): dev.carcara.kotlinx.locale/NameWidth? // dev.carcara.kotlinx.locale/DisplayName.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., dev.carcara.kotlinx.locale/NameOrigin = ..., dev.carcara.kotlinx.locale/NameWidth? = ...): dev.carcara.kotlinx.locale/DisplayName // dev.carcara.kotlinx.locale/DisplayName.copy|copy(kotlin.String;dev.carcara.kotlinx.locale.NameOrigin;dev.carcara.kotlinx.locale.NameWidth?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/DisplayName.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/DisplayName.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/DisplayName.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale/DisplayName.Companion|null[0]
+}
+
 final class dev.carcara.kotlinx.locale/Locale { // dev.carcara.kotlinx.locale/Locale|null[0]
+    final val extensions // dev.carcara.kotlinx.locale/Locale.extensions|{}extensions[0]
+        final fun <get-extensions>(): kotlin.collections/Map<kotlin/Char, kotlin/String> // dev.carcara.kotlinx.locale/Locale.extensions.<get-extensions>|<get-extensions>(){}[0]
     final val language // dev.carcara.kotlinx.locale/Locale.language|{}language[0]
         final fun <get-language>(): kotlin/String // dev.carcara.kotlinx.locale/Locale.language.<get-language>|<get-language>(){}[0]
     final val region // dev.carcara.kotlinx.locale/Locale.region|{}region[0]
@@ -57,8 +259,12 @@ final class dev.carcara.kotlinx.locale/Locale { // dev.carcara.kotlinx.locale/Lo
         final fun <get-script>(): kotlin/String? // dev.carcara.kotlinx.locale/Locale.script.<get-script>|<get-script>(){}[0]
     final val unicodeAttributes // dev.carcara.kotlinx.locale/Locale.unicodeAttributes|{}unicodeAttributes[0]
         final fun <get-unicodeAttributes>(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale/Locale.unicodeAttributes.<get-unicodeAttributes>|<get-unicodeAttributes>(){}[0]
+    final val unicodeKeywords // dev.carcara.kotlinx.locale/Locale.unicodeKeywords|{}unicodeKeywords[0]
+        final fun <get-unicodeKeywords>(): kotlin.collections/Map<kotlin/String, kotlin/String> // dev.carcara.kotlinx.locale/Locale.unicodeKeywords.<get-unicodeKeywords>|<get-unicodeKeywords>(){}[0]
     final val variant // dev.carcara.kotlinx.locale/Locale.variant|{}variant[0]
         final fun <get-variant>(): kotlin/String? // dev.carcara.kotlinx.locale/Locale.variant.<get-variant>|<get-variant>(){}[0]
+    final val variants // dev.carcara.kotlinx.locale/Locale.variants|{}variants[0]
+        final fun <get-variants>(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale/Locale.variants.<get-variants>|<get-variants>(){}[0]
 
     final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale/Locale.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale/Locale.hashCode|hashCode(){}[0]
@@ -66,6 +272,9 @@ final class dev.carcara.kotlinx.locale/Locale { // dev.carcara.kotlinx.locale/Lo
     final fun toLanguageTag(): kotlin/String // dev.carcara.kotlinx.locale/Locale.toLanguageTag|toLanguageTag(){}[0]
     final fun toString(): kotlin/String // dev.carcara.kotlinx.locale/Locale.toString|toString(){}[0]
     final fun unicodeKeywordOrNull(kotlin/String): kotlin/String? // dev.carcara.kotlinx.locale/Locale.unicodeKeywordOrNull|unicodeKeywordOrNull(kotlin.String){}[0]
+    final fun unicodeKeywordValueOrNull(kotlin/String): kotlin/String? // dev.carcara.kotlinx.locale/Locale.unicodeKeywordValueOrNull|unicodeKeywordValueOrNull(kotlin.String){}[0]
+    final fun withExtension(kotlin/Char, kotlin/String?): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale/Locale.withExtension|withExtension(kotlin.Char;kotlin.String?){}[0]
+    final fun withLanguageId(kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ...): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale/Locale.withLanguageId|withLanguageId(kotlin.String;kotlin.String?;kotlin.String?;kotlin.collections.List<kotlin.String>){}[0]
     final fun withUnicodeKeyword(kotlin/String, kotlin/String?): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale/Locale.withUnicodeKeyword|withUnicodeKeyword(kotlin.String;kotlin.String?){}[0]
 
     final object Companion { // dev.carcara.kotlinx.locale/Locale.Companion|null[0]
@@ -74,6 +283,7 @@ final class dev.carcara.kotlinx.locale/Locale { // dev.carcara.kotlinx.locale/Lo
 
         final fun forLanguageTag(kotlin/String): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale/Locale.Companion.forLanguageTag|forLanguageTag(kotlin.String){}[0]
         final fun forLanguageTagOrNull(kotlin/String): dev.carcara.kotlinx.locale/Locale? // dev.carcara.kotlinx.locale/Locale.Companion.forLanguageTagOrNull|forLanguageTagOrNull(kotlin.String){}[0]
+        final fun forUnicodeLanguageTagOrNull(kotlin/String): dev.carcara.kotlinx.locale/Locale? // dev.carcara.kotlinx.locale/Locale.Companion.forUnicodeLanguageTagOrNull|forUnicodeLanguageTagOrNull(kotlin.String){}[0]
         final fun of(kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale/Locale.Companion.of|of(kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
     }
 }

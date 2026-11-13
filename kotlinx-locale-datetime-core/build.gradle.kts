@@ -22,6 +22,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":kotlinx-locale-core"))
+            api(project(":kotlinx-locale-number-core"))
+            api(project(":kotlinx-locale-timezone-core"))
             api(libs.kotlinx.datetime)
         }
     }

@@ -3,9 +3,16 @@ public final class dev/carcara/kotlinx/locale/timezone/cldr/CldrTimeZone : dev/c
 	public fun displayNameOrNull (Lkotlinx/datetime/TimeZone;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameStyle;Lkotlinx/datetime/UtcOffset;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun exemplarCityOrNull (Lkotlinx/datetime/TimeZone;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public final fun getFormatRecords ()Ljava/util/Map;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public final fun getMetadata ()Ldev/carcara/kotlinx/locale/timezone/cldr/runtime/TimeZoneMetadata;
 	public final fun getNameRecords ()Ljava/util/Map;
 	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun render (Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameStyle;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/timezone/cldr/IntlTimeZoneKt {
+	public static final fun timeZoneName (Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameStyle;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun timeZoneName$default (Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameStyle;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/timezone/cldr/TimeZoneNamesKt {

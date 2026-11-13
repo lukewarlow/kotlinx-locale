@@ -19,9 +19,8 @@ plugins {
 }
 
 sizeProbe {
-    // Measured at 186.1 KB. It tracks datetime-full, which grew by the
-    // stand-alone calendar names; the skeleton tables themselves are unchanged.
-    budgetBytes = 205 * 1024
+    // Structured rendering adds exact number options, calendar name widths and zone-name context.
+    budgetBytes = 750 * 1024
 }
 
 kotlin {

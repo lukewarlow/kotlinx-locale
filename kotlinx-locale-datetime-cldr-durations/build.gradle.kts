@@ -31,6 +31,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":kotlinx-locale-datetime-cldr-runtime"))
+            api(project(":kotlinx-locale-list-cldr-full"))
             // The plural rules that pick the wording and the formatter that
             // renders its count.
             api(project(":kotlinx-locale-number-cldr-full"))

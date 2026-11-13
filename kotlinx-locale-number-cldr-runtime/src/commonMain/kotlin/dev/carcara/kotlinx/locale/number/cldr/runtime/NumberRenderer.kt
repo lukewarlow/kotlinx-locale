@@ -23,10 +23,13 @@ import dev.carcara.kotlinx.locale.number.Decimal
 import dev.carcara.kotlinx.locale.number.FormattedNumber
 import dev.carcara.kotlinx.locale.number.NumberFormatOptions
 import dev.carcara.kotlinx.locale.number.NumberGrouping
+import dev.carcara.kotlinx.locale.number.NumberNotation
+import dev.carcara.kotlinx.locale.number.NumberPart
+import dev.carcara.kotlinx.locale.number.NumberPartKind
 import dev.carcara.kotlinx.locale.number.NumberSymbols
+import dev.carcara.kotlinx.locale.number.NumberValue
 import dev.carcara.kotlinx.locale.number.SignDisplay
-import dev.carcara.kotlinx.locale.number.internal.rescaleFraction
-import dev.carcara.kotlinx.locale.number.internal.roundToIncrement
+import dev.carcara.kotlinx.locale.number.numberRound
 
 /**
  * How a run of `¤` characters in an affix is filled in.
@@ -72,85 +75,148 @@ public fun renderNumber(
     compactExponent: Int = 0,
     groupingFloor: Int = 1,
     currencySpacing: Boolean = false,
+    affixLiteralKind: NumberPartKind = NumberPartKind.LITERAL,
 ): FormattedNumber {
-    val scaled = applyMultiplier(value, pattern.multiplier)
-
+    val scaled = if (options.preRounded) value else applyMultiplier(value, pattern.multiplier)
     val minimum = fixedFractionDigits ?: options.minimumFractionDigits ?: pattern.minimumFractionDigits
     val maximum = fixedFractionDigits ?: options.maximumFractionDigits ?: pattern.maximumFractionDigits
-    var rendered = scaled.rescaled(maxOf(minimum, minOf(scaled.scale, maxOf(minimum, maximum))))
-    if (pattern.roundingIncrement > 0 && fixedFractionDigits == null) {
-        rendered = Decimal.ofUnscaled(roundToIncrement(rendered.unscaled, pattern.roundingIncrement), rendered.scale)
+    val rendered = if (options.preRounded) {
+        scaled
+    } else if (fixedFractionDigits != null) {
+        scaled.rescaled(fixedFractionDigits, options.roundingMode, options.roundingIncrement)
+    } else {
+        numberRound(scaled, options, minimum, maximum)
     }
-    // Trailing zeros beyond the minimum come off, which is what a `#` in the
-    // pattern's fraction part means.
-    while (rendered.scale > minimum && rendered.unscaled % 10L == 0L) {
-        rendered = Decimal.ofUnscaled(rendered.unscaled / 10, rendered.scale - 1)
-    }
-
-    // The sign is read off the value that arrived, not off the rounded result,
-    // so -0.5 at no fraction digits keeps its minus. Both reference
-    // implementations do this, and SignDisplay.NEGATIVE is the value that asks
-    // for the other answer.
-    val zero = rendered.unscaled == 0L
-    val negative = scaled.unscaled < 0 && !(zero && options.signDisplay.suppressesNegativeZero)
-    val digits = rendered.absoluteDigits()
-    val fractionDigits = rendered.scale
-    val integerLength = maxOf(digits.length - fractionDigits, 0)
-    var integerPart = digits.substring(0, integerLength)
-    var fractionPart = digits.substring(integerLength)
-    while (fractionPart.length < fractionDigits) fractionPart = "0$fractionPart"
-    val minimumIntegerDigits = maxOf(pattern.minimumIntegerDigits, options.minimumIntegerDigits)
-    while (integerPart.length < minimumIntegerDigits) integerPart = "0$integerPart"
+    val zero = rendered.isZero
+    val negative = scaled.isNegative && !(zero && options.signDisplay.suppressesNegativeZero)
+    val fractionPart = rendered.fractionDigits
+    val integerPart = rendered.integerDigits.padStart(maxOf(pattern.minimumIntegerDigits, options.minimumIntegerDigits), '0')
 
     val digitStrings = digitStringsOf(symbols.digits)
     val group = if (useCurrencySeparators) symbols.currencyGroup else symbols.group
     val decimal = if (useCurrencySeparators) symbols.currencyDecimal else symbols.decimal
 
-    val body = buildString {
-        appendGrouped(integerPart, pattern, symbols, options.grouping, group, digitStrings, groupingFloor)
-        if (fractionPart.isNotEmpty()) {
-            append(decimal)
-            for (ch in fractionPart) append(digitStrings[ch - '0'])
+    val bodyParts = ArrayList<NumberPart>()
+    val primary = pattern.primaryGroupSize
+    val groupingMinimum = when (options.grouping) {
+        NumberGrouping.NEVER -> Int.MAX_VALUE
+        NumberGrouping.ALWAYS -> 1
+        NumberGrouping.AUTO -> maxOf(symbols.minimumGroupingDigits, groupingFloor)
+        NumberGrouping.MIN2 -> maxOf(2, groupingFloor)
+    }
+    val grouped = primary > 0 && groupingMinimum != Int.MAX_VALUE && integerPart.length >= primary + groupingMinimum
+    var chunk = StringBuilder()
+    for (index in integerPart.indices) {
+        val afterPrimary = integerPart.length - index - primary
+        if (grouped && index > 0 && (afterPrimary == 0 || (afterPrimary > 0 && afterPrimary % pattern.secondaryGroupSize == 0))) {
+            bodyParts.add(NumberPart(NumberPartKind.INTEGER, chunk.toString()))
+            bodyParts.add(NumberPart(NumberPartKind.GROUP, group))
+            chunk = StringBuilder()
         }
+        chunk.append(digitStrings[integerPart[index] - '0'])
     }
-
+    bodyParts.add(NumberPart(NumberPartKind.INTEGER, chunk.toString()))
+    if (fractionPart.isNotEmpty()) {
+        bodyParts.add(NumberPart(NumberPartKind.DECIMAL, decimal))
+        bodyParts.add(NumberPart(NumberPartKind.FRACTION, fractionPart.map { digitStrings[it - '0'] }.joinToString("")))
+    }
     val effective = signPattern(pattern, symbols, options.signDisplay, negative, zero)
-    val prefixText = renderAffix(effective.prefix, affix)
-    val suffixText = renderAffix(effective.suffix, affix)
-    val text = if (currencySpacing) {
-        prefixText +
-            currencySpacingInsert(effective.prefix, prefixText, body, digitStrings, atPrefix = true) +
-            body +
-            currencySpacingInsert(effective.suffix, suffixText, body, digitStrings, atPrefix = false) +
-            suffixText
-    } else {
-        prefixText + body + suffixText
+    val prefix = affixParts(effective.prefix, symbols, affix, affixLiteralKind)
+    val suffix = affixParts(effective.suffix, symbols, affix, affixLiteralKind)
+    val body = bodyParts.joinToString("") { it.value }
+    val parts = buildList {
+        addAll(prefix)
+        if (currencySpacing) {
+            val spacing = currencySpacingInsert(effective.prefix, prefix.joinToString("") { it.value }, body, digitStrings, atPrefix = true)
+            if (spacing.isNotEmpty()) add(NumberPart(NumberPartKind.LITERAL, spacing))
+        }
+        addAll(bodyParts)
+        if (currencySpacing) {
+            val spacing =
+                currencySpacingInsert(effective.suffix, suffix.joinToString("") { it.value }, body, digitStrings, atPrefix = false)
+            if (spacing.isNotEmpty()) add(NumberPart(NumberPartKind.LITERAL, spacing))
+        }
+        addAll(suffix)
     }
-    return FormattedNumber(text, integerPart, fractionPart, compactExponent)
+    return FormattedNumber(parts.joinToString("") { it.value }, integerPart, fractionPart, compactExponent, parts)
 }
 
 private fun applyMultiplier(value: Decimal, multiplier: Int): Decimal = when (multiplier) {
-    // Scaling by dropping fraction digits rather than by multiplying keeps the
-    // value exact and keeps the operand `v` honest: 0.075 at scale 3 becomes 7.5
-    // at scale 1, which is three visible digits becoming one.
-    100 -> if (value.scale >= 2) Decimal.ofUnscaled(value.unscaled, value.scale - 2) else times(value, 100)
-    1000 -> if (value.scale >= 3) Decimal.ofUnscaled(value.unscaled, value.scale - 3) else times(value, 1000)
+    100 -> value.shifted(2)
+    1000 -> value.shifted(3)
     else -> value
 }
 
-private fun times(value: Decimal, factor: Int): Decimal {
-    var unscaled = value.unscaled
-    var remaining = factor
-    var scale = value.scale
-    while (remaining > 1 && scale > 0) {
-        remaining /= 10
-        scale--
+internal fun affixParts(
+    raw: String,
+    symbols: NumberSymbols,
+    substitution: AffixSubstitution,
+    literalKind: NumberPartKind = NumberPartKind.LITERAL,
+): List<NumberPart> {
+    val result = ArrayList<NumberPart>()
+    var literal = StringBuilder()
+    fun flush() {
+        if (literal.isNotEmpty()) {
+            val value = literal.toString()
+            if (literalKind == NumberPartKind.LITERAL) {
+                result.add(NumberPart(literalKind, value))
+            } else {
+                var start = 0
+                fun isLiteral(char: Char): Boolean = char.isWhitespace() ||
+                    char in "()[]" ||
+                    char == '\u00a0' ||
+                    char == '\u202f' ||
+                    char == '\u200e' ||
+                    char == '\u200f' ||
+                    char == '\u061c'
+                while (start < value.length) {
+                    val ordinary = isLiteral(value[start])
+                    var end = start + 1
+                    while (end < value.length && isLiteral(value[end]) == ordinary) end++
+                    result.add(NumberPart(if (ordinary) NumberPartKind.LITERAL else literalKind, value.substring(start, end)))
+                    start = end
+                }
+            }
+        }
+        literal = StringBuilder()
     }
-    while (remaining > 1) {
-        unscaled *= 10
-        remaining /= 10
+    fun symbol(kind: NumberPartKind, value: String) {
+        flush()
+        var content = StringBuilder()
+        fun contentPart() {
+            if (content.isNotEmpty()) result.add(NumberPart(kind, content.toString()))
+            content = StringBuilder()
+        }
+        for (char in value) {
+            if (char == '\u061c' || char == '\u200e' || char == '\u200f') {
+                contentPart()
+                result.add(NumberPart(NumberPartKind.LITERAL, char.toString()))
+            } else {
+                content.append(char)
+            }
+        }
+        contentPart()
     }
-    return Decimal.ofUnscaled(unscaled, scale)
+    var index = 0
+    while (index < raw.length) {
+        when (val char = raw[index++]) {
+            '-' -> symbol(NumberPartKind.MINUS_SIGN, symbols.minusSign)
+            '+' -> symbol(NumberPartKind.PLUS_SIGN, symbols.plusSign)
+            '%' -> symbol(NumberPartKind.PERCENT_SIGN, symbols.percentSign)
+            '\u2030' -> symbol(NumberPartKind.PER_MILLE, symbols.perMille)
+            '¤' -> {
+                var count = 1
+                while (index < raw.length && raw[index] == '¤') {
+                    count++
+                    index++
+                }
+                symbol(NumberPartKind.CURRENCY, substitution.currencyText(count))
+            }
+            else -> literal.append(char)
+        }
+    }
+    flush()
+    return result
 }
 
 private class SignedAffixes(val prefix: String, val suffix: String)
@@ -172,7 +238,7 @@ private fun signPattern(
     negative: Boolean,
     zero: Boolean,
 ): SignedAffixes {
-    fun resolved(prefix: String, suffix: String) = SignedAffixes(prefix.withSymbols(symbols), suffix.withSymbols(symbols))
+    fun resolved(prefix: String, suffix: String) = SignedAffixes(prefix, suffix)
 
     if (signDisplay == SignDisplay.NEVER) {
         return resolved(pattern.positivePrefix, pattern.positiveSuffix)
@@ -216,6 +282,7 @@ private fun StringBuilder.appendGrouped(
         NumberGrouping.NEVER -> Int.MAX_VALUE
         NumberGrouping.ALWAYS -> 1
         NumberGrouping.AUTO -> maxOf(symbols.minimumGroupingDigits, groupingFloor)
+        NumberGrouping.MIN2 -> maxOf(2, groupingFloor)
     }
     val applyGrouping = primary > 0 && minimum != Int.MAX_VALUE && length >= primary + minimum
     for (index in 0 until length) {
@@ -340,7 +407,7 @@ private fun digitStringsOf(digits: List<String>): List<String> = digits
 
 /** Rescales [value] to [digits] fraction digits, half-even. */
 @InternalKotlinxLocaleApi
-public fun Decimal.atFractionDigits(digits: Int): Decimal = Decimal.ofUnscaled(rescaleFraction(unscaled, scale, digits), digits)
+public fun Decimal.atFractionDigits(digits: Int): Decimal = rescaled(digits)
 
 /**
  * The four sign and scale placeholders in an affix, replaced by [symbols].
@@ -362,4 +429,104 @@ private fun String.withSymbols(symbols: NumberSymbols): String {
             }
         }
     }
+}
+
+@InternalKotlinxLocaleApi
+public fun renderScientific(
+    value: Decimal,
+    pattern: NumberPattern,
+    symbols: NumberSymbols,
+    options: NumberFormatOptions,
+    affix: AffixSubstitution = AffixSubstitution.None,
+    useCurrencySeparators: Boolean = false,
+): FormattedNumber {
+    val scaled = if (options.preRounded) value else applyMultiplier(value, pattern.multiplier)
+    val step = if (options.notation == NumberNotation.ENGINEERING) 3 else 1
+    var exponent: Int =
+        options.notationExponent?.takeIf { options.preRounded }
+            ?: if (scaled.isZero) 0 else scaled.magnitude - ((scaled.magnitude % step + step) % step)
+    fun mantissa(): Decimal = (if (options.preRounded) scaled else scaled.shifted(-exponent)).let {
+        if (options.preRounded) it else numberRound(it, options, pattern.minimumFractionDigits, pattern.maximumFractionDigits)
+    }
+    var rounded = mantissa()
+    if (!options.preRounded && !rounded.isZero && rounded.magnitude >= step) {
+        exponent += step
+        rounded = mantissa()
+    }
+    val base =
+        renderNumber(
+            rounded,
+            pattern,
+            symbols,
+            options.copy(preRounded = true, notation = NumberNotation.STANDARD, grouping = NumberGrouping.NEVER),
+            affix = affix,
+            useCurrencySeparators = useCurrencySeparators,
+        )
+    val exponentParts = buildList {
+        add(NumberPart(NumberPartKind.EXPONENT_SEPARATOR, symbols.exponential))
+        if (exponent < 0) add(NumberPart(NumberPartKind.EXPONENT_MINUS_SIGN, symbols.minusSign))
+        add(
+            NumberPart(
+                NumberPartKind.EXPONENT_INTEGER,
+                exponent.toString().removePrefix("-").map {
+                    symbols.digits[it - '0']
+                }.joinToString(""),
+            ),
+        )
+    }
+    val insert = base.parts.indexOfLast { it.kind == NumberPartKind.INTEGER || it.kind == NumberPartKind.FRACTION } + 1
+    val parts = base.parts.take(insert) + exponentParts + base.parts.drop(insert)
+    return FormattedNumber(
+        parts.joinToString("") {
+            it.value
+        },
+        base.operands.integerDigits,
+        base.operands.fractionDigits,
+        parts = parts,
+        notationExponent = exponent,
+    )
+}
+
+@InternalKotlinxLocaleApi
+public fun renderSpecialNumber(
+    value: NumberValue,
+    pattern: NumberPattern,
+    symbols: NumberSymbols,
+    options: NumberFormatOptions,
+    affix: AffixSubstitution = AffixSubstitution.None,
+    useCurrencySeparators: Boolean = false,
+): FormattedNumber {
+    val negative = value == NumberValue.NegativeInfinity
+    val base =
+        renderNumber(
+            Decimal.ofDigits(if (value == NumberValue.NaN) "0" else "1", 0, negative),
+            pattern,
+            symbols,
+            options.copy(preRounded = true),
+            affix = affix,
+            useCurrencySeparators = useCurrencySeparators,
+            currencySpacing = true,
+        )
+    var inserted = false
+    val parts = buildList {
+        for (part in base.parts) {
+            if (part.kind in setOf(NumberPartKind.INTEGER, NumberPartKind.FRACTION, NumberPartKind.GROUP, NumberPartKind.DECIMAL)) {
+                if (!inserted) {
+                    add(
+                        if (value ==
+                            NumberValue.NaN
+                        ) {
+                            NumberPart(NumberPartKind.NAN, symbols.nan)
+                        } else {
+                            NumberPart(NumberPartKind.INFINITY, symbols.infinity)
+                        },
+                    )
+                    inserted = true
+                }
+            } else {
+                add(part)
+            }
+        }
+    }
+    return FormattedNumber(parts.joinToString("") { it.value }, "0", "", parts = parts)
 }

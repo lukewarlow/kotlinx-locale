@@ -18,5 +18,11 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.datetime.cldr.internal.data
 
+internal val LOCALE_STANDALONE_VEC: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001Dv.C.\u001Eera/abbreviated/1\u001Dd.C.\u001Eera/wide/0\u001Dvanti Cristo\u001Eera/wide/1\u001Ddaspò Cristo\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM"
+
 internal val LOCALE_STANDALONE_VI: String =
-    "Tháng 1\u001ETháng 2\u001ETháng 3\u001ETháng 4\u001ETháng 5\u001ETháng 6\u001ETháng 7\u001ETháng 8\u001ETháng 9\u001ETháng 10\u001ETháng 11\u001ETháng 12\u001FTháng 1\u001ETháng 2\u001ETháng 3\u001ETháng 4\u001ETháng 5\u001ETháng 6\u001ETháng 7\u001ETháng 8\u001ETháng 9\u001ETháng 10\u001ETháng 11\u001ETháng 12\u001F\u001F\u001F\u001F\u001F0"
+    "Tháng 1\u001ETháng 2\u001ETháng 3\u001ETháng 4\u001ETháng 5\u001ETháng 6\u001ETháng 7\u001ETháng 8\u001ETháng 9\u001ETháng 10\u001ETháng 11\u001ETháng 12\u001FTháng 1\u001ETháng 2\u001ETháng 3\u001ETháng 4\u001ETháng 5\u001ETháng 6\u001ETháng 7\u001ETháng 8\u001ETháng 9\u001ETháng 10\u001ETháng 11\u001ETháng 12\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DTCN\u001Eera/abbreviated/1\u001DSCN\u001Eera/narrow/1\u001DCN\u001Eera/wide/0\u001DTrước Chúa Giáng Sinh\u001Eera/wide/1\u001DSau Công Nguyên\u001Eperiod/format/abbreviated/afternoon1\u001Dchiều\u001Eperiod/format/abbreviated/am\u001DSA\u001Eperiod/format/abbreviated/evening1\u001Dtối\u001Eperiod/format/abbreviated/midnight\u001Dnửa đêm\u001Eperiod/format/abbreviated/morning1\u001Dsáng\u001Eperiod/format/abbreviated/night1\u001Dđêm\u001Eperiod/format/abbreviated/noon\u001DTR\u001Eperiod/format/abbreviated/pm\u001DCH\u001Eperiod/format/narrow/am\u001Ds\u001Eperiod/format/narrow/noon\u001Dtr\u001Eperiod/format/narrow/pm\u001Dc\u001Eperiod/format/wide/noon\u001Dtrưa\u001Eperiod/stand-alone/narrow/noon\u001Dtrưa\u001Eperiod/stand-alone/wide/noon\u001Dtrưa"
+
+internal val LOCALE_STANDALONE_VMW: String =
+    "\u001F\u001F\u001F\u001F\u001F\u001F0\u001Fdefault/numberingSystem\u001Dlatn\u001Eera/abbreviated/0\u001DBCE\u001Eera/abbreviated/1\u001DCE\u001Eperiod/format/abbreviated/am\u001DAM\u001Eperiod/format/abbreviated/pm\u001DPM\u001Eperiod/format/wide/am\u001Dvaasisu\u001Eperiod/format/wide/pm\u001Dmakaaripi"

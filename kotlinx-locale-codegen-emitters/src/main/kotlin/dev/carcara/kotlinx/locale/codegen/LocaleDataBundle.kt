@@ -92,6 +92,18 @@ public class LocaleDataBundle private constructor(
     public val sections: Map<String, Map<String, String>>,
 ) {
 
+    /** Copy this immutable bundle into a builder, retaining all sections and tables. */
+    public fun toBuilder(): Builder = Builder().also { builder ->
+        builder.cldrVersion = cldrVersion
+        builder.isoPublished = isoPublished
+        builder.localeTags = localeTags
+        builder.countries = countries
+        builder.currencies = currencies
+        builder.countryCurrencies = countryCurrencies
+        tables.forEach { (name, payload) -> builder.table(name, payload) }
+        sections.forEach { (name, payloads) -> builder.section(name, payloads) }
+    }
+
     /** The payloads of one section, empty when this bundle carries none. */
     public fun section(name: String): Map<String, String> = sections[name].orEmpty()
 

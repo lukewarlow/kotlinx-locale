@@ -75,3 +75,18 @@ tasks.register<JavaExec>("generateSegmentationData") {
     mainClass = mainClassFqn
     args("segmentation", rootDir.absolutePath)
 }
+
+// Locale identity metadata can be updated without rebuilding the other tables.
+tasks.register<JavaExec>("generateLocaleMetadata") {
+    group = "codegen"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = mainClassFqn
+    args("metadata", rootDir.absolutePath)
+}
+
+tasks.register<JavaExec>("generateLocaleIdentityFixtures") {
+    group = "codegen"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = mainClassFqn
+    args("identityFixtures", rootDir.absolutePath)
+}

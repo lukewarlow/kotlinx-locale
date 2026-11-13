@@ -15,31 +15,126 @@ public final class dev/carcara/kotlinx/locale/CapitalizationKt {
 	public static final fun titlecaseFirstWord (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class dev/carcara/kotlinx/locale/DisplayName {
+	public static final field Companion Ldev/carcara/kotlinx/locale/DisplayName$Companion;
+	public fun <init> (Ljava/lang/String;Ldev/carcara/kotlinx/locale/NameOrigin;Ldev/carcara/kotlinx/locale/NameWidth;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ldev/carcara/kotlinx/locale/NameOrigin;
+	public final fun component3 ()Ldev/carcara/kotlinx/locale/NameWidth;
+	public final fun copy (Ljava/lang/String;Ldev/carcara/kotlinx/locale/NameOrigin;Ldev/carcara/kotlinx/locale/NameWidth;)Ldev/carcara/kotlinx/locale/DisplayName;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/DisplayName;Ljava/lang/String;Ldev/carcara/kotlinx/locale/NameOrigin;Ldev/carcara/kotlinx/locale/NameWidth;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/DisplayName;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOrigin ()Ldev/carcara/kotlinx/locale/NameOrigin;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getWidth ()Ldev/carcara/kotlinx/locale/NameWidth;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/DisplayName$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/DisplayNameType : java/lang/Enum {
+	public static final field CALENDAR Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static final field CURRENCY Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static final field Companion Ldev/carcara/kotlinx/locale/DisplayNameType$Companion;
+	public static final field DATE_TIME_FIELD Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static final field LANGUAGE Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static final field REGION Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static final field SCRIPT Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static final field VARIANT Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/DisplayNameType;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/DisplayNameType;
+}
+
+public final class dev/carcara/kotlinx/locale/DisplayNameType$Companion {
+}
+
 public abstract interface annotation class dev/carcara/kotlinx/locale/InternalKotlinxLocaleApi : java/lang/annotation/Annotation {
 }
 
 public final class dev/carcara/kotlinx/locale/Locale {
 	public static final field Companion Ldev/carcara/kotlinx/locale/Locale$Companion;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExtensions ()Ljava/util/Map;
 	public final fun getLanguage ()Ljava/lang/String;
 	public final fun getRegion ()Ljava/lang/String;
 	public final fun getScript ()Ljava/lang/String;
 	public final fun getUnicodeAttributes ()Ljava/util/Set;
+	public final fun getUnicodeKeywords ()Ljava/util/Map;
 	public final fun getVariant ()Ljava/lang/String;
+	public final fun getVariants ()Ljava/util/List;
 	public fun hashCode ()I
 	public final fun stripExtensions ()Ldev/carcara/kotlinx/locale/Locale;
 	public final fun toLanguageTag ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public final fun unicodeKeywordOrNull (Ljava/lang/String;)Ljava/lang/String;
+	public final fun unicodeKeywordValueOrNull (Ljava/lang/String;)Ljava/lang/String;
+	public final fun withExtension (CLjava/lang/String;)Ldev/carcara/kotlinx/locale/Locale;
+	public final fun withLanguageId (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Ldev/carcara/kotlinx/locale/Locale;
+	public static synthetic fun withLanguageId$default (Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/Locale;
 	public final fun withUnicodeKeyword (Ljava/lang/String;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/Locale;
 }
 
 public final class dev/carcara/kotlinx/locale/Locale$Companion {
 	public final fun forLanguageTag (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/Locale;
 	public final fun forLanguageTagOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/Locale;
+	public final fun forUnicodeLanguageTagOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/Locale;
 	public final fun getCurrent ()Ldev/carcara/kotlinx/locale/Locale;
 	public final fun of (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/Locale;
 	public static synthetic fun of$default (Ldev/carcara/kotlinx/locale/Locale$Companion;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/Locale;
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/LocaleCoverage {
+	public static final field Companion Ldev/carcara/kotlinx/locale/LocaleCoverage$Companion;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleCoverage$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleCoverage$Enumerated : dev/carcara/kotlinx/locale/LocaleCoverage {
+	public static final field Companion Ldev/carcara/kotlinx/locale/LocaleCoverage$Enumerated$Companion;
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Ldev/carcara/kotlinx/locale/LocaleCoverage$Enumerated;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/LocaleCoverage$Enumerated;Ljava/util/Set;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleCoverage$Enumerated;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLocales ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleCoverage$Enumerated$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleCoverage$RootFallback : dev/carcara/kotlinx/locale/LocaleCoverage {
+	public static final field Companion Ldev/carcara/kotlinx/locale/LocaleCoverage$RootFallback$Companion;
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Ldev/carcara/kotlinx/locale/LocaleCoverage$RootFallback;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/LocaleCoverage$RootFallback;Ljava/util/Set;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleCoverage$RootFallback;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLocales ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleCoverage$RootFallback$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleCoverage$Universal : dev/carcara/kotlinx/locale/LocaleCoverage {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/LocaleCoverage$Universal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleCoverage$Unknown : dev/carcara/kotlinx/locale/LocaleCoverage {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/LocaleCoverage$Unknown;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class dev/carcara/kotlinx/locale/LocaleDataLookupKt {
@@ -48,16 +143,65 @@ public final class dev/carcara/kotlinx/locale/LocaleDataLookupKt {
 
 public abstract interface class dev/carcara/kotlinx/locale/LocaleDataSource {
 	public static final field Companion Ldev/carcara/kotlinx/locale/LocaleDataSource$Companion;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public abstract fun getSupportedLocales ()Ljava/util/Set;
 }
 
 public final class dev/carcara/kotlinx/locale/LocaleDataSource$Companion {
 }
 
+public final class dev/carcara/kotlinx/locale/LocaleDataSource$DefaultImpls {
+	public static fun getLocaleCoverage (Ldev/carcara/kotlinx/locale/LocaleDataSource;)Ldev/carcara/kotlinx/locale/LocaleCoverage;
+}
+
 public final class dev/carcara/kotlinx/locale/LocaleDefaults {
 	public static final field INSTANCE Ldev/carcara/kotlinx/locale/LocaleDefaults;
 	public final fun getLocale ()Ldev/carcara/kotlinx/locale/Locale;
 	public final fun setLocale (Ldev/carcara/kotlinx/locale/Locale;)V
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/LocaleLookup {
+	public static final field Companion Ldev/carcara/kotlinx/locale/LocaleLookup$Companion;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleLookup$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleLookup$MissingData : dev/carcara/kotlinx/locale/LocaleLookup {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/LocaleLookup$MissingData;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleLookup$Unsupported : dev/carcara/kotlinx/locale/LocaleLookup {
+	public static final field Companion Ldev/carcara/kotlinx/locale/LocaleLookup$Unsupported$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/LocaleLookup$Unsupported;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/LocaleLookup$Unsupported;Ljava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup$Unsupported;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOperation ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleLookup$Unsupported$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleLookup$Value : dev/carcara/kotlinx/locale/LocaleLookup {
+	public static final field Companion Ldev/carcara/kotlinx/locale/LocaleLookup$Value$Companion;
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup$Value;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/LocaleLookup$Value;Ljava/lang/Object;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup$Value;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/LocaleLookup$Value$Companion {
 }
 
 public abstract interface class dev/carcara/kotlinx/locale/LocaleRef {
@@ -70,6 +214,74 @@ public final class dev/carcara/kotlinx/locale/LocaleRef$Companion {
 
 public final class dev/carcara/kotlinx/locale/LocaleRefKt {
 	public static final fun toLocale (Ldev/carcara/kotlinx/locale/LocaleRef;)Ldev/carcara/kotlinx/locale/Locale;
+}
+
+public final class dev/carcara/kotlinx/locale/NameFallback : java/lang/Enum {
+	public static final field CODE Ldev/carcara/kotlinx/locale/NameFallback;
+	public static final field Companion Ldev/carcara/kotlinx/locale/NameFallback$Companion;
+	public static final field NONE Ldev/carcara/kotlinx/locale/NameFallback;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/NameFallback;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/NameFallback;
+}
+
+public final class dev/carcara/kotlinx/locale/NameFallback$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/NameOrigin : java/lang/Enum {
+	public static final field CODE Ldev/carcara/kotlinx/locale/NameOrigin;
+	public static final field Companion Ldev/carcara/kotlinx/locale/NameOrigin$Companion;
+	public static final field LOCALIZED Ldev/carcara/kotlinx/locale/NameOrigin;
+	public static final field WIDTH_FALLBACK Ldev/carcara/kotlinx/locale/NameOrigin;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/NameOrigin;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/NameOrigin;
+}
+
+public final class dev/carcara/kotlinx/locale/NameOrigin$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/NameWidth : java/lang/Enum {
+	public static final field Companion Ldev/carcara/kotlinx/locale/NameWidth$Companion;
+	public static final field LONG Ldev/carcara/kotlinx/locale/NameWidth;
+	public static final field NARROW Ldev/carcara/kotlinx/locale/NameWidth;
+	public static final field SHORT Ldev/carcara/kotlinx/locale/NameWidth;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/NameWidth;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/NameWidth;
+}
+
+public final class dev/carcara/kotlinx/locale/NameWidth$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/RangePart {
+	public static final field Companion Ldev/carcara/kotlinx/locale/RangePart$Companion;
+	public fun <init> (Ljava/lang/Object;Ldev/carcara/kotlinx/locale/RangeSource;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ldev/carcara/kotlinx/locale/RangeSource;
+	public final fun copy (Ljava/lang/Object;Ldev/carcara/kotlinx/locale/RangeSource;)Ldev/carcara/kotlinx/locale/RangePart;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/RangePart;Ljava/lang/Object;Ldev/carcara/kotlinx/locale/RangeSource;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/RangePart;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPart ()Ljava/lang/Object;
+	public final fun getSource ()Ldev/carcara/kotlinx/locale/RangeSource;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/RangePart$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/RangeSource : java/lang/Enum {
+	public static final field Companion Ldev/carcara/kotlinx/locale/RangeSource$Companion;
+	public static final field END Ldev/carcara/kotlinx/locale/RangeSource;
+	public static final field SHARED Ldev/carcara/kotlinx/locale/RangeSource;
+	public static final field START Ldev/carcara/kotlinx/locale/RangeSource;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/RangeSource;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/RangeSource;
+}
+
+public final class dev/carcara/kotlinx/locale/RangeSource$Companion {
 }
 
 public final class dev/carcara/kotlinx/locale/internal/GraphemeBreakRules {

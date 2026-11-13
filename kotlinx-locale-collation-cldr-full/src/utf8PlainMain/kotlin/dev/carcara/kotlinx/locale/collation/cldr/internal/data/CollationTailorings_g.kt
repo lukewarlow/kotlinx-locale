@@ -18,5 +18,20 @@
 // Regenerate with: ./gradlew :codegen:generateLocaleData
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
+internal val COLLATION_TAILORING_GAZ: String =
+    "om\u001F04\u001F01"
+
+internal val COLLATION_TAILORING_GL: String =
+    "root\u001F031ea6:2eftgo/2hwcg/27y5mo/0,1ea5:2eftgo/2hwcg/27zk5c/0,1e9u:2eftgo/2hzi8/27y5mo/0,1e9t:2eftgo/2hzi8/27zk5c/0,1e9w:2eftgo/2i2nw/27y5mo/0,1e9v:2eftgo/2i2nw/27zk5c/0,1ea0:2eftgo/2i5tg/27y5mo/0,1e9z:2eftgo/2i5tg/27zk5c/0,1d1:2g5v9c/2hwcg/27y5mo/0,1ecu:2g5v9c/2hwcg/27zk5c/0,1ect:2g5v9c/2hwcg/280ym8/0,1e9y:2g5v9c/2hzi8/27y5mo/0,1e9x:2g5v9c/2hzi8/27zk5c/0,1d2:2gaovc/2hwcg/27y5mo/0,1ecz:2gaovc/2hwcg/27zk5c/0,1ed0:2gaovc/2hwcg/280ym8/0,1ecy:2gaovc/2hwcg/282d1c/0,1ecx:2gaovc/2hwcg/283reo/0,1ea3:2gaovc/2hzi8/27y5mo/0,1ea4:2gaovc/2hzi8/27zk5c/0,1ea2:2gaovc/2hzi8/280ym8/0,1ea1:2gaovc/2hzi8/282d1c/0,18p:2gaovc/2i2nw/27wr28/0,1drc:2gaovc/2i2nw/27y5mo/0,1drd:2gaovc/2i2nw/27zk5c/0,1ecw:2gaovc/2i2nw/280ym8/0,1ecv:2gaovc/2i2nw/282d1c/0,1ecr:2g3xtc/2hwcg/27y5mo/0,1ecs:2g3xtc/2hwcg/27zk5c/0,1ecq:2g3xtc/2hwcg/280ym8/0,1ecp:2g3xtc/2hwcg/282d1c/0,17t:2g3xtc/2hzi8/27wr28/0,1eac:2g3xtc/2hzi8/27y5mo/0,1eab:2g3xtc/2hzi8/27zk5c/0,18g:0/il8u80/27wr28/0,2t6:0/il8vsw/27wr28/0,3hk:47pzy0/2hwcg/27wr28/0,3cx:47pzy0/2hwcg/27wr28/0,3hl:47pzy0/2hwcg/27wr28/0,3hm:47pzy0/2hwcg/27wr28/0,3hn:47qn3c/2hwcg/27wr28/0,3ho:47qn3c/2hwcg/27wr28/0,3hp:47qn3c/2hwcg/27wr28/0,3hq:47qyo0/2hwcg/27wr28/0,3d0:47qyo0/2hwcg/27wr28/0,3hr:47rltc/2hwcg/27wr28/0,3hs:47rltc/2hwcg/27wr28/0,3ht:47rltc/2hwcg/27wr28/0,3hu:47rltc/2hwcg/27wr28/0,3hv:47rltc/2hwcg/27wr28/0,3hw:47rltc/2hwcg/27wr28/0,3hx:47rltc/2hwcg/27wr28/0,3hy:47rltc/2hwcg/27wr28/0,3hz:47rxe0/2hwcg/27wr28/0,3i0:47s8yo/2hwcg/27wr28/0,3d4:47s8yo/2hwcg/27wr28/0,3i1:47s8yo/2hwcg/27wr28/0,3i2:47sw40/2hwcg/27wr28/0,3d6:47sw40/2hwcg/27wr28/0,3i3:47sw40/2hwcg/27wr28/0,3i4:47tj9c/2hwcg/27wr28/0,3i5:47tuu0/2hwcg/27wr28/0,3d9:47tuu0/2hwcg/27wr28/0,3i6:47uhzc/2hwcg/27wr28/0,3i7:47utk0/2hwcg/27wr28/0,3i8:47v54o/2hwcg/27wr28/0,3i9:47vgpc/2hwcg/27wr28/0,3ia:47vsa0/2hwcg/27wr28/0,3fm:48uia0/2hwcg/27wr28/0,3fo:48v5fc/2hwcg/27wr28/0,3fq:48vsko/2hwcg/27wr28/0,3fs:48wfq0/2hwcg/27wr28/0,3fu:48x2vc/2hwcg/27wr28/0,3fv:48x2vc/2hwcg/27wr28/0,3fw:48x2vc/2hwcg/27wr28/0,3fz:48yoqo/2hwcg/27wr28/0,3g0:48yoqo/2hwcg/27wr28/0,3g1:48yoqo/2hwcg/27wr28/0,3g4:490am0/2hwcg/27wr28/0;1p.mw:b49qe/2hwcg/27wr28/0,17r.18z:2eftgo/2hzi8/27wr28/0,17r.190:2eftgo/2i2nw/27wr28/0,17r.191:2eftgo/2i5tg/27wr28/0,18o.190:2g5v9c/2hzi8/27wr28/0,18q.190:2gaovc/2hzi8/27wr28/0,32.lf:274tvq/2hwcg/27wr28/0,26.lf:274tvq/2hwcg/27y5mo/2;;;;;2tc,2td,2te,2tf,2tg,2ww,2wx,2wy,2wz,2x0,52t,52u,52v,52y,xpx,xpy,xq1,xq3,xq4\u001E;32.lf:274tvq/2hwcg/27wr28/0,26.lf:274tvq/2hwcg/27y5mo/2;;;;;\u001F01"
+
+internal val COLLATION_TAILORING_GLG: String =
+    "gl\u001F04\u001F01"
+
+internal val COLLATION_TAILORING_GOM: String =
+    "kok\u001F04\u001F01"
+
 internal val COLLATION_TAILORING_GU: String =
-    "22q:2okq1q/2hwcg/27wr28,22p:2okq1q/2hzi8/27wr28,22r:2okq24/2hwcg/27wr28;;;25k8u0.29fgeo.2hghi0,29frzc.2ad7oo.2lc0nc,2adj9c.2bs0e0.2m9rxc,2bsbyo.2cjnrc.2nokmo,2cjzc0.2dbb4o.2og800,2dbmpc.2doho0.2p7vdc,2dot8o.2eazuo.2pl1wo,2ebbfc.2ggh7c.2q7k3c,2ggss0.2mk2ao.2sd1g0,2mkdvc.2nguuo.266fg0,2nh6fc.2o22qo.273800,2o2ebc.2okego.27ofw0,2okq1c.2p6l2o.25k8u0,2p6wnc.2ps4jc.286rm0,2psg40.2q878o.28sb2o,2q8itc.2qvzq0.298ds0,2qwbao.2rjs7c.29w69c,2rk3s0.2s7koo.2ajyqo,2s7w9c.2ygayo.2b7r80;;;"
+    "root\u001F0022q:2okq1q/2hwcg/27wr28/0,22p:2okq1q/2hzi8/27wr28/0,22r:2okq24/2hwcg/27wr28/0;;;25k8u0.29fgeo.2hghi0,29frzc.2ad7oo.2lc0nc,2adj9c.2bs0e0.2m9rxc,2bsbyo.2cjnrc.2nokmo,2cjzc0.2dbb4o.2og800,2dbmpc.2doho0.2p7vdc,2dot8o.2eazuo.2pl1wo,2ebbfc.2ggh7c.2q7k3c,2ggss0.2mk2ao.2sd1g0,2mkdvc.2nguuo.266fg0,2nh6fc.2o22qo.273800,2o2ebc.2okego.27ofw0,2okq1c.2p6l2o.25k8u0,2p6wnc.2ps4jc.286rm0,2psg40.2q878o.28sb2o,2q8itc.2qvzq0.298ds0,2qwbao.2rjs7c.29w69c,2rk3s0.2s7koo.2ajyqo,2s7w9c.2ygayo.2b7r80;;;\u001F01"
+
+internal val COLLATION_TAILORING_GUJ: String =
+    "gu\u001F04\u001F01"

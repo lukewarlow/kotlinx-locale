@@ -1,0 +1,183 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-metadata-core>
+final enum class dev.carcara.kotlinx.locale.metadata/RegionOrigin : kotlin/Enum<dev.carcara.kotlinx.locale.metadata/RegionOrigin> { // dev.carcara.kotlinx.locale.metadata/RegionOrigin|null[0]
+    enum entry EXPLICIT // dev.carcara.kotlinx.locale.metadata/RegionOrigin.EXPLICIT|null[0]
+    enum entry LIKELY // dev.carcara.kotlinx.locale.metadata/RegionOrigin.LIKELY|null[0]
+    enum entry OVERRIDE // dev.carcara.kotlinx.locale.metadata/RegionOrigin.OVERRIDE|null[0]
+    enum entry SUBDIVISION // dev.carcara.kotlinx.locale.metadata/RegionOrigin.SUBDIVISION|null[0]
+    enum entry WORLD // dev.carcara.kotlinx.locale.metadata/RegionOrigin.WORLD|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.metadata/RegionOrigin.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.metadata/RegionOrigin> // dev.carcara.kotlinx.locale.metadata/RegionOrigin.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.metadata/RegionOrigin // dev.carcara.kotlinx.locale.metadata/RegionOrigin.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.metadata/RegionOrigin> // dev.carcara.kotlinx.locale.metadata/RegionOrigin.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/RegionOrigin.Companion|null[0]
+}
+
+final enum class dev.carcara.kotlinx.locale.metadata/TextDirection : kotlin/Enum<dev.carcara.kotlinx.locale.metadata/TextDirection> { // dev.carcara.kotlinx.locale.metadata/TextDirection|null[0]
+    enum entry LTR // dev.carcara.kotlinx.locale.metadata/TextDirection.LTR|null[0]
+    enum entry RTL // dev.carcara.kotlinx.locale.metadata/TextDirection.RTL|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.metadata/TextDirection.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.metadata/TextDirection> // dev.carcara.kotlinx.locale.metadata/TextDirection.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.metadata/TextDirection // dev.carcara.kotlinx.locale.metadata/TextDirection.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.metadata/TextDirection> // dev.carcara.kotlinx.locale.metadata/TextDirection.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/TextDirection.Companion|null[0]
+}
+
+abstract interface dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource { // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource|null[0]
+    abstract val dataVersion // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.dataVersion|{}dataVersion[0]
+        abstract fun <get-dataVersion>(): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.dataVersion.<get-dataVersion>|<get-dataVersion>(){}[0]
+
+    abstract fun bestFitOrNull(kotlin.collections/List<dev.carcara.kotlinx.locale/Locale>, kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale>): dev.carcara.kotlinx.locale.metadata/LocaleMatch? // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.bestFitOrNull|bestFitOrNull(kotlin.collections.List<dev.carcara.kotlinx.locale.Locale>;kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+    abstract fun canonicalize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.canonicalize|canonicalize(dev.carcara.kotlinx.locale.Locale){}[0]
+    abstract fun canonicalizeUnicodeValue(kotlin/String, kotlin/String): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.canonicalizeUnicodeValue|canonicalizeUnicodeValue(kotlin.String;kotlin.String){}[0]
+    abstract fun currencies(): kotlin.collections/List<dev.carcara.kotlinx.locale.metadata/CurrencyMetadata> // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.currencies|currencies(){}[0]
+    abstract fun maximize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.maximize|maximize(dev.carcara.kotlinx.locale.Locale){}[0]
+    abstract fun minimize(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.minimize|minimize(dev.carcara.kotlinx.locale.Locale){}[0]
+    abstract fun numberingSystemDigitsOrNull(kotlin/String): kotlin/String? // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.numberingSystemDigitsOrNull|numberingSystemDigitsOrNull(kotlin.String){}[0]
+    abstract fun numberingSystems(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.numberingSystems|numberingSystems(){}[0]
+    abstract fun preferences(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale.metadata/LocalePreferences // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.preferences|preferences(dev.carcara.kotlinx.locale.Locale){}[0]
+    abstract fun regionPreference(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale.metadata/RegionPreference // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.regionPreference|regionPreference(dev.carcara.kotlinx.locale.Locale){}[0]
+    abstract fun timeZoneIdentifierOrNull(kotlin/String): dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier? // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.timeZoneIdentifierOrNull|timeZoneIdentifierOrNull(kotlin.String){}[0]
+    abstract fun timeZoneIdentifiers(): kotlin.collections/List<dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier> // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.timeZoneIdentifiers|timeZoneIdentifiers(){}[0]
+    abstract fun timeZonesForRegion(kotlin/String): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.timeZonesForRegion|timeZonesForRegion(kotlin.String){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.metadata/CurrencyMetadata { // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata|null[0]
+    constructor <init>(kotlin/String, kotlin/Int?, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Boolean) // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.<init>|<init>(kotlin.String;kotlin.Int?;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Boolean){}[0]
+
+    final val cashFractionDigits // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.cashFractionDigits|{}cashFractionDigits[0]
+        final fun <get-cashFractionDigits>(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.cashFractionDigits.<get-cashFractionDigits>|<get-cashFractionDigits>(){}[0]
+    final val cashRoundingIncrement // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.cashRoundingIncrement|{}cashRoundingIncrement[0]
+        final fun <get-cashRoundingIncrement>(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.cashRoundingIncrement.<get-cashRoundingIncrement>|<get-cashRoundingIncrement>(){}[0]
+    final val code // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.code|{}code[0]
+        final fun <get-code>(): kotlin/String // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.code.<get-code>|<get-code>(){}[0]
+    final val current // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.current|{}current[0]
+        final fun <get-current>(): kotlin/Boolean // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.current.<get-current>|<get-current>(){}[0]
+    final val fractionDigits // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.fractionDigits|{}fractionDigits[0]
+        final fun <get-fractionDigits>(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.fractionDigits.<get-fractionDigits>|<get-fractionDigits>(){}[0]
+    final val isoMinorUnits // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.isoMinorUnits|{}isoMinorUnits[0]
+        final fun <get-isoMinorUnits>(): kotlin/Int? // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.isoMinorUnits.<get-isoMinorUnits>|<get-isoMinorUnits>(){}[0]
+    final val roundingIncrement // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.roundingIncrement|{}roundingIncrement[0]
+        final fun <get-roundingIncrement>(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.roundingIncrement.<get-roundingIncrement>|<get-roundingIncrement>(){}[0]
+
+    final fun component1(): kotlin/String // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.component1|component1(){}[0]
+    final fun component2(): kotlin/Int? // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.component3|component3(){}[0]
+    final fun component4(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.component4|component4(){}[0]
+    final fun component5(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.component5|component5(){}[0]
+    final fun component6(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.component6|component6(){}[0]
+    final fun component7(): kotlin/Boolean // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int? = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Boolean = ...): dev.carcara.kotlinx.locale.metadata/CurrencyMetadata // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.copy|copy(kotlin.String;kotlin.Int?;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.metadata/LocaleMatch { // dev.carcara.kotlinx.locale.metadata/LocaleMatch|null[0]
+    constructor <init>(dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale/Locale, kotlin/Int) // dev.carcara.kotlinx.locale.metadata/LocaleMatch.<init>|<init>(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.Locale;kotlin.Int){}[0]
+
+    final val available // dev.carcara.kotlinx.locale.metadata/LocaleMatch.available|{}available[0]
+        final fun <get-available>(): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata/LocaleMatch.available.<get-available>|<get-available>(){}[0]
+    final val distance // dev.carcara.kotlinx.locale.metadata/LocaleMatch.distance|{}distance[0]
+        final fun <get-distance>(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/LocaleMatch.distance.<get-distance>|<get-distance>(){}[0]
+    final val requested // dev.carcara.kotlinx.locale.metadata/LocaleMatch.requested|{}requested[0]
+        final fun <get-requested>(): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata/LocaleMatch.requested.<get-requested>|<get-requested>(){}[0]
+
+    final fun component1(): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata/LocaleMatch.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale/Locale // dev.carcara.kotlinx.locale.metadata/LocaleMatch.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/LocaleMatch.component3|component3(){}[0]
+    final fun copy(dev.carcara.kotlinx.locale/Locale = ..., dev.carcara.kotlinx.locale/Locale = ..., kotlin/Int = ...): dev.carcara.kotlinx.locale.metadata/LocaleMatch // dev.carcara.kotlinx.locale.metadata/LocaleMatch.copy|copy(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.Locale;kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.metadata/LocaleMatch.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/LocaleMatch.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocaleMatch.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/LocaleMatch.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.metadata/LocalePreferences { // dev.carcara.kotlinx.locale.metadata/LocalePreferences|null[0]
+    constructor <init>(kotlin.collections/List<kotlin/String>, kotlin.collections/List<kotlin/String>, kotlin.collections/List<kotlin/String>, kotlin.collections/List<kotlin/String>, kotlin/String, kotlin/String, dev.carcara.kotlinx.locale.metadata/TextDirection) // dev.carcara.kotlinx.locale.metadata/LocalePreferences.<init>|<init>(kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.String;kotlin.String;dev.carcara.kotlinx.locale.metadata.TextDirection){}[0]
+
+    final val calendars // dev.carcara.kotlinx.locale.metadata/LocalePreferences.calendars|{}calendars[0]
+        final fun <get-calendars>(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.calendars.<get-calendars>|<get-calendars>(){}[0]
+    final val collations // dev.carcara.kotlinx.locale.metadata/LocalePreferences.collations|{}collations[0]
+        final fun <get-collations>(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.collations.<get-collations>|<get-collations>(){}[0]
+    final val direction // dev.carcara.kotlinx.locale.metadata/LocalePreferences.direction|{}direction[0]
+        final fun <get-direction>(): dev.carcara.kotlinx.locale.metadata/TextDirection // dev.carcara.kotlinx.locale.metadata/LocalePreferences.direction.<get-direction>|<get-direction>(){}[0]
+    final val hourCycle12 // dev.carcara.kotlinx.locale.metadata/LocalePreferences.hourCycle12|{}hourCycle12[0]
+        final fun <get-hourCycle12>(): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocalePreferences.hourCycle12.<get-hourCycle12>|<get-hourCycle12>(){}[0]
+    final val hourCycle24 // dev.carcara.kotlinx.locale.metadata/LocalePreferences.hourCycle24|{}hourCycle24[0]
+        final fun <get-hourCycle24>(): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocalePreferences.hourCycle24.<get-hourCycle24>|<get-hourCycle24>(){}[0]
+    final val hourCycles // dev.carcara.kotlinx.locale.metadata/LocalePreferences.hourCycles|{}hourCycles[0]
+        final fun <get-hourCycles>(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.hourCycles.<get-hourCycles>|<get-hourCycles>(){}[0]
+    final val numberingSystems // dev.carcara.kotlinx.locale.metadata/LocalePreferences.numberingSystems|{}numberingSystems[0]
+        final fun <get-numberingSystems>(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.numberingSystems.<get-numberingSystems>|<get-numberingSystems>(){}[0]
+
+    final fun component1(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.component2|component2(){}[0]
+    final fun component3(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocalePreferences.component4|component4(){}[0]
+    final fun component5(): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocalePreferences.component5|component5(){}[0]
+    final fun component6(): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocalePreferences.component6|component6(){}[0]
+    final fun component7(): dev.carcara.kotlinx.locale.metadata/TextDirection // dev.carcara.kotlinx.locale.metadata/LocalePreferences.component7|component7(){}[0]
+    final fun copy(kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/String = ..., kotlin/String = ..., dev.carcara.kotlinx.locale.metadata/TextDirection = ...): dev.carcara.kotlinx.locale.metadata/LocalePreferences // dev.carcara.kotlinx.locale.metadata/LocalePreferences.copy|copy(kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.String;kotlin.String;dev.carcara.kotlinx.locale.metadata.TextDirection){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.metadata/LocalePreferences.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/LocalePreferences.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.metadata/LocalePreferences.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/LocalePreferences.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.metadata/RegionPreference { // dev.carcara.kotlinx.locale.metadata/RegionPreference|null[0]
+    constructor <init>(kotlin/String, dev.carcara.kotlinx.locale.metadata/RegionOrigin) // dev.carcara.kotlinx.locale.metadata/RegionPreference.<init>|<init>(kotlin.String;dev.carcara.kotlinx.locale.metadata.RegionOrigin){}[0]
+
+    final val origin // dev.carcara.kotlinx.locale.metadata/RegionPreference.origin|{}origin[0]
+        final fun <get-origin>(): dev.carcara.kotlinx.locale.metadata/RegionOrigin // dev.carcara.kotlinx.locale.metadata/RegionPreference.origin.<get-origin>|<get-origin>(){}[0]
+    final val region // dev.carcara.kotlinx.locale.metadata/RegionPreference.region|{}region[0]
+        final fun <get-region>(): kotlin/String // dev.carcara.kotlinx.locale.metadata/RegionPreference.region.<get-region>|<get-region>(){}[0]
+
+    final fun component1(): kotlin/String // dev.carcara.kotlinx.locale.metadata/RegionPreference.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale.metadata/RegionOrigin // dev.carcara.kotlinx.locale.metadata/RegionPreference.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., dev.carcara.kotlinx.locale.metadata/RegionOrigin = ...): dev.carcara.kotlinx.locale.metadata/RegionPreference // dev.carcara.kotlinx.locale.metadata/RegionPreference.copy|copy(kotlin.String;dev.carcara.kotlinx.locale.metadata.RegionOrigin){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.metadata/RegionPreference.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/RegionPreference.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.metadata/RegionPreference.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/RegionPreference.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier { // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String?) // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?){}[0]
+
+    final val identifier // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.identifier|{}identifier[0]
+        final fun <get-identifier>(): kotlin/String // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val primaryIdentifier // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.primaryIdentifier|{}primaryIdentifier[0]
+        final fun <get-primaryIdentifier>(): kotlin/String // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.primaryIdentifier.<get-primaryIdentifier>|<get-primaryIdentifier>(){}[0]
+    final val region // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.region|{}region[0]
+        final fun <get-region>(): kotlin/String? // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.region.<get-region>|<get-region>(){}[0]
+
+    final fun component1(): kotlin/String // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String? = ...): dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.copy|copy(kotlin.String;kotlin.String;kotlin.String?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier.Companion|null[0]
+}

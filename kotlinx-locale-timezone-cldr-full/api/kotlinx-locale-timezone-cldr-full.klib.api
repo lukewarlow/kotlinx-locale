@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -9,6 +9,8 @@
 final object dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone : dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource { // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone|null[0]
     final val formatRecords // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.formatRecords|{}formatRecords[0]
         final fun <get-formatRecords>(): kotlin.collections/Map<kotlin/String, kotlin/String> // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.formatRecords.<get-formatRecords>|<get-formatRecords>(){}[0]
+    final val localeCoverage // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val metadata // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.metadata|{}metadata[0]
         final fun <get-metadata>(): dev.carcara.kotlinx.locale.timezone.cldr.runtime/TimeZoneMetadata // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.metadata.<get-metadata>|<get-metadata>(){}[0]
     final val nameRecords // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.nameRecords|{}nameRecords[0]
@@ -18,7 +20,9 @@ final object dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone : dev.carcara
 
     final fun displayNameOrNull(kotlinx.datetime/TimeZone, dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle, kotlinx.datetime/UtcOffset?, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.displayNameOrNull|displayNameOrNull(kotlinx.datetime.TimeZone;dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle;kotlinx.datetime.UtcOffset?;dev.carcara.kotlinx.locale.Locale){}[0]
     final fun exemplarCityOrNull(kotlinx.datetime/TimeZone, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.exemplarCityOrNull|exemplarCityOrNull(kotlinx.datetime.TimeZone;dev.carcara.kotlinx.locale.Locale){}[0]
+    final fun render(dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext, dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle, dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/LocaleLookup<kotlin/String> // dev.carcara.kotlinx.locale.timezone.cldr/CldrTimeZone.render|render(dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext;dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle;dev.carcara.kotlinx.locale.Locale){}[0]
 }
 
 final fun (kotlinx.datetime/TimeZone).dev.carcara.kotlinx.locale.timezone.cldr/displayName(dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle = ..., kotlinx.datetime/UtcOffset? = ..., dev.carcara.kotlinx.locale/Locale = ...): kotlin/String // dev.carcara.kotlinx.locale.timezone.cldr/displayName|displayName@kotlinx.datetime.TimeZone(dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle;kotlinx.datetime.UtcOffset?;dev.carcara.kotlinx.locale.Locale){}[0]
 final fun (kotlinx.datetime/UtcOffset).dev.carcara.kotlinx.locale.timezone.cldr/displayName(dev.carcara.kotlinx.locale/Locale = ..., kotlin/Boolean = ...): kotlin/String // dev.carcara.kotlinx.locale.timezone.cldr/displayName|displayName@kotlinx.datetime.UtcOffset(dev.carcara.kotlinx.locale.Locale;kotlin.Boolean){}[0]
+final fun dev.carcara.kotlinx.locale.timezone.cldr/timeZoneName(dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext, dev.carcara.kotlinx.locale/Locale = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameStyle = ...): dev.carcara.kotlinx.locale/LocaleLookup<kotlin/String> // dev.carcara.kotlinx.locale.timezone.cldr/timeZoneName|timeZoneName(dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.timezone.TimeZoneNameStyle){}[0]

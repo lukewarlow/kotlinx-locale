@@ -1,0 +1,15 @@
+public final class dev/carcara/kotlinx/locale/unit/cldr/CldrUnitFormats : dev/carcara/kotlinx/locale/unit/UnitFormatSource {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/unit/cldr/CldrUnitFormats;
+	public fun compose (Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun render (Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/unit/cldr/UnitFormatKt {
+	public static final fun unitFormat (Ldev/carcara/kotlinx/locale/number/Decimal;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static final fun unitFormat (Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun unitFormat$default (Ldev/carcara/kotlinx/locale/number/Decimal;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun unitFormat$default (Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/unit/UnitWidth;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+

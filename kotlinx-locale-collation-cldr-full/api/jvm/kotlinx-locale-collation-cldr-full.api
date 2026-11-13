@@ -1,10 +1,21 @@
 public final class dev/carcara/kotlinx/locale/collation/cldr/CldrCollation : dev/carcara/kotlinx/locale/collation/CollationSource {
 	public static final field INSTANCE Ldev/carcara/kotlinx/locale/collation/cldr/CldrCollation;
+	public fun capabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/collation/CollationCapabilities;
+	public fun collations ()Ljava/util/Set;
 	public fun comparatorOrNull (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;)Ljava/util/Comparator;
+	public fun resolve (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/collation/cldr/CollationKt {
 	public static final fun collationComparator (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;)Ljava/util/Comparator;
 	public static synthetic fun collationComparator$default (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;ILjava/lang/Object;)Ljava/util/Comparator;
+}
+
+public final class dev/carcara/kotlinx/locale/collation/cldr/IntlCollationKt {
+	public static final fun collationCapabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/collation/CollationCapabilities;
+	public static synthetic fun collationCapabilities$default (Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/collation/CollationCapabilities;
+	public static final fun collationResolve (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun collationResolve$default (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static final fun collationValues ()Ljava/util/Set;
 }
 

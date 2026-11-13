@@ -19,7 +19,22 @@
 package dev.carcara.kotlinx.locale.collation.cldr.internal.data
 
 internal val COLLATION_TAILORING_PA: String =
-    "228:/cmhm2o/27wr28,1z6:/cmhp8c/27wr28,1z5:/cmhsdw/27wr28,20s:/cmhvjc/27wr28,219:2oh6qe/2hwcg/27wr28;;;25k8u0.29fgeo.2jlyuo,29frzc.2ad7oo.2nhi00,2adj9c.2bs0e0.2of9a0,2bsbyo.2cjnrc.2pu1zc,2cjzc0.2dbb4o.2qlpco,2dbmpc.2doho0.2rdcq0,2dot8o.2eazuo.2rqj9c,2ebbfc.2ggh7c.2hghi0,2ggss0.2mk2ao.2sd1g0,2mkdvc.2nguuo.262kk0,2nh6fc.2o22qo.26zd40,2o2ebc.2okego.25k8u0,2okq1c.2p6l2o.27kl00,2p6wnc.2ps4jc.286rm0,2psg40.2q878o.28sb2o,2q8itc.2qvzq0.298ds0,2qwbao.2rjs7c.29w69c,2rk3s0.2s7koo.2ajyqo,2s7w9c.2ygayo.2b7r80;;;"
+    "root\u001F00228:0/cmhm2o/27wr28/0,1z6:0/cmhp8c/27wr28/0,1z5:0/cmhsdw/27wr28/0,20s:0/cmhvjc/27wr28/0,219:2oh6qe/2hwcg/27wr28/0;;;25k8u0.29fgeo.2jlyuo,29frzc.2ad7oo.2nhi00,2adj9c.2bs0e0.2of9a0,2bsbyo.2cjnrc.2pu1zc,2cjzc0.2dbb4o.2qlpco,2dbmpc.2doho0.2rdcq0,2dot8o.2eazuo.2rqj9c,2ebbfc.2ggh7c.2hghi0,2ggss0.2mk2ao.2sd1g0,2mkdvc.2nguuo.262kk0,2nh6fc.2o22qo.26zd40,2o2ebc.2okego.25k8u0,2okq1c.2p6l2o.27kl00,2p6wnc.2ps4jc.286rm0,2psg40.2q878o.28sb2o,2q8itc.2qvzq0.298ds0,2qwbao.2rjs7c.29w69c,2rk3s0.2s7koo.2ajyqo,2s7w9c.2ygayo.2b7r80;;;\u001F01"
+
+internal val COLLATION_TAILORING_PAN: String =
+    "pa\u001F04\u001F01"
+
+internal val COLLATION_TAILORING_PBU: String =
+    "ps\u001F04\u001F01"
+
+internal val COLLATION_TAILORING_PES: String =
+    "fa\u001F04\u001F01"
 
 internal val COLLATION_TAILORING_PL: String =
-    "8y:26sxn2/2hwcg/27wr28,8x:26sxn2/2hwcg/27y5mo;2p.mg:25k8ue/2hwcg/27wr28,1t.mg:25k8ue/2hwcg/27y5mo,2r.ld:25sa72/2hwcg/27wr28,1v.ld:25sa72/2hwcg/27y5mo,2t.mg:25zzz2/2hwcg/27wr28,1x.mg:25zzz2/2hwcg/27y5mo,32.ld:274tvq/2hwcg/27wr28,26.ld:274tvq/2hwcg/27y5mo,33.ld:27am7q/2hwcg/27wr28,27.ld:27am7q/2hwcg/27y5mo,37.ld:280zae/2hwcg/27wr28,2b.ld:280zae/2hwcg/27y5mo,3e.ld:28tldq/2hwcg/27wr28,2i.ld:28tldq/2hwcg/27y5mo,3e.lj:28tle4/2hwcg/27wr28,2i.lj:28tle4/2hwcg/27y5mo;;;;;"
+    "root\u001F008y:26sxn2/2hwcg/27wr28/0,8x:26sxn2/2hwcg/27y5mo/2;2p.mg:25k8ue/2hwcg/27wr28/0,1t.mg:25k8ue/2hwcg/27y5mo/2,2r.ld:25sa72/2hwcg/27wr28/0,1v.ld:25sa72/2hwcg/27y5mo/2,2t.mg:25zzz2/2hwcg/27wr28/0,1x.mg:25zzz2/2hwcg/27y5mo/2,32.ld:274tvq/2hwcg/27wr28/0,26.ld:274tvq/2hwcg/27y5mo/2,33.ld:27am7q/2hwcg/27wr28/0,27.ld:27am7q/2hwcg/27y5mo/2,37.ld:280zae/2hwcg/27wr28/0,2b.ld:280zae/2hwcg/27y5mo/2,3e.ld:28tldq/2hwcg/27wr28/0,2i.ld:28tldq/2hwcg/27y5mo/2,3e.lj:28tle4/2hwcg/27wr28/0,2i.lj:28tle4/2hwcg/27y5mo/2;;;;;\u001F01"
+
+internal val COLLATION_TAILORING_POL: String =
+    "pl\u001F04\u001F01"
+
+internal val COLLATION_TAILORING_PS: String =
+    "root\u001F0018w:0/6v81ds/27wr28/0,18v:0/6v84jg/27wr28/0,18r:0/6v87p0/27wr28/0,18t:0/6v8aug/27wr28/0,18s:0/6v8dzs/27wr28/0,19u:2eftgo/2i2nw/27wr28/0,19t:2eftgo/2i5tg/27wr28/0,19v:2eftgo/2ic48/27wr28/0,17l:2efth2/2hwcg/27wr28/0,1a4:2elxdq/2hwcg/27wr28/0,1a1:2elxdq/2hzi8/27wr28/0,1a9:2ep54e/2hwcg/27wr28/0,1ad:2eqff2/2hwcg/27wr28/0,1ah:2ew7r2/2hwcg/27wr28/0,1ag:2ew7r2/2hzi8/27wr28/0,1ar:2f1cxq/2hwcg/27wr28/0,1ap:2f1cxq/2hzi8/27wr28/0,1au:2f493q/2hwcg/27wr28/0,1be:2foi9c/2hzi8/27wr28/0,18j:2foi9c/2i2nw/27wr28/0,1bj:2fp5eo/2hzi8/27wr28/0,1bv:2g1d80/2hzi8/27wr28/0,1c7:2g5v9c/2i2nw/27wr28/0,1c9:2g5v9c/2i5tg/27wr28/0,1cl:2g3xtc/2hzi8/27wr28/0,1c1:2g3xtc/2i2nw/27wr28/0,1by:2g3xtc/2i5tg/27wr28/0,17t:2g3xtc/2i8yw/27wr28/0,1c3:2g3xtc/2ic48/27wr28/0,18p:2gb0g0/2hzi8/27wr28/0,1ci:2gb0g0/2i2nw/27wr28/0,18q:2gb0g0/2i5tg/27wr28/0,1cg:2gb0g0/2i8yw/27wr28/0,1cd:2gb0g0/2ic48/27wr28/0;17r.18z:2efhwe/2hwcg/27wr28/0,17r.190:2eftgo/2hzi8/27wr28/0,17r.191:2eftgo/2i8yw/27wr28/0,17x.190:2ep54e/2hzi8/27wr28/0,18o.190:2g5v9c/2hzi8/27wr28/0,1cl.190:2g3xtc/2hwcg/27y5mo/0,18n.190:2g3xtc/2hwcg/27zk5c/0,1cc.190:2gb0g0/2if9g/27wr28/0,18p.190:2gb0g0/2if9g/27y5mo/0,18q.190:2gb0g0/2if9g/27zk5c/0,2k.39.1e.1c.1c.1v:41ymo.28cjy0.20xpgo.20xpgo.25k8u0.20xpgo/2hzi8.2hwcg.2hwcg.2hwcg.2hwcg.2hwcg/27wr28.27wr28.27wr28.27wr28.efevwg.27wr28/1.0.0.0.2.0,2k.39.1e.1c.1c.1w:41ymo.28cjy0.20xpgo.20xpgo.25k8u0.20xpgo/2i2nw.2hwcg.2hwcg.2hwcg.2hwcg.2hwcg/27wr28.27wr28.27wr28.27wr28.efevwg.27wr28/1.0.0.0.2.0;;25k8u0.29fgeo.27pq6o,29frzc.2ad7oo.2bl9c0,2adj9c.2bs0e0.2cj0m0,2bsbyo.2cjnrc.2dxtbc,2cjzc0.2dbb4o.2epgoo,2dbmpc.2doho0.2fh420,2dot8o.2eazuo.2fualc,2ebbfc.2ggh7c.25k8u0;;;\u001F01"

@@ -19,12 +19,8 @@ plugins {
 }
 
 sizeProbe {
-    // Measured at 497.6 KB, which is the root weight table and almost nothing
-    // else: the root is the same for every locale, so a build narrowed to three
-    // locales pays nearly what one shipping all 1121 pays. That is the opposite
-    // of every other domain here and the reason the Gradle plugin flag is worth
-    // leaving off rather than narrowing.
-    budgetBytes = 600 * 1024
+    // Measured at 1733 KB after sparse inheritance; includes public variants, search rules and CJK orders.
+    budgetBytes = 2200 * 1024
 }
 
 kotlin {

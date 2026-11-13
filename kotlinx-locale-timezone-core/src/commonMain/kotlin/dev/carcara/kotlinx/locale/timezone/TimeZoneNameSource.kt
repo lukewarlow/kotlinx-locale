@@ -85,6 +85,13 @@ public interface TimeZoneNameSource : LocaleDataSource {
      */
     public fun exemplarCityOrNull(zone: TimeZone, locale: Locale): String?
 
+    /** Renders caller-supplied zone context, including offsets outside kotlinx-datetime's range. */
+    public fun render(
+        context: TimeZoneNameContext,
+        style: TimeZoneNameStyle,
+        locale: Locale,
+    ): dev.carcara.kotlinx.locale.LocaleLookup<String> = dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Zone context rendering")
+
     public companion object
 }
 

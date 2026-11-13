@@ -108,10 +108,11 @@ both do, and holds it there with ICU goldens. The reasoning is in
 
 ## The rounding mode
 
-Half to even, everywhere. LDML does not say. ICU and `java.text.DecimalFormat`
-default to half-even; ECMA-402 rounds half away from zero. So `0.125` formatted
-as a percentage with no fraction digits is `12%` here and `13%` in a browser.
-Both are defensible; this one is written down.
+Half-even is the default, matching ICU and `java.text.DecimalFormat`.
+`NumberFormatOptions.roundingMode` selects all nine ECMA-402 modes, including
+`HALF_EXPAND` for ties away from zero. Thus `0.125` as a percentage with no
+fraction digits is `12%` by default and `13%` with HALF_EXPAND. The pre-rounded
+rendering path does not round again.
 
 ## Ordinal forms for languages CLDR gives no rules for
 
@@ -314,17 +315,11 @@ build. So does a row in them that stops reproducing.
 
 ## Time zone naming at a past instant
 
-The zone name API takes a style and an offset. It does not take an instant and
-work out whether the zone was on daylight time then.
-
-kotlinx-datetime 0.8.0 exposes `TimeZone.offsetAt` and nothing else: no
-`inDaylightTime`, no standard offset, no transition list. Inferring the answer
-is possible and this library does not, because the inference would be invisible
-at the call site. Pass `STANDARD_LONG` or `DAYLIGHT_LONG` and you know which one
-you got.
-
-Only the current metazone is carried for the same reason. The full history with
-its date ranges is what naming a zone at a past instant needs.
+The original zone-name convenience API takes a style and offset and uses the
+current metazone. `timeZoneName(TimeZoneNameContext, ...)` also accepts an instant
+and selects the historical CLDR metazone. The caller supplies offset and DST
+status; this library does not calculate transitions. Offset-name rendering
+accepts values through ±23:59 independently of kotlinx-datetime's UtcOffset.
 
 ## A generic zone name for a place that stopped changing its clocks
 
@@ -433,10 +428,8 @@ that strength resume matches résumé. In German ö matches o, and in Swedish it
 does not, because the Swedish tailoring makes ö a letter of its own. That is the
 per-language decision a global rule cannot make, and the tables already carry it.
 
-What is still missing is CLDR's `search` collation type, which is a second
-tailoring per locale with looser rules than the sorting one. CLDR ships it for 21
-locales and this build reads only the `standard` type, so a search today uses the
-sorting tailoring at primary strength. That is close and not identical.
+`collationResolve` can select CLDR's search collation and public collation
+variants. The older strength-only convenience function remains a sort operation.
 
 The cheap version, decomposing and dropping the combining marks, remains wrong
 and remains unimplemented. Whether a mark is decoration on a base letter or part
@@ -456,18 +449,13 @@ Two more are ignored without cost. `normalization` asks for the decomposed form,
 which the algorithm always uses anyway, and `optimize` is a speed hint about
 which characters to precompute.
 
-The remaining five are read and ignored, and the result differs from ICU where a
-locale uses one: `caseFirst` (Danish, Maltese, Church Slavonic),
-`alternate shifted` (Thai), `caseLevel` (Church Slavonic), and the `[first ...]`
-and `[last ...]` anchors. `caseFirst` is the one with an implementation that was
-written and then removed: a tertiary weight is a class shared by many characters
-rather than a per-letter value, and the pairing derivable from the root table is
-not the one between `a` and `A`. Applying it would have reordered every cased
-letter in those locales by a rule nobody wrote.
-
-`conformance/ledger/collation-order.tsv` records every locale whose order differs
-from ICU4J and why, so a locale that sorts differently is written down rather
-than discovered.
+The options-based comparator uses individual collation-element case bits for
+case-only and case-first comparisons, and variable primary ranges for shifted
+punctuation. Logical first/last reset anchors are resolved during generation.
+The older strength-only convenience path preserves its historical behavior;
+use collationResolve when resolved options matter. The conformance ledger still
+records differences in that legacy path rather than treating it as a complete
+options-based comparator.
 
 ## Domestic bank account identifiers
 

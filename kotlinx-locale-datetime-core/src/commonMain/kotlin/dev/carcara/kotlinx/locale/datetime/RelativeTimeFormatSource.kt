@@ -18,6 +18,10 @@ package dev.carcara.kotlinx.locale.datetime
 
 import dev.carcara.kotlinx.locale.Locale
 import dev.carcara.kotlinx.locale.LocaleDataSource
+import dev.carcara.kotlinx.locale.LocaleLookup
+import dev.carcara.kotlinx.locale.number.Decimal
+import dev.carcara.kotlinx.locale.number.NumberFormatOptions
+import dev.carcara.kotlinx.locale.number.NumberPart
 
 /** The units CLDR carries relative names for. */
 public enum class RelativeTimeUnit {
@@ -87,6 +91,16 @@ public interface RelativeTimeFormatSource : LocaleDataSource {
         locale: Locale,
     ): String?
 
+    /** Exact fractional quantities and signed zero, with structured localized output. */
+    public fun render(
+        value: Decimal,
+        unit: RelativeTimeUnit,
+        style: RelativeTimeStyle,
+        numbering: RelativeTimeNumbering,
+        locale: Locale,
+        options: NumberFormatOptions = NumberFormatOptions.Default,
+    ): LocaleLookup<FormattedRelativeTime> = LocaleLookup.Unsupported("exact relative-time parts")
+
     /**
      * The word CLDR has for exactly [offset] [unit]s — `yesterday`, `zítra`,
      * `předevčírem` — or `null` when the locale has none.
@@ -149,5 +163,13 @@ public class FallbackRelativeTimeFormats(private val primary: RelativeTimeFormat
     override fun unitNameOrNull(unit: RelativeTimeUnit, style: RelativeTimeStyle, locale: Locale): String? =
         primary.unitNameOrNull(unit, style, locale) ?: fallback.unitNameOrNull(unit, style, locale)
 
+    public companion object
+}
+
+/** Relative wording and numeric parts, with a unit on each numeric part. */
+public class FormattedRelativeTime(parts: List<NumberPart>) {
+    public val parts: List<NumberPart> = parts.toList()
+    public val text: String get() = parts.joinToString("") { it.value }
+    override fun toString(): String = text
     public companion object
 }

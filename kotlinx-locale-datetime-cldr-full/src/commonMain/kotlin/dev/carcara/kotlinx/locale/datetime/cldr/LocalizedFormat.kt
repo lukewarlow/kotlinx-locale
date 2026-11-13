@@ -44,7 +44,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
 
 internal val dateTimeSource: PayloadDateTimeFormats =
-    PayloadDateTimeFormats(localeDataRegistry, localeStandaloneRegistry)
+    PayloadDateTimeFormats(localeDataRegistry, localeStandaloneRegistry, defaultNumbers = dev.carcara.kotlinx.locale.number.cldr.CldrNumber, defaultZones = dev.carcara.kotlinx.locale.timezone.cldr.CldrTimeZone)
 
 /**
  * The date and time patterns this build carries.
@@ -186,3 +186,7 @@ public fun weekInfo(locale: Locale = Locale.current): WeekInfo = weekInfoTable.w
  * days a country rests is not a question about anybody's language.
  */
 public fun weekInfoForRegion(regionCode: String): WeekInfo = weekInfoTable.weekInfoForRegion(regionCode)
+
+/** The explicit regional row; null means no row, without world-default substitution. */
+public fun weekInfoForRegionOrNull(regionCode: String): WeekInfo? =
+    (weekInfoTable.regionalWeekInfo(regionCode) as? dev.carcara.kotlinx.locale.LocaleLookup.Value)?.value

@@ -38,7 +38,7 @@ public class Locale private constructor(
     public val language: String,
     public val script: String?,
     public val region: String?,
-    public val variant: String?,
+    public val variants: List<String>,
     private val attributes: List<String>,
     private val keywords: Map<String, String>,
     private val otherExtensions: Map<Char, String>,
@@ -49,6 +49,69 @@ public class Locale private constructor(
      */
     public val unicodeAttributes: Set<String> get() = attributes.sorted().toSet()
 
+    /** All variants in order, joined for callers of the original single-variant API. */
+    public val variant: String? get() = variants.takeIf { it.isNotEmpty() }?.joinToString("-")
+
+    /** Unicode keywords as written, with an empty value for a bare key. */
+    public val unicodeKeywords: Map<String, String> get() = keywords.toMap()
+
+    /** Other extension payloads, including private use, keyed by singleton. */
+    public val extensions: Map<Char, String> get() = otherExtensions.toMap()
+
+    /** The raw keyword value, empty for a bare key and null when absent. */
+    public fun unicodeKeywordValueOrNull(key: String): String? = keywords[key.lowercase()]
+
+    /** Replace the language identifier while preserving every extension. */
+    public fun withLanguageId(
+        language: String = this.language,
+        script: String? = this.script,
+        region: String? = this.region,
+        variants: List<String> = this.variants,
+    ): Locale {
+        val tag = buildList {
+            add(language)
+            script?.let(::add)
+            region?.let(::add)
+            addAll(variants)
+        }.joinToString("-")
+        val parsed = requireNotNull(forUnicodeLanguageTagOrNull(tag)) { "Invalid Unicode language identifier: '$tag'" }
+        require(parsed.otherExtensions.isEmpty() && parsed.keywords.isEmpty() && parsed.attributes.isEmpty()) {
+            "Language identifier must not contain extensions"
+        }
+        return Locale(parsed.language, parsed.script, parsed.region, parsed.variants, attributes, keywords, otherExtensions)
+    }
+
+    /** Set or remove an extension, validating its Unicode locale syntax. */
+    public fun withExtension(singleton: Char, value: String?): Locale {
+        val key = singleton.lowercaseChar()
+        require(key.isAsciiAlphanumeric()) { "Invalid extension singleton: '$singleton'" }
+        if (value == null) {
+            return if (key == 'u') {
+                Locale(language, script, region, variants, emptyList(), emptyMap(), otherExtensions)
+            } else {
+                Locale(language, script, region, variants, attributes, keywords, otherExtensions - key)
+            }
+        }
+        val parsed = requireNotNull(forUnicodeLanguageTagOrNull("und-$key-$value")) { "Invalid extension: '$singleton-$value'" }
+        return if (key == 'u') {
+            require(parsed.otherExtensions.isEmpty()) { "Expected one Unicode extension" }
+            Locale(language, script, region, variants, parsed.attributes, parsed.keywords, otherExtensions)
+        } else {
+            require(parsed.otherExtensions.keys == setOf(key) && parsed.attributes.isEmpty() && parsed.keywords.isEmpty()) {
+                "Expected one extension"
+            }
+            Locale(
+                language,
+                script,
+                region,
+                variants,
+                attributes,
+                keywords,
+                otherExtensions + (key to parsed.otherExtensions.getValue(key)),
+            )
+        }
+    }
+
     /**
      * The value of a `-u-` keyword, or `null` when the identifier names none.
      * An absent value reads as `true`, which is what UTS #35 assumes.
@@ -57,7 +120,7 @@ public class Locale private constructor(
      * round-trips through [toLanguageTag], which the `-platform` sources pass to
      * the host as it stands.
      */
-    public fun unicodeKeywordOrNull(key: String): String? = keywords[key.lowercase()]
+    public fun unicodeKeywordOrNull(key: String): String? = keywords[key.lowercase()]?.ifEmpty { TRUE_VALUE }
 
     /**
      * This identifier with [key] set to [value], or removed when [value] is `null`.
@@ -73,17 +136,17 @@ public class Locale private constructor(
         }
         val normalizedValue = value?.lowercase()?.also {
             require(isWellFormedUnicodeValue(it)) { "Invalid Unicode keyword value: '$value'" }
-        }
+        }?.let { if (it == TRUE_VALUE) "" else it }
         val updated = if (normalizedValue == null) keywords - normalized else keywords + (normalized to normalizedValue)
         if (updated == keywords) return this
-        return Locale(language, script, region, variant, attributes, updated, otherExtensions)
+        return Locale(language, script, region, variants, attributes, updated, otherExtensions)
     }
 
     /** The Unicode language identifier alone, with every extension removed. */
     public fun stripExtensions(): Locale = if (attributes.isEmpty() && keywords.isEmpty() && otherExtensions.isEmpty()) {
         this
     } else {
-        Locale(language, script, region, variant, emptyList(), emptyMap(), emptyMap())
+        Locale(language, script, region, variants, emptyList(), emptyMap(), emptyMap())
     }
 
     /** The canonical BCP 47 language tag, e.g. `pt-BR` or `sr-Cyrl-BA`. */
@@ -91,7 +154,7 @@ public class Locale private constructor(
         append(language)
         script?.let { append('-').append(it) }
         region?.let { append('-').append(it) }
-        variant?.let { append('-').append(it) }
+        variants.forEach { append('-').append(it) }
         appendExtensions()
     }
 
@@ -111,7 +174,7 @@ public class Locale private constructor(
         for (key in keywords.keys.sorted()) {
             append('-').append(key)
             val value = keywords.getValue(key)
-            if (value != TRUE_VALUE) append('-').append(value)
+            if (value.isNotEmpty() && value != TRUE_VALUE) append('-').append(value)
         }
     }
 
@@ -121,7 +184,7 @@ public class Locale private constructor(
         language == other.language &&
         script == other.script &&
         region == other.region &&
-        variant == other.variant &&
+        variants == other.variants &&
         attributes.sorted() == other.attributes.sorted() &&
         keywords == other.keywords &&
         otherExtensions == other.otherExtensions
@@ -130,7 +193,7 @@ public class Locale private constructor(
         var result = language.hashCode()
         result = 31 * result + (script?.hashCode() ?: 0)
         result = 31 * result + (region?.hashCode() ?: 0)
-        result = 31 * result + (variant?.hashCode() ?: 0)
+        result = 31 * result + variants.hashCode()
         result = 31 * result + attributes.sorted().hashCode()
         result = 31 * result + keywords.hashCode()
         result = 31 * result + otherExtensions.hashCode()
@@ -161,7 +224,7 @@ public class Locale private constructor(
                     ) { "Invalid region subtag: '$it'" }
                     it.uppercase()
                 },
-                variant = variant?.takeIf(String::isNotEmpty)?.lowercase(),
+                variants = variant?.takeIf(String::isNotEmpty)?.lowercase()?.split('-') ?: emptyList(),
                 attributes = emptyList(),
                 keywords = emptyMap(),
                 otherExtensions = emptyMap(),
@@ -190,27 +253,27 @@ public class Locale private constructor(
 
             var script: String? = null
             var region: String? = null
-            var variant: String? = null
+            val variants = ArrayList<String>()
             var index = 1
             while (index < parts.size && parts[index].length != 1) {
                 val part = parts[index]
                 when {
                     script == null &&
                         region == null &&
-                        variant == null &&
+                        variants.isEmpty() &&
                         part.length == 4 &&
                         part.all(Char::isLatinLetter) ->
                         script = part.lowercase().replaceFirstChar(Char::uppercaseChar)
 
                     region == null &&
-                        variant == null &&
+                        variants.isEmpty() &&
                         (
                             (part.length == 2 && part.all(Char::isLatinLetter)) ||
                                 (part.length == 3 && part.all(Char::isAsciiDigit))
                             ) ->
                         region = part.uppercase()
 
-                    variant == null -> variant = part.lowercase()
+                    else -> variants.add(part.lowercase())
                 }
                 index++
             }
@@ -220,11 +283,42 @@ public class Locale private constructor(
                 language = legacyLanguageAlias(language),
                 script = script,
                 region = region,
-                variant = variant,
+                variants = variants.toList(),
                 attributes = extensions.attributes,
                 keywords = extensions.keywords,
                 otherExtensions = extensions.other,
             )
+        }
+
+        /**
+         * Parse a strict Unicode locale identifier, normalizing subtag case.
+         * Unknown languages are accepted. Underscores, POSIX syntax, duplicate
+         * variants/singletons and malformed extensions return null. Alias
+         * replacement is a separate data-backed canonicalization operation.
+         */
+        public fun forUnicodeLanguageTagOrNull(tag: String): Locale? {
+            val parts = tag.split('-').map { it.lowercase() }
+            if (parts.any { it.isEmpty() || it.length > 8 || !it.all(Char::isAsciiAlphanumeric) }) return null
+            val languageEnd = parts.indexOfFirst { it.length == 1 }.let { if (it < 0) parts.size else it }
+            val id = strictLanguageId(parts.take(languageEnd)) ?: return null
+            val seen = HashSet<Char>()
+            var index = languageEnd
+            while (index < parts.size) {
+                val singleton = parts[index].singleOrNull() ?: return null
+                if (!seen.add(singleton)) return null
+                val start = ++index
+                while (index < parts.size && (singleton == 'x' || parts[index].length != 1)) index++
+                val payload = parts.subList(start, index)
+                if (payload.isEmpty()) return null
+                when (singleton) {
+                    'x' -> Unit
+                    'u' -> if (!strictUnicodeExtension(payload)) return null
+                    't' -> if (!strictTransformedExtension(payload)) return null
+                    else -> if (payload.any { it.length !in 2..8 }) return null
+                }
+            }
+            val extensions = parseExtensions(parts, languageEnd)
+            return Locale(id.language, id.script, id.region, id.variants, extensions.attributes, extensions.keywords, extensions.other)
         }
 
         /**
@@ -284,7 +378,13 @@ private fun parseExtensions(parts: List<String>, from: Int): ParsedExtensions {
             var key: String? = null
             val values = ArrayList<String>()
             fun flush() {
-                key?.let { keywords[it] = values.joinToString("-").ifEmpty { TRUE_VALUE } }
+                key?.let {
+                    if (it !in
+                        keywords
+                    ) {
+                        keywords[it] = values.joinToString("-").let { value -> if (value == TRUE_VALUE) "" else value }
+                    }
+                }
                 values.clear()
             }
             while (index < parts.size && parts[index].length != 1) {
@@ -309,7 +409,7 @@ private fun parseExtensions(parts: List<String>, from: Int): ParsedExtensions {
             if (payload.isNotEmpty()) other[singleton] = payload.joinToString("-")
         }
     }
-    return ParsedExtensions(attributes, keywords, other)
+    return ParsedExtensions(attributes.distinct(), keywords, other)
 }
 
 private val OLD_KEYWORD_ALIASES = mapOf(
@@ -337,3 +437,49 @@ private fun parseOldKeywords(segment: String): Map<String, String> {
 
 private fun ParsedExtensions.mergedWith(old: Map<String, String>): ParsedExtensions =
     if (old.isEmpty()) this else ParsedExtensions(attributes, keywords + old, other)
+
+private class StrictLanguageId(val language: String, val script: String?, val region: String?, val variants: List<String>)
+
+private fun strictLanguageId(parts: List<String>): StrictLanguageId? {
+    val language = parts.firstOrNull() ?: return null
+    if ((language.length !in 2..3 && language.length !in 5..8) || !language.all(Char::isLatinLetter)) return null
+    var index = 1
+    val script = parts.getOrNull(index)?.takeIf { it.length == 4 && it.all(Char::isLatinLetter) }
+        ?.also { index++ }?.replaceFirstChar(Char::uppercaseChar)
+    val region = parts.getOrNull(index)?.takeIf {
+        (it.length == 2 && it.all(Char::isLatinLetter)) || (it.length == 3 && it.all(Char::isAsciiDigit))
+    }?.also { index++ }?.uppercase()
+    val variants = parts.drop(index)
+    if (variants.any { !isUnicodeVariant(it) } || variants.distinct().size != variants.size) return null
+    return StrictLanguageId(language, script, region, variants.toList())
+}
+
+private fun isUnicodeVariant(value: String): Boolean =
+    (value.length in 5..8 || (value.length == 4 && value[0].isAsciiDigit())) && value.all(Char::isAsciiAlphanumeric)
+
+private fun strictUnicodeExtension(parts: List<String>): Boolean {
+    var index = 0
+    while (index < parts.size && parts[index].length in 3..8) index++
+    while (index < parts.size) {
+        val key = parts[index++]
+        if (key.length != 2 || !key[1].isLatinLetter()) return false
+        while (index < parts.size && parts[index].length in 3..8) index++
+    }
+    return true
+}
+
+private fun strictTransformedExtension(parts: List<String>): Boolean {
+    fun isKey(part: String): Boolean = part.length == 2 && part[0].isLatinLetter() && part[1].isAsciiDigit()
+    val languageEnd = parts.indexOfFirst(::isKey).let { if (it < 0) parts.size else it }
+    if (languageEnd > 0 && strictLanguageId(parts.take(languageEnd)) == null) return false
+    var index = languageEnd
+    val keys = HashSet<String>()
+    while (index < parts.size) {
+        val key = parts[index++]
+        if (!isKey(key) || !keys.add(key)) return false
+        val start = index
+        while (index < parts.size && parts[index].length in 3..8) index++
+        if (index == start) return false
+    }
+    return true
+}

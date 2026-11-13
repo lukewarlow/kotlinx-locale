@@ -42,6 +42,8 @@ All date and time examples are real output for 2026-07-27, a Monday, at
 
 ## Contents
 
+- [Structured formatting and locale metadata](#structured-formatting-and-locale-metadata)
+
 - [Where the tables come from](#where-the-tables-come-from)
 - [Locale](#locale)
 - [The locale catalog](#the-locale-catalog)
@@ -784,9 +786,9 @@ pattern the locale uses.
 ```kotlin
 val en = Locale.forLanguageTag("en")
 intervalFormat(LocalDate(2026, 7, 22), LocalDate(2026, 7, 22), "yMMMd", en) // "Jul 22, 2026"
-intervalFormat(LocalDate(2026, 7, 18), LocalDate(2026, 7, 22), "yMMMd", en) // "Jul 18 – 22, 2026"
-intervalFormat(LocalDate(2026, 5, 18), LocalDate(2026, 7, 22), "yMMMd", en) // "May 18 – Jul 22, 2026"
-intervalFormat(LocalDate(2025, 5, 18), LocalDate(2026, 7, 22), "yMMMd", en) // "May 18, 2025 – Jul 22, 2026"
+intervalFormat(LocalDate(2026, 7, 18), LocalDate(2026, 7, 22), "yMMMd", en) // "Jul 18 \u2013 22, 2026"
+intervalFormat(LocalDate(2026, 5, 18), LocalDate(2026, 7, 22), "yMMMd", en) // "May 18 \u2013 Jul 22, 2026"
+intervalFormat(LocalDate(2025, 5, 18), LocalDate(2026, 7, 22), "yMMMd", en) // "May 18, 2025 \u2013 Jul 22, 2026"
 ```
 
 `skeleton` names the fields the way [Skeleton formatting](#skeleton-formatting)
@@ -795,7 +797,7 @@ twice with a separator. The values are formatted in the order given: a later
 start is not an error and is not swapped, because several locales write their
 fallback with the arguments reversed.
 
-Falls back to the locale's own `{0} – {1}` over two whole formats, then to ISO
+Falls back to the locale's own `{0} \u2013 {1}` over two whole formats, then to ISO
 8601's `<start>/<end>`.
 
 ## Week data
@@ -1543,7 +1545,8 @@ numberFormat(Decimal.parse("1.50"), EN)        // "1.5"
 ```
 
 Overloaded for `Long`, `Double` and `Decimal`. `Decimal` is the exact type the
-formatters take: a `Long` of unscaled units plus a scale. The digit count for a
+formatters take: an arbitrary-length ASCII coefficient plus a signed scale and
+a separate sign, preserving negative zero and visible trailing zeros. The digit count for a
 `Double` is required rather than inferred, because the targets do not agree on
 how many digits a `Double` has and a formatter that guessed would print
 different text on each.
@@ -2404,3 +2407,208 @@ The bundled data comes from CLDR `release-48-2` plus, for currency identity
 2026-01-01. Test fixtures and the ISO 4217 numeric cross-check come from ICU
 `release-78.3`. Regeneration instructions are in the
 [README](README.md#where-the-data-comes-from).
+
+## Structured formatting and locale metadata
+
+These APIs return `LocaleLookup<T>`: `Value(value)` for a result, `MissingData`
+when the operation is supported but the lookup has no data, and
+`Unsupported(operation)` when that source cannot perform it. They do not require
+`InternalKotlinxLocaleApi`. Existing string convenience functions remain available.
+
+### Locale identity and preferences
+
+From `kotlinx-locale-core`:
+
+```kotlin
+Locale.forUnicodeLanguageTagOrNull(tag: String): Locale?
+locale.variants: List<String>
+locale.unicodeKeywords: Map<String, String>
+locale.unicodeKeywordValueOrNull(key: String): String?
+locale.withLanguageId(language, script, region, variants): Locale
+```
+
+The strict parser accepts Unicode locale identifier syntax, including unknown
+languages, without underscore or POSIX normalization. It preserves all variants
+and extensions. Duplicate Unicode keys and attributes retain the first value;
+duplicate variants or extension singletons are invalid. Raw keyword lookup
+returns an empty string for a bare key and null for an absent key. The older
+`unicodeKeywordOrNull` continues to return `"true"` for a bare key.
+
+From `kotlinx-locale-metadata-cldr-full`, import
+`dev.carcara.kotlinx.locale.metadata.cldr.*`:
+
+```kotlin
+localeCanonicalize(value: Locale): Locale
+localeCanonicalizeUnicodeValue(key: String, value: String): String
+localeMaximize(value: Locale): Locale
+localeMinimize(value: Locale): Locale
+localePreferences(locale: Locale): LocalePreferences
+localeRegionPreference(locale: Locale): RegionPreference
+localeCurrencies(): List<CurrencyMetadata>
+localeTimeZones(region: String): List<String>
+localeTimeZoneIdentifiers(): List<TimeZoneIdentifier>
+localeTimeZoneIdentifierOrNull(identifier: String): TimeZoneIdentifier?
+localeNumberingSystems(): Set<String>
+localeMatchOrNull(requested: List<Locale>, available: Set<Locale>): LocaleMatch?
+```
+
+Canonicalization uses CLDR language, script, region, variant, subdivision and
+Unicode-value aliases. Maximize/minimize preserve variants and extensions.
+Regional preference resolution considers `rg`, an explicit region, `sd`, likely
+subtags and the world default, in that order; the result records its origin.
+Preferences include calendars, collations, numbering systems, concrete hour
+cycles and text direction. Preferences do not advertise formatter capabilities. The date/time module's
+`weekInfoForRegionOrNull(regionCode)` returns only an explicit regional row,
+so callers can distinguish it from the world fallback in `weekInfoForRegion`. Currency records include
+ISO storage precision separately from CLDR rendering/cash defaults. Zone records
+retain recognized alias spellings and CLDR's IANA primary mapping; the UTC family
+maps to UTC. Unknown regions return an empty zone list. Matching uses the pinned
+CLDR language-distance rules with deterministic available-tag tie breaking.
+
+### Exact numbers, rounding and plurals
+
+Import `dev.carcara.kotlinx.locale.number.*` and `.number.cldr.*`:
+
+```kotlin
+Decimal.parse("123456789012345678901234567890.12500")
+Decimal.ofDigits("0", scale = 2, negative = true)
+numberRound(value, options): Decimal
+numberFormat(value: NumberValue, locale, options): LocaleLookup<FormattedNumber>
+numberFormatRounded(value: RoundedNumber, locale, options): LocaleLookup<FormattedNumber>
+numberFormatPercent(value: NumberValue, locale, options): LocaleLookup<FormattedNumber>
+numberFormatPercentValue(value: NumberValue, locale, options): LocaleLookup<FormattedNumber>
+numberCapabilities(locale): NumberFormatCapabilities
+pluralCategoryOrNull(value: PluralOperands, locale, type): PluralCategory?
+pluralCategoriesOrNull(locale, type): Set<PluralCategory>?
+pluralRangeOrNull(start, end, locale): PluralCategory?
+```
+
+`Decimal` accepts arbitrary-length coefficients and signed scales. Checked
+`unscaledOrNull()` and `integerPartOrNull()` conversions replace lossy Long
+accessors. NumberValue is `Finite(Decimal)`, `NaN`, `PositiveInfinity` or
+`NegativeInfinity`. A finite Decimal retains its sign at zero.
+
+NumberFormatOptions adds significant digits, rounding priority, rounding
+increments, trailing-zero display and numbering-system selection. Rounding modes
+are ceil, floor, expand, trunc and the five half variants, with half-even as the
+default. Scientific and engineering notation emit exponent parts. `MIN2` grouping
+uses the selected pattern's primary group size.
+
+FormattedNumber contains text, immutable NumberPart values and exact
+PluralOperands. `operands` describes the displayed coefficient; `quantityOperands`
+restores the notation exponent for measurement-unit and currency-name inflection.
+Thus one million formats with plural wording even when its coefficient is `1`. Parts concatenate to text. Operands can be constructed directly
+from already-rounded ASCII integer/fraction digits and compact exponent; plural
+selection never saturates large values to Long. Plural categories include other,
+and plural ranges use CLDR range rules.
+
+RoundedNumber carries the displayed Decimal, scientific exponent and compact
+exponent. `numberFormatRounded` preserves those digits, including trailing zeros,
+and performs no second rounding or percent multiplication. The caller must supply
+the selected notation. Number ranges compose already-rendered endpoints with
+`numberComposeRange`; `approximately` selects the locale's approximation pattern,
+and each part records START, END or SHARED provenance. Callers own endpoint
+validation and the decision to request approximation.
+
+### Currency, units, relative time and durations
+
+```kotlin
+// dev.carcara.kotlinx.locale.currency.cldr
+currencyFormat(value: NumberValue, currencyCode, locale, options, style)
+currencyDisplayName(currencyCode, locale, width, fallback)
+
+// dev.carcara.kotlinx.locale.unit.cldr
+unitFormat(value: Decimal, unit: String, locale, width, options)
+
+// dev.carcara.kotlinx.locale.datetime.cldr.relative
+relativeTimeFormat(value: Decimal, unit, locale, style, numbering, options)
+```
+
+Currency formatting takes an exact major-unit amount, independently of ISO minor
+units. Unknown well-formed three-letter codes use code fallback and standard
+currency fraction defaults. The monetary CurrencyAmount API still stores Long
+ISO minor units. Unit formatting accepts CLDR unit identifiers, including
+`meter-per-second`, and returns number/unit/literal parts. Relative time accepts
+fractions and negative zero, preserving tense independently of magnitude.
+
+Duration wording can compose an already-rendered number through
+`durationComposeUnit`. `durationCompose` joins rendered elements with unit-list
+patterns while retaining their number/unit parts. `durationDigitalFormat` returns
+the two clock separators and hour-padding policy. Duration field selection,
+balancing, sign placement and fractional truncation remain caller decisions.
+
+### Lists and display names
+
+Import `dev.carcara.kotlinx.locale.list.cldr.*`:
+
+```kotlin
+listFormat(value: List<String>, locale, options): LocaleLookup<FormattedList>
+```
+
+ListFormatOptions selects conjunction, disjunction or unit lists and long, short
+or narrow style. Each element part retains its original value and index, including
+empty or repeated elements. Joining text is emitted as literal parts. Spanish
+and Hebrew contextual joining rules are applied during composition.
+
+The language CLDR module adds `localeDisplayName` for composed locales or a
+DisplayNameType/code pair. Supported types include language, script, region,
+calendar, date/time field and variant. Currency names use `currencyDisplayName`.
+NameWidth selects long/short/narrow. NameFallback chooses code substitution or
+no substitution, and DisplayName records localized, width-fallback or code origin.
+The composed locale operation preserves and names each variant; fallback NONE
+never silently echoes an unknown variant code.
+
+### Collation
+
+Import `dev.carcara.kotlinx.locale.collation.cldr.*`:
+
+```kotlin
+collationResolve(locale, options): LocaleLookup<ResolvedCollation>
+collationCapabilities(locale): CollationCapabilities
+collationValues(): Set<String>
+```
+
+CollationOptions selects sort/search usage, a supported `co` type, base/accent/
+case/variant sensitivity, punctuation handling, numeric comparison and case-first
+ordering. ResolvedCollation includes the comparator and the actual selected
+options. Search uses CLDR search rules, rather than merely reducing sort strength.
+Case-only sensitivity keeps the collation element's case information while
+ignoring secondary accent weights. Numeric comparison recognizes Unicode decimal
+digits and compares arbitrary-length digit runs by numeric value.
+
+Coverage distinguishes enumerated localized data with root fallback from
+universal default algorithms and unknown coverage. A root fallback is not a
+claim that every locale has a dedicated tailoring.
+
+### Selected date/time formats and zones
+
+Import `dev.carcara.kotlinx.locale.datetime.cldr.*`, adding `.skeletons.*` or
+`.intervals.*` for their operations:
+
+```kotlin
+dateTimeCapabilities(locale): DateTimeCapabilities
+dateTimeSelect(dateStyle, timeStyle, locale, hourCycle, numberingSystem)
+dateTimeSelectSkeleton(skeleton, locale, numberingSystem)
+dateTimeCandidates(locale, numberingSystem)
+dateTimeFormat(value: DateTimeRenderContext, format: SelectedDateTimeFormat)
+intervalFormatSelected(start, end, format, skeleton)
+```
+
+SelectedDateTimeFormat contains the actual pattern, component widths, concrete
+hour cycle, fractional-second count, calendar and numbering system. Candidate
+records let an embedding engine perform its own BasicFormatMatcher. Date and
+time fields are already converted by the caller. Rendering returns typed parts;
+missing required date, time or zone context is an unsupported operation rather
+than a silently omitted field. Gregorian is the implemented calendar.
+
+Style intervals retain the selected style pattern. Skeleton intervals use CLDR's
+interval patterns when available; fallback renders both endpoints with the
+selected pattern. Range parts carry endpoint/shared provenance.
+
+`timeZoneName` in `dev.carcara.kotlinx.locale.timezone.cldr` accepts a
+TimeZoneNameContext with identifier, offset seconds, optional epoch seconds,
+daylight status, whether the zone observes daylight time, and numbering system.
+Historical metazones are selected using half-open UTC instant ranges. Offsets
+through ±23:59 are accepted without constructing kotlinx-datetime UtcOffset.
+The caller owns instant conversion and DST calculations; the library owns names
+and localized offset patterns.

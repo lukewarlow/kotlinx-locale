@@ -55,6 +55,16 @@ dependencyResolutionManagement {
 rootProject.name = "kotlinx-locale-project"
 
 val published = listOf(
+    "kotlinx-locale-list-core",
+    "kotlinx-locale-list-cldr-runtime",
+    "kotlinx-locale-list-cldr-full",
+    "kotlinx-locale-unit-core",
+    "kotlinx-locale-unit-cldr-runtime",
+    "kotlinx-locale-unit-cldr-full",
+
+    "kotlinx-locale-metadata-core",
+    "kotlinx-locale-metadata-cldr-runtime",
+    "kotlinx-locale-metadata-cldr-full",
     "kotlinx-locale-core",
     "kotlinx-locale-types",
     "kotlinx-locale-segmentation-core",

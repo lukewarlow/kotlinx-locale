@@ -80,6 +80,10 @@ public class PayloadWeekInfo(table: String) : WeekInfoSource {
 
     private fun dayOf(isoDayNumber: Int): DayOfWeek = DayOfWeek.entries.first { it.isoDayNumber == isoDayNumber }
 
+    override fun regionalWeekInfo(regionCode: String): dev.carcara.kotlinx.locale.LocaleLookup<WeekInfo> =
+        byTerritory[regionCode.uppercase()]?.let(::unpack)?.let { dev.carcara.kotlinx.locale.LocaleLookup.Value(it) }
+            ?: dev.carcara.kotlinx.locale.LocaleLookup.MissingData
+
     override fun weekInfoForRegionOrNull(regionCode: String): WeekInfo? {
         val packed = byTerritory[regionCode.uppercase()] ?: byTerritory[WORLD] ?: return null
         return unpack(packed)

@@ -5,9 +5,12 @@ public final class dev/carcara/kotlinx/locale/currency/platform/PlatformCurrency
 	public fun currencySymbolOrNull (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun currencySymbolOrNull (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/currency/CurrencySymbolStyle;)Ljava/lang/String;
 	public fun formatOrNull (JLjava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/currency/CurrencyFormatOptions;)Ljava/lang/String;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public final fun isAvailable ()Z
+	public fun lookupName (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/NameWidth;Ldev/carcara/kotlinx/locale/NameFallback;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun parseToMinorUnitsOrNull (Ljava/lang/String;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/Long;
+	public fun render (Ldev/carcara/kotlinx/locale/number/NumberValue;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ldev/carcara/kotlinx/locale/currency/CurrencySymbolStyle;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/currency/platform/PlatformCurrencyKt {

@@ -119,3 +119,86 @@ public fun LanguageNameSource.scriptName(code: String, locale: Locale = Locale.c
 
 /** The name of the region [code] in [locale]; falls back to the code. */
 public fun LanguageNameSource.regionName(code: String, locale: Locale = Locale.current): String = regionNameOrNull(code, locale) ?: code
+
+/** Compose a locale name with explicit missing-name and code-substitution semantics. */
+public fun LanguageNameSource.localeName(
+    target: Locale,
+    locale: Locale = Locale.current,
+    display: LanguageDisplay = LanguageDisplay.DIALECT,
+    width: dev.carcara.kotlinx.locale.NameWidth = dev.carcara.kotlinx.locale.NameWidth.LONG,
+    fallback: dev.carcara.kotlinx.locale.NameFallback = dev.carcara.kotlinx.locale.NameFallback.NONE,
+): dev.carcara.kotlinx.locale.LocaleLookup<dev.carcara.kotlinx.locale.DisplayName> {
+    val values = ArrayList<dev.carcara.kotlinx.locale.DisplayName>()
+    var failure: dev.carcara.kotlinx.locale.LocaleLookup<Nothing>? = null
+    fun name(type: dev.carcara.kotlinx.locale.DisplayNameType, code: String, allowCode: Boolean = true): String? = when (
+        val result = lookupName(
+            type,
+            code,
+            locale,
+            width,
+            if (allowCode) fallback else dev.carcara.kotlinx.locale.NameFallback.NONE,
+        )
+    ) {
+        is dev.carcara.kotlinx.locale.LocaleLookup.Value -> result.value.also(values::add).text
+        is dev.carcara.kotlinx.locale.LocaleLookup.Unsupported -> {
+            failure = result
+            null
+        }
+        dev.carcara.kotlinx.locale.LocaleLookup.MissingData -> null
+    }
+    val patterns = displayPatternsOrNull(locale) ?: LocaleDisplayPatterns.Root
+    var base: String? = null
+    var scriptUsed = false
+    var regionUsed = false
+    if (display == LanguageDisplay.DIALECT) {
+        if (target.script != null && target.region != null) {
+            base = name(dev.carcara.kotlinx.locale.DisplayNameType.LANGUAGE, "${target.language}-${target.script}-${target.region}", false)
+            if (base != null) {
+                scriptUsed = true
+                regionUsed = true
+            }
+        }
+        if (base == null && target.region != null) {
+            base = name(dev.carcara.kotlinx.locale.DisplayNameType.LANGUAGE, "${target.language}-${target.region}", false)
+            if (base != null) regionUsed = true
+        }
+        if (base == null && target.script != null) {
+            base = name(dev.carcara.kotlinx.locale.DisplayNameType.LANGUAGE, "${target.language}-${target.script}", false)
+            if (base != null) scriptUsed = true
+        }
+    }
+    base = base ?: name(dev.carcara.kotlinx.locale.DisplayNameType.LANGUAGE, target.language)
+        ?: return failure ?: dev.carcara.kotlinx.locale.LocaleLookup.MissingData
+    val qualifiers = ArrayList<String>()
+    target.script?.takeUnless { scriptUsed }?.let {
+        qualifiers.add(
+            name(dev.carcara.kotlinx.locale.DisplayNameType.SCRIPT, it)
+                ?: return failure ?: dev.carcara.kotlinx.locale.LocaleLookup.MissingData,
+        )
+    }
+    target.region?.takeUnless { regionUsed }?.let {
+        qualifiers.add(
+            name(dev.carcara.kotlinx.locale.DisplayNameType.REGION, it)
+                ?: return failure ?: dev.carcara.kotlinx.locale.LocaleLookup.MissingData,
+        )
+    }
+    for (variant in target.variants) {
+        qualifiers.add(
+            name(dev.carcara.kotlinx.locale.DisplayNameType.VARIANT, variant)
+                ?: return failure ?: dev.carcara.kotlinx.locale.LocaleLookup.MissingData,
+        )
+    }
+    fun escapeQualifier(value: String): String = value.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］')
+    val qualifier = qualifiers.map(::escapeQualifier).reduceOrNull { left, right ->
+        patterns.localeSeparator.replace("{0}", left).replace("{1}", right)
+    }
+    val text = if (qualifier == null) base else patterns.localePattern.replace("{0}", base).replace("{1}", qualifier)
+    val origin = when {
+        values.any { it.origin == dev.carcara.kotlinx.locale.NameOrigin.CODE } -> dev.carcara.kotlinx.locale.NameOrigin.CODE
+        values.any {
+            it.origin == dev.carcara.kotlinx.locale.NameOrigin.WIDTH_FALLBACK
+        } -> dev.carcara.kotlinx.locale.NameOrigin.WIDTH_FALLBACK
+        else -> dev.carcara.kotlinx.locale.NameOrigin.LOCALIZED
+    }
+    return dev.carcara.kotlinx.locale.LocaleLookup.Value(dev.carcara.kotlinx.locale.DisplayName(text, origin, width))
+}

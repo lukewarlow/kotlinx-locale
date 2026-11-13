@@ -17,6 +17,9 @@
 package dev.carcara.kotlinx.locale.collation.cldr.runtime
 
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
+import dev.carcara.kotlinx.locale.collation.CollationCaseFirst
+import dev.carcara.kotlinx.locale.collation.CollationOptions
+import dev.carcara.kotlinx.locale.collation.CollationSensitivity
 import dev.carcara.kotlinx.locale.collation.CollationStrength
 import dev.carcara.kotlinx.locale.internal.Normalization
 
@@ -45,7 +48,12 @@ import dev.carcara.kotlinx.locale.internal.Normalization
 public object PayloadCollation {
 
     /** A collation element: one weight per level, zero meaning ignorable. */
-    internal class Elements(val primary: IntArray, val secondary: IntArray, val tertiary: IntArray)
+    internal class Elements(
+        val primary: IntArray,
+        val secondary: IntArray,
+        val tertiary: IntArray,
+        val caseBits: IntArray = IntArray(tertiary.size),
+    )
 
     /**
      * The Han ideographs, as spans rather than as entries.
@@ -70,6 +78,8 @@ public object PayloadCollation {
     private var implicitBase = 0
     private var defaultSecondary = 0
     private var defaultTertiary = 0
+    private var variableRanges: List<Pair<Int, Int>> = emptyList()
+    private var decimalDigits: Map<Int, Int> = emptyMap()
 
     /** How far apart two neighbouring ranks sit, which is what a span steps by. */
     private var rankStride = 0
@@ -136,6 +146,20 @@ public object PayloadCollation {
             firstRanks[index] = rank
         }
 
+        variableRanges =
+            sections.getOrNull(5).orEmpty().split(',').filter(String::isNotEmpty).map { row ->
+                row.split('.').let {
+                    it[0].toInt(36) to
+                        it[1].toInt(36)
+                }
+            }
+        decimalDigits =
+            sections.getOrNull(6).orEmpty().split(',').filter(String::isNotEmpty).associate { row ->
+                row.split('.').let {
+                    it[0].toInt(36) to
+                        it[1].toInt()
+                }
+            }
         singles = single
         contractions = many
         prefixes = prefixed
@@ -277,6 +301,7 @@ public object PayloadCollation {
         private val suppressed: Set<Int>,
         /** How many levels a comparison reads, one to three. */
         private val levels: Int = 3,
+        private val options: CollationOptions? = null,
     ) : Comparator<String> {
 
         /**
@@ -310,6 +335,11 @@ public object PayloadCollation {
             )
         }
 
+        public fun configured(options: CollationOptions): Tailored = Tailored(
+            singles, contractions, prefixes, longestContraction, reorderFrom, reorderTo, reorderShift,
+            caseFrom, caseTo, backwardsSecondary, suppressed, levels, options,
+        )
+
         override fun compare(a: String, b: String): Int {
             if (a == b) return 0
             val left = sortKey(a)
@@ -341,6 +371,7 @@ public object PayloadCollation {
          */
         public fun sortKey(text: String): IntArray {
             val elements = elementsFor(Normalization.decompose(text))
+            if (options != null) return configuredKey(elements, options)
             val key = ArrayList<Int>(elements.size * levels + levels)
             val level1 = ArrayList<Int>()
             for (level in 0 until levels) {
@@ -373,6 +404,47 @@ public object PayloadCollation {
             return key.toIntArray()
         }
 
+        private fun configuredKey(elements: List<Elements>, options: CollationOptions): IntArray {
+            val key = ArrayList<Int>()
+            val active = elements.flatMap { element ->
+                element.primary.indices.map { index ->
+                    intArrayOf(
+                        element.primary[index],
+                        element.secondary.getOrElse(index) {
+                            0
+                        },
+                        element.tertiary.getOrElse(index) { 0 },
+                        element.caseBits.getOrElse(index) { 0 },
+                    )
+                }
+            }
+            val filtered = ArrayList<IntArray>()
+            var shifted = false
+            for (element in active) {
+                if (options.ignorePunctuation == true && element[0] != 0) shifted = variableRanges.any { element[0] in it.first..it.second }
+                if (!shifted || options.ignorePunctuation != true) filtered += element
+            }
+            for (e in filtered) if (e[0] != 0) key += reordered(e[0])
+            val sensitivity = options.sensitivity ?: CollationSensitivity.VARIANT
+            if (sensitivity == CollationSensitivity.BASE) return key.toIntArray()
+            key += 0
+            if (sensitivity != CollationSensitivity.CASE) {
+                val secondary = filtered.map { it[1] }.filter { it != 0 }
+                key += if (backwardsSecondary) secondary.reversed() else secondary
+                if (sensitivity == CollationSensitivity.ACCENT) return key.toIntArray()
+                key += 0
+            }
+            for (e in filtered) {
+                if (e[0] == 0 && sensitivity == CollationSensitivity.CASE) continue
+                if (sensitivity == CollationSensitivity.CASE || options.caseFirst != null && options.caseFirst != CollationCaseFirst.OFF) {
+                    // Case bits come from individual collation elements, never a global tertiary swap.
+                    key += if (options.caseFirst == CollationCaseFirst.UPPER) 3 - e[3] else e[3] + 1
+                }
+                if (sensitivity != CollationSensitivity.CASE && e[2] != 0) key += e[2]
+            }
+            return key.toIntArray()
+        }
+
         /** A tertiary after the locale's case ordering, if it asked for one. */
         private fun cased(tertiary: Int): Int {
             for (index in caseFrom.indices) if (caseFrom[index] == tertiary) return caseTo[index]
@@ -384,6 +456,15 @@ public object PayloadCollation {
             val out = ArrayList<Elements>(points.size + 4)
             var i = 0
             while (i < points.size) {
+                if (options?.numeric == true && points[i] in decimalDigits) {
+                    val begin = i
+                    while (i < points.size && points[i] in decimalDigits) i++
+                    var digits = points.subList(begin, i).map { decimalDigits.getValue(it) }.dropWhile { it == 0 }
+                    if (digits.isEmpty()) digits = listOf(0)
+                    val primary = intArrayOf(singles[48]?.primary?.firstOrNull() ?: 1, digits.size + 1) + digits.map { it + 1 }.toIntArray()
+                    out += Elements(primary, IntArray(primary.size), IntArray(primary.size), IntArray(primary.size))
+                    continue
+                }
                 // A prefix rule wins over the character's own entry: U+00B7 has
                 // weights of its own, but after an l it takes the ones that make
                 // l-middle-dot weigh the same as U+0140.
@@ -500,7 +581,12 @@ public object PayloadCollation {
 
     private fun decodeElements(encoded: String): Elements {
         val levels = encoded.split('/')
-        return Elements(decodeLevel(levels[0]), decodeLevel(levels[1]), decodeLevel(levels[2]))
+        return Elements(
+            decodeLevel(levels[0]),
+            decodeLevel(levels[1]),
+            decodeLevel(levels[2]),
+            levels.getOrNull(3)?.let(::decodeLevel) ?: IntArray(decodeLevel(levels[2]).size),
+        )
     }
 
     private fun decodeLevel(encoded: String): IntArray {

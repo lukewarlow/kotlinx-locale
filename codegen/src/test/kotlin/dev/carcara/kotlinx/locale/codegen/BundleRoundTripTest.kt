@@ -65,22 +65,15 @@ val BundleRoundTripTest by matrixSuite(matrixConfig { testConfig = TestConfig.te
             generateSegmentationData(regenerated)
 
             var compared = 0
-            val modules = listOf(
-                "kotlinx-locale-types",
-                "kotlinx-locale-segmentation-unicode",
-                "kotlinx-locale-country-types",
-                "kotlinx-locale-country-cldr-full",
-                "kotlinx-locale-currency-types",
-                "kotlinx-locale-currency-cldr-full",
-                "kotlinx-locale-datetime-cldr-full",
-                "kotlinx-locale-datetime-cldr-skeletons",
-            )
+            val modules = regenerated.listFiles().orEmpty().filter {
+                it.isDirectory && it.name.startsWith("kotlinx-locale-")
+            }.map(File::getName)
             // Include both packed source sets, because a compressed table writes its
             // `expect` into commonMain and one packed `actual` into each of the
             // others. Comparing only commonMain would leave the data itself,
             // which is the part worth pinning, unchecked.
             // The Unicode-only generator also writes the vendored word/sentence fixtures.
-            val sourceSets = listOf("commonMain", "utf8Main", "utf16Main", "commonTest")
+            val sourceSets = listOf("commonMain", "utf8Main", "utf8PlainMain", "utf8DeflatedMain", "utf16Main", "commonTest")
             for (module in modules) {
                 for (sourceSet in sourceSets) {
                     val fresh = regenerated.resolve("$module/src/$sourceSet/kotlin")

@@ -30,6 +30,39 @@ import dev.carcara.kotlinx.locale.test.assertTrue
 
 val LocaleTest by matrixSuite(matrixConfig { testConfig = TestConfig.testScope(isEnabled = false) }) {
 
+    test("strictUnicodeGrammarAndLosslessLanguageId") {
+        val tag = "sl-rozaj-biske-1994-u-foo-ca-gregory-kn-a-hello-x-private"
+        val locale = Locale.forUnicodeLanguageTagOrNull(tag)!!
+        assertEquals(listOf("rozaj", "biske", "1994"), locale.variants)
+        assertEquals(tag.replace("-u-foo-ca-gregory-kn-a-hello", "-a-hello-u-foo-ca-gregory-kn"), locale.toLanguageTag())
+        assertEquals("", locale.unicodeKeywordValueOrNull("kn"))
+        assertEquals("true", locale.unicodeKeywordOrNull("kn"))
+        assertNull(locale.unicodeKeywordValueOrNull("kf"))
+        assertEquals(locale.extensions, locale.withLanguageId(language = "de", region = "DE").extensions)
+        assertEquals(locale.unicodeKeywords, locale.withLanguageId(language = "de").unicodeKeywords)
+        assertEquals(locale.variants, Locale.forLanguageTag("sl-rozaj-biske-1994").variants)
+        assertEquals("posix", Locale.forUnicodeLanguageTagOrNull("posix")!!.language)
+    }
+
+    test("strictParserRejectsMalformedMainAndTransformedIdentifiers") {
+        for (tag in listOf(
+            "en_US", " en-US", "en--US", "en.UTF-8", "en@calendar=gregory", "abcd", "x-private",
+            "en-1901-1901", "en-a-hello-a-again", "en-u", "en-u-c1-gregory", "en-t",
+            "en-t-de-1901-1901", "en-t-h0", "en-t-de-h0-hybrid-h0-another", "en-t-foo-USA",
+        )) {
+            assertNull(Locale.forUnicodeLanguageTagOrNull(tag), tag)
+        }
+        for (tag in listOf("en-t-de-1901-h0-hybrid", "en-t-h0-hybrid", "en-x-a-b", "zzzzz-Latn-554")) {
+            assertTrue(Locale.forUnicodeLanguageTagOrNull(tag) != null, tag)
+        }
+    }
+
+    test("duplicateUnicodeKeywordsAndAttributesKeepFirst") {
+        val locale = Locale.forUnicodeLanguageTagOrNull("da-u-foo-foo-ca-gregory-ca-buddhist")!!
+        assertEquals("da-u-foo-ca-gregory", locale.toLanguageTag())
+        assertEquals("gregory", locale.unicodeKeywordOrNull("ca"))
+    }
+
     test("parsesBcp47Tags") {
         val locale = Locale.forLanguageTag("pt-BR")
         assertEquals("pt", locale.language)

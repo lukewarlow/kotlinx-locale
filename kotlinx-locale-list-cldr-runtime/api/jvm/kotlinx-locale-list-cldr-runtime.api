@@ -1,0 +1,11 @@
+public final class dev/carcara/kotlinx/locale/list/cldr/runtime/PayloadListFormats : dev/carcara/kotlinx/locale/list/ListFormatSource {
+	public static final field Companion Ldev/carcara/kotlinx/locale/list/cldr/runtime/PayloadListFormats$Companion;
+	public fun <init> (Ljava/util/Map;)V
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun render (Ljava/util/List;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/list/ListFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+}
+
+public final class dev/carcara/kotlinx/locale/list/cldr/runtime/PayloadListFormats$Companion {
+}
+

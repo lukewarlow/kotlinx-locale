@@ -61,6 +61,8 @@ public enum class TextStyle {
  * `Month.number` and `DayOfWeek.isoDayNumber`.
  */
 public interface DateTimeFormatSource : LocaleDataSource {
+    public fun capabilities(locale: Locale): DateTimeCapabilities =
+        DateTimeCapabilities(localeCoverage, emptySet(), null, emptySet(), null, null, null, null, false, false)
 
     public fun formatDateOrNull(date: LocalDate, style: FormatStyle, locale: Locale): String?
 
@@ -86,6 +88,25 @@ public interface DateTimeFormatSource : LocaleDataSource {
     /** The weekday name in [context]; see [monthNameOrNull]. */
     public fun dayOfWeekNameOrNull(isoDayNumber: Int, style: TextStyle, context: NameContext, locale: Locale): String? =
         dayOfWeekNameOrNull(isoDayNumber, style, locale)
+
+    /** Select the actual style pattern; null styles omit that half. */
+    public fun select(
+        dateStyle: FormatStyle?,
+        timeStyle: FormatStyle?,
+        locale: Locale,
+        hourCycle: HourCycle? = null,
+        numberingSystem: String? = null,
+    ): dev.carcara.kotlinx.locale.LocaleLookup<SelectedDateTimeFormat> =
+        dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Selected date/time formats")
+
+    /** Typed output from the formatting pass. Missing required fields are unsupported. */
+    public fun render(
+        context: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        numbers: dev.carcara.kotlinx.locale.number.NumberFormatSource? = null,
+        zones: dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource? = null,
+    ): dev.carcara.kotlinx.locale.LocaleLookup<FormattedDateTime> =
+        dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Structured date/time formatting")
 
     public companion object
 }

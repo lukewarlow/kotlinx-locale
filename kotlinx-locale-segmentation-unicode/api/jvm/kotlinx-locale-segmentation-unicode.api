@@ -1,5 +1,6 @@
 public final class dev/carcara/kotlinx/locale/segmentation/unicode/UnicodeSegmentation : dev/carcara/kotlinx/locale/segmentation/SegmentationSource {
 	public static final field INSTANCE Ldev/carcara/kotlinx/locale/segmentation/unicode/UnicodeSegmentation;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedGranularities ()Ljava/util/Set;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public fun getUnicodeVersion ()Ljava/lang/String;

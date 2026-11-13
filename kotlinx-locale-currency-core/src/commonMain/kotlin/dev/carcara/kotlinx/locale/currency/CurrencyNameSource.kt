@@ -51,6 +51,39 @@ public interface CurrencyNameSource : LocaleDataSource {
     /** The currency display name for [locale], or `null` when this source has none. */
     public fun currencyNameOrNull(currencyCode: String, locale: Locale): String?
 
+    /** CLDR has one display-name width; narrower requests explicitly fall back to it. */
+    public fun lookupName(
+        currencyCode: String,
+        locale: Locale,
+        width: dev.carcara.kotlinx.locale.NameWidth = dev.carcara.kotlinx.locale.NameWidth.LONG,
+        fallback: dev.carcara.kotlinx.locale.NameFallback = dev.carcara.kotlinx.locale.NameFallback.NONE,
+    ): dev.carcara.kotlinx.locale.LocaleLookup<dev.carcara.kotlinx.locale.DisplayName> {
+        val text = currencyNameOrNull(currencyCode, locale)
+        return if (text != null) {
+            dev.carcara.kotlinx.locale.LocaleLookup.Value(
+                dev.carcara.kotlinx.locale.DisplayName(
+                    text,
+                    if (width ==
+                        dev.carcara.kotlinx.locale.NameWidth.LONG
+                    ) {
+                        dev.carcara.kotlinx.locale.NameOrigin.LOCALIZED
+                    } else {
+                        dev.carcara.kotlinx.locale.NameOrigin.WIDTH_FALLBACK
+                    },
+                    dev.carcara.kotlinx.locale.NameWidth.LONG,
+                ),
+            )
+        } else if (fallback ==
+            dev.carcara.kotlinx.locale.NameFallback.CODE
+        ) {
+            dev.carcara.kotlinx.locale.LocaleLookup.Value(
+                dev.carcara.kotlinx.locale.DisplayName(currencyCode, dev.carcara.kotlinx.locale.NameOrigin.CODE, null),
+            )
+        } else {
+            dev.carcara.kotlinx.locale.LocaleLookup.MissingData
+        }
+    }
+
     public companion object
 }
 

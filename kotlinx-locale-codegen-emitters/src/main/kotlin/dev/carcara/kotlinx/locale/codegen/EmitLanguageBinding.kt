@@ -19,7 +19,7 @@ package dev.carcara.kotlinx.locale.codegen
 import java.io.File
 
 /** `CldrLanguage`-shaped binding: the source object plus the Locale extensions. */
-public fun emitLanguageBinding(outputRoot: File, spec: BindingSpec) {
+public fun emitLanguageBinding(outputRoot: File, spec: BindingSpec, hasExtendedNames: Boolean = false) {
     val file = outputRoot.packageFile(spec.packageName, "LanguageNames.kt")
     file.writeText(
         preamble(
@@ -36,6 +36,7 @@ public fun emitLanguageBinding(outputRoot: File, spec: BindingSpec) {
                 "dev.carcara.kotlinx.locale.language.regionName",
                 "dev.carcara.kotlinx.locale.language.scriptName",
                 "${spec.registryPackage}.localeDisplayNamesRegistry",
+                if (hasExtendedNames) "${spec.registryPackage}.extendedDisplayNamesRegistry" else null,
                 if (spec.hasSharedTerritory) null else "dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi",
                 if (spec.hasSharedTerritory) null else "dev.carcara.kotlinx.locale.internal.sparseRecordValue",
                 if (spec.hasSharedTerritory) spec.territoryObject else "${spec.registryPackage}.countryNamesRegistry",
@@ -50,7 +51,9 @@ public fun emitLanguageBinding(outputRoot: File, spec: BindingSpec) {
         | * `kotlinx-locale-language-cldr-runtime` and `-core`; all this object
         | * contributes is the table.
         | */
-        |public object ${spec.objectName} : LanguageNameSource by ${spec.languageNamesArgument()}
+        |public object ${spec.objectName} : LanguageNameSource by ${spec.languageNamesArgument(
+            if (hasExtendedNames) "extendedDisplayNamesRegistry" else "emptyMap()",
+        ) }
         |
         |/**
         | * This locale's name written in [inLocale], e.g. `Brazilian Portuguese` for

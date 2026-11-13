@@ -79,8 +79,12 @@ public final class dev/carcara/kotlinx/locale/number/cldr/runtime/NumberRenderer
 	public static final fun atFractionDigits (Ldev/carcara/kotlinx/locale/number/Decimal;I)Ldev/carcara/kotlinx/locale/number/Decimal;
 	public static final fun digitStringsOf (Ljava/lang/String;)Ljava/util/List;
 	public static final fun isAlphaAdjacent (Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ljava/lang/String;)Z
-	public static final fun renderNumber (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ljava/lang/Integer;ZLdev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;IIZ)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
-	public static synthetic fun renderNumber$default (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ljava/lang/Integer;ZLdev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;IIZILjava/lang/Object;)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
+	public static final fun renderNumber (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ljava/lang/Integer;ZLdev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;IIZLdev/carcara/kotlinx/locale/number/NumberPartKind;)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
+	public static synthetic fun renderNumber$default (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ljava/lang/Integer;ZLdev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;IIZLdev/carcara/kotlinx/locale/number/NumberPartKind;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
+	public static final fun renderScientific (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ldev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;Z)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
+	public static synthetic fun renderScientific$default (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ldev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;ZILjava/lang/Object;)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
+	public static final fun renderSpecialNumber (Ldev/carcara/kotlinx/locale/number/NumberValue;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ldev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;Z)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
+	public static synthetic fun renderSpecialNumber$default (Ldev/carcara/kotlinx/locale/number/NumberValue;Ldev/carcara/kotlinx/locale/number/cldr/runtime/NumberPattern;Ldev/carcara/kotlinx/locale/number/NumberSymbols;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;Ldev/carcara/kotlinx/locale/number/cldr/runtime/AffixSubstitution;ZILjava/lang/Object;)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
 }
 
 public final class dev/carcara/kotlinx/locale/number/cldr/runtime/NumberSymbolsRecord {
@@ -122,12 +126,20 @@ public final class dev/carcara/kotlinx/locale/number/cldr/runtime/OrdinalRuleClo
 
 public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadNumberFormats : dev/carcara/kotlinx/locale/number/NumberFormatSource {
 	public static final field Companion Ldev/carcara/kotlinx/locale/number/cldr/runtime/PayloadNumberFormats$Companion;
-	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ldev/carcara/kotlinx/locale/number/PluralRuleSource;)V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ldev/carcara/kotlinx/locale/number/PluralRuleSource;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ldev/carcara/kotlinx/locale/number/PluralRuleSource;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun capabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/number/NumberFormatCapabilities;
+	public fun composeRange (Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;ZZ)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun formatOrNull (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
 	public fun formatPercentOrNull (Ldev/carcara/kotlinx/locale/number/Decimal;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/PercentScale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/number/FormattedNumber;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public fun parseDecimalOrNull (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/number/Decimal;
+	public fun render (Ldev/carcara/kotlinx/locale/number/NumberValue;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public fun renderPercent (Ldev/carcara/kotlinx/locale/number/NumberValue;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/PercentScale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public fun renderRounded (Ldev/carcara/kotlinx/locale/number/RoundedNumber;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/number/NumberFormatOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun symbolsOrNull (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/number/NumberSymbols;
+	public fun symbolsOrNull (Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/number/NumberSymbols;
 }
 
 public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadNumberFormats$Companion {
@@ -136,6 +148,7 @@ public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadNumberF
 public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadOrdinalFormats : dev/carcara/kotlinx/locale/number/OrdinalFormatSource {
 	public static final field Companion Ldev/carcara/kotlinx/locale/number/cldr/runtime/PayloadOrdinalFormats$Companion;
 	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/number/PluralRuleSource;)V
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public fun ordinalOrNull (JLdev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 }
@@ -145,9 +158,14 @@ public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadOrdinal
 
 public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadPluralRules : dev/carcara/kotlinx/locale/number/PluralRuleSource {
 	public static final field Companion Ldev/carcara/kotlinx/locale/number/cldr/runtime/PayloadPluralRules$Companion;
-	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun pluralCategoriesOrNull (Ldev/carcara/kotlinx/locale/number/PluralType;Ldev/carcara/kotlinx/locale/Locale;)Ljava/util/Set;
 	public fun pluralCategoryOrNull (Ldev/carcara/kotlinx/locale/number/FormattedNumber;Ldev/carcara/kotlinx/locale/number/PluralType;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/number/PluralCategory;
+	public fun pluralCategoryOrNull (Ldev/carcara/kotlinx/locale/number/PluralOperands;Ldev/carcara/kotlinx/locale/number/PluralType;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/number/PluralCategory;
+	public fun pluralRangeOrNull (Ldev/carcara/kotlinx/locale/number/PluralCategory;Ldev/carcara/kotlinx/locale/number/PluralCategory;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/number/PluralCategory;
 }
 
 public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadPluralRules$Companion {
@@ -155,6 +173,7 @@ public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadPluralR
 
 public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PluralRuleSet {
 	public static final field Companion Ldev/carcara/kotlinx/locale/number/cldr/runtime/PluralRuleSet$Companion;
+	public final fun getCategories ()Ljava/util/Set;
 	public final fun select (Ldev/carcara/kotlinx/locale/number/FormattedNumber;)Ldev/carcara/kotlinx/locale/number/PluralCategory;
 }
 

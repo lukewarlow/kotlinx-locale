@@ -47,8 +47,18 @@ public enum class CollationStrength {
  * names [collationComparator] rather than this.
  */
 public interface CollationSource {
+    /** Actual public collation variants carried by this source; excludes standard/search. */
+    public fun collations(): Set<String> = emptySet()
+
     /** The order [locale] reads in, or null when this build carries no table for it. */
     public fun comparatorOrNull(locale: Locale, strength: CollationStrength): Comparator<String>?
+
+    public fun resolve(
+        locale: Locale,
+        options: CollationOptions = CollationOptions(),
+    ): dev.carcara.kotlinx.locale.LocaleLookup<ResolvedCollation> = dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Collation options")
+    public fun capabilities(locale: Locale): CollationCapabilities =
+        CollationCapabilities(dev.carcara.kotlinx.locale.LocaleCoverage.Unknown, emptySet(), emptySet(), false, false)
 
     public companion object
 }

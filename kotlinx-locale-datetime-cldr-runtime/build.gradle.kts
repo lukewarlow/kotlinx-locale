@@ -25,6 +25,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":kotlinx-locale-datetime-core"))
+            api(project(":kotlinx-locale-list-core"))
             // The interfaces only. Relative wording picks a plural form and renders
             // its count, and the tables for both come from the consumer.
             api(project(":kotlinx-locale-number-core"))
