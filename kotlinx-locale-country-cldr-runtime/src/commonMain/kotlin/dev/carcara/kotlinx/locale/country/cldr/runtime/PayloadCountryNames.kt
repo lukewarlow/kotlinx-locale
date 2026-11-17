@@ -37,8 +37,11 @@ import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
  * inheritance chain and honors the `parentLocales` overrides: `es-AR` reads its
  * names from `es-419`.
  */
-public class PayloadCountryNames private constructor(private val lookup: (String, Locale) -> String?, supported: () -> Set<Locale>) :
-    CountryNameSource {
+public class PayloadCountryNames private constructor(
+    private val lookup: (String, Locale) -> String?,
+    supported: () -> Set<Locale>,
+    coverage: (() -> dev.carcara.kotlinx.locale.LocaleCoverage)? = null,
+) : CountryNameSource {
 
     /**
      * Over a table of records, which is what a generated build hands it.
@@ -46,6 +49,7 @@ public class PayloadCountryNames private constructor(private val lookup: (String
     public constructor(records: Map<String, String>) : this(
         { alpha2, locale -> sparseRecordValue(records, locale, field = 1, fieldCount = 2, key = alpha2) },
         { supportedLocalesOf(records) },
+        { dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(records, supportedLocalesOf(records)) },
     )
 
     /**
@@ -55,7 +59,16 @@ public class PayloadCountryNames private constructor(private val lookup: (String
      */
     public constructor(lookup: (String, Locale) -> String?, supported: Set<Locale>) : this(lookup, { supported })
 
+    public constructor(
+        lookup: (String, Locale) -> String?,
+        supported: Set<Locale>,
+        coverage: dev.carcara.kotlinx.locale.LocaleCoverage,
+    ) : this(lookup, { supported }, { coverage })
+
     override val supportedLocales: Set<Locale> by lazy(supported)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        coverage?.invoke() ?: dev.carcara.kotlinx.locale.LocaleCoverage.Enumerated(supportedLocales)
+    }
 
     override fun countryNameOrNull(alpha2: String, locale: Locale): String? = lookup(alpha2, locale)
 

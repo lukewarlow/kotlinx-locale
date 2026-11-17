@@ -160,6 +160,8 @@ public final class dev/carcara/kotlinx/locale/number/cldr/runtime/PayloadPluralR
 	public static final field Companion Ldev/carcara/kotlinx/locale/number/cldr/runtime/PayloadPluralRules$Companion;
 	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V
 	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
 	public fun getSupportedLocales ()Ljava/util/Set;
 	public fun pluralCategoriesOrNull (Ldev/carcara/kotlinx/locale/number/PluralType;Ldev/carcara/kotlinx/locale/Locale;)Ljava/util/Set;

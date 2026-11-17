@@ -61,6 +61,10 @@ public fun OrdinalFormatSource.ordinal(value: Long, locale: Locale = Locale.curr
 public class FallbackOrdinalFormats(private val primary: OrdinalFormatSource, private val fallback: OrdinalFormatSource) :
     OrdinalFormatSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale> get() = primary.supportedLocales + fallback.supportedLocales
 
     override fun ordinalOrNull(value: Long, locale: Locale): String? =

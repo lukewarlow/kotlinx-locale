@@ -2453,7 +2453,10 @@ localeMatchOrNull(requested: List<Locale>, available: Set<Locale>): LocaleMatch?
 ```
 
 Canonicalization uses CLDR language, script, region, variant, subdivision and
-Unicode-value aliases. Maximize/minimize preserve variants and extensions.
+Unicode-value aliases. Maximize/minimize preserve variants and extensions. They
+leave a canonical identifier unchanged when likely-subtag data has no entry
+for its language. Unicode `rg` and `sd` values follow subdivision aliases,
+including replacements with regions.
 Regional preference resolution considers `rg`, an explicit region, `sd`, likely
 subtags and the world default, in that order; the result records its origin.
 Preferences include calendars, collations, numbering systems, concrete hour
@@ -2464,6 +2467,32 @@ ISO storage precision separately from CLDR rendering/cash defaults. Zone records
 retain recognized alias spellings and CLDR's IANA primary mapping; the UTC family
 maps to UTC. Unknown regions return an empty zone list. Matching uses the pinned
 CLDR language-distance rules with deterministic available-tag tie breaking.
+
+### Unicode string casing
+
+From `kotlinx-locale-casing-unicode`:
+
+```kotlin
+import dev.carcara.kotlinx.locale.casing.unicode.casingLowercase
+import dev.carcara.kotlinx.locale.casing.unicode.casingUppercase
+import dev.carcara.kotlinx.locale.casing.unicode.UnicodeCasing
+
+casingLowercase(text: String, locale: Locale = Locale.current): String
+casingUppercase(text: String, locale: Locale = Locale.current): String
+
+casingLowercase("Iİ", Locale.of("tr")) // "ıi"
+casingUppercase("straße", Locale.of("de")) // "STRASSE"
+
+UnicodeCasing.unicodeVersion // "15.1.0"
+UnicodeCasing.supportedLanguages // setOf("az", "lt", "tr")
+```
+
+Every locale is accepted. `supportedLanguages` lists languages with special
+casing rules; other languages use default Unicode casing, including contextual
+Greek final sigma. Both operations use the original string to evaluate context,
+preserve lone surrogates and allow mappings to multiple characters. They do not
+normalize the input or depend on the host's Unicode version. Titlecasing and
+case folding are outside these operations.
 
 ### Exact numbers, rounding and plurals
 
@@ -2545,6 +2574,9 @@ Import `dev.carcara.kotlinx.locale.list.cldr.*`:
 listFormat(value: List<String>, locale, options): LocaleLookup<FormattedList>
 ```
 
+Unit parts retain complete semantic affixes, including internal spaces. The
+separator between a number and its unit is a literal part.
+
 ListFormatOptions selects conjunction, disjunction or unit lists and long, short
 or narrow style. Each element part retains its original value and index, including
 empty or repeated elements. Joining text is emitted as literal parts. Spanish
@@ -2552,11 +2584,29 @@ and Hebrew contextual joining rules are applied during composition.
 
 The language CLDR module adds `localeDisplayName` for composed locales or a
 DisplayNameType/code pair. Supported types include language, script, region,
-calendar, date/time field and variant. Currency names use `currencyDisplayName`.
+calendar, date/time field and variant. Currency names use `currencyDisplayName`. English names use official ISO 4217
+names for current codes which the pinned CLDR release does not yet name. Other
+languages retain their normal missing-data behavior.
 NameWidth selects long/short/narrow. NameFallback chooses code substitution or
 no substitution, and DisplayName records localized, width-fallback or code origin.
 The composed locale operation preserves and names each variant; fallback NONE
 never silently echoes an unknown variant code.
+
+### Service locale coverage
+
+Service catalogues retain inherited locale identities independently of storage
+deduplication. Generated plural and collation sources use the emitting bundle's
+catalogue; narrowed bundles retain their own identities. Root fallback is
+reported separately from that set. Duration-unit sources enumerate localized
+wording and report their English root fallback without expanding the catalogue
+to every CLDR locale.
+
+Collation's service coverage is available through `collationLocaleCoverage()`.
+`collationTailoringLocales()` reports dedicated tailoring records separately.
+Use per-locale capabilities to negotiate which collation variants are available.
+
+An embedding engine must still canonicalize identities and prepare any fallback
+forms its specification requires.
 
 ### Collation
 
@@ -2566,6 +2616,8 @@ Import `dev.carcara.kotlinx.locale.collation.cldr.*`:
 collationResolve(locale, options): LocaleLookup<ResolvedCollation>
 collationCapabilities(locale): CollationCapabilities
 collationValues(): Set<String>
+collationLocaleCoverage(): LocaleCoverage
+collationTailoringLocales(): Set<Locale>
 ```
 
 CollationOptions selects sort/search usage, a supported `co` type, base/accent/

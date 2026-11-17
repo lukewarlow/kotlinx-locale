@@ -63,6 +63,13 @@ final enum class dev.carcara.kotlinx.locale.collation/CollationUsage : kotlin/En
 }
 
 abstract interface dev.carcara.kotlinx.locale.collation/CollationSource { // dev.carcara.kotlinx.locale.collation/CollationSource|null[0]
+    open val localeCoverage // dev.carcara.kotlinx.locale.collation/CollationSource.localeCoverage|{}localeCoverage[0]
+        open fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.collation/CollationSource.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
+    open val supportedLocales // dev.carcara.kotlinx.locale.collation/CollationSource.supportedLocales|{}supportedLocales[0]
+        open fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.collation/CollationSource.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
+    open val tailoredLocales // dev.carcara.kotlinx.locale.collation/CollationSource.tailoredLocales|{}tailoredLocales[0]
+        open fun <get-tailoredLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.collation/CollationSource.tailoredLocales.<get-tailoredLocales>|<get-tailoredLocales>(){}[0]
+
     abstract fun comparatorOrNull(dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.collation/CollationStrength): kotlin/Comparator<kotlin/String>? // dev.carcara.kotlinx.locale.collation/CollationSource.comparatorOrNull|comparatorOrNull(dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.collation.CollationStrength){}[0]
     open fun capabilities(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale.collation/CollationCapabilities // dev.carcara.kotlinx.locale.collation/CollationSource.capabilities|capabilities(dev.carcara.kotlinx.locale.Locale){}[0]
     open fun collations(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.collation/CollationSource.collations|collations(){}[0]

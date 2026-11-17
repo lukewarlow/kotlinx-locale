@@ -110,6 +110,7 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
     private val currencyCatalogue: List<CurrencyMetadata> by lazy { prepareCurrencies() }
 
     private fun table(name: String): Map<String, String> = tables[name].orEmpty()
+    private val likelyLanguages: Set<String> by lazy { table("likely").keys.map { it.substringBefore('-') }.toSet() }
     private fun tag(locale: Locale): String = locale.stripExtensions().toLanguageTag().lowercase()
     private fun languageId(value: String): Locale = requireNotNull(Locale.forUnicodeLanguageTagOrNull(value)) {
         "Invalid CLDR language identifier: $value"
@@ -191,6 +192,18 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
     override fun canonicalizeUnicodeValue(key: String, value: String): String {
         if (value.isEmpty()) return ""
         var result = value.lowercase()
+        if (key.equals("sd", ignoreCase = true) || key.equals("rg", ignoreCase = true)) {
+            repeat(16) {
+                val replacement = table("subdivisionAlias")[result]?.substringBefore(' ')?.lowercase()
+                if (replacement == null || replacement == result) return result
+                result = if (replacement.length == 2 || replacement.length == 3 && replacement.all { c -> c in '0'..'9' }) {
+                    replacement + "zzzz"
+                } else {
+                    replacement
+                }
+            }
+            error("CLDR subdivision aliases contain a cycle for $key/$value")
+        }
         repeat(16) {
             val next = table("uAlias")["${key.lowercase()}/$result"]?.lowercase() ?: return result
             if (next == result) return result
@@ -221,10 +234,17 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
         )
     }
 
-    override fun maximize(locale: Locale): Locale = maximizeId(canonicalize(locale))
+    override fun maximize(locale: Locale): Locale {
+        val canonical = canonicalize(locale)
+        // UTS #35 Add Likely Subtags fails for an unknown language. The matcher
+        // still uses its internal fallback model for distance comparisons.
+        if (canonical.language !in likelyLanguages) return canonical
+        return maximizeId(canonical)
+    }
 
     override fun minimize(locale: Locale): Locale {
         val canonical = canonicalize(locale)
+        if (canonical.language !in likelyLanguages) return canonical
         val maximal = maximizeId(canonical)
         for (candidate in listOf(
             canonical.withLanguageId(language = maximal.language, script = null, region = null),

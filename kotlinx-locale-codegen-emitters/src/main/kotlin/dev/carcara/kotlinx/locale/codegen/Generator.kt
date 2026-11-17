@@ -791,6 +791,7 @@ public fun generateSources(
         emitCollationBinding(
             target.root,
             target.spec(packages[GeneratedTable.COLLATION], cldr),
+            localeCatalogue = bundle.localeTags.toSet(),
             availableCollations = bundle.section("collationTailorings").values.flatMap { record ->
                 record.split(FIELD_SEPARATOR).getOrNull(1).orEmpty().split(LIST_SEPARATOR).map { it.substringBefore(KEY_SEPARATOR) }
             }.filter { it.isNotEmpty() && it != "standard" && it != "search" }.toSet(),

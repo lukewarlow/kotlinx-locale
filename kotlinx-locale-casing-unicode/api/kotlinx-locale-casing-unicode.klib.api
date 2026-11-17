@@ -1,0 +1,20 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.carcara:kotlinx-locale-casing-unicode>
+final object dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing { // dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing|null[0]
+    final val supportedLanguages // dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing.supportedLanguages|{}supportedLanguages[0]
+        final fun <get-supportedLanguages>(): kotlin.collections/Set<kotlin/String> // dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing.supportedLanguages.<get-supportedLanguages>|<get-supportedLanguages>(){}[0]
+    final val unicodeVersion // dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing.unicodeVersion|{}unicodeVersion[0]
+        final fun <get-unicodeVersion>(): kotlin/String // dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing.unicodeVersion.<get-unicodeVersion>|<get-unicodeVersion>(){}[0]
+
+    final fun lowercase(kotlin/String, dev.carcara.kotlinx.locale/Locale): kotlin/String // dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing.lowercase|lowercase(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
+    final fun uppercase(kotlin/String, dev.carcara.kotlinx.locale/Locale): kotlin/String // dev.carcara.kotlinx.locale.casing.unicode/UnicodeCasing.uppercase|uppercase(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
+}
+
+final fun dev.carcara.kotlinx.locale.casing.unicode/casingLowercase(kotlin/String, dev.carcara.kotlinx.locale/Locale = ...): kotlin/String // dev.carcara.kotlinx.locale.casing.unicode/casingLowercase|casingLowercase(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
+final fun dev.carcara.kotlinx.locale.casing.unicode/casingUppercase(kotlin/String, dev.carcara.kotlinx.locale/Locale = ...): kotlin/String // dev.carcara.kotlinx.locale.casing.unicode/casingUppercase|casingUppercase(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]

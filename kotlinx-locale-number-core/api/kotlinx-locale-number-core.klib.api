@@ -306,6 +306,8 @@ final class dev.carcara.kotlinx.locale.number/Decimal : kotlin/Comparable<dev.ca
 final class dev.carcara.kotlinx.locale.number/FallbackNumberFormats : dev.carcara.kotlinx.locale.number/NumberFormatSource { // dev.carcara.kotlinx.locale.number/FallbackNumberFormats|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.number/NumberFormatSource, dev.carcara.kotlinx.locale.number/NumberFormatSource) // dev.carcara.kotlinx.locale.number/FallbackNumberFormats.<init>|<init>(dev.carcara.kotlinx.locale.number.NumberFormatSource;dev.carcara.kotlinx.locale.number.NumberFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.number/FallbackNumberFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.number/FallbackNumberFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.number/FallbackNumberFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.number/FallbackNumberFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -320,6 +322,8 @@ final class dev.carcara.kotlinx.locale.number/FallbackNumberFormats : dev.carcar
 final class dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats : dev.carcara.kotlinx.locale.number/OrdinalFormatSource { // dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.number/OrdinalFormatSource, dev.carcara.kotlinx.locale.number/OrdinalFormatSource) // dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats.<init>|<init>(dev.carcara.kotlinx.locale.number.OrdinalFormatSource;dev.carcara.kotlinx.locale.number.OrdinalFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -331,6 +335,8 @@ final class dev.carcara.kotlinx.locale.number/FallbackOrdinalFormats : dev.carca
 final class dev.carcara.kotlinx.locale.number/FallbackPluralRules : dev.carcara.kotlinx.locale.number/PluralRuleSource { // dev.carcara.kotlinx.locale.number/FallbackPluralRules|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.number/PluralRuleSource, dev.carcara.kotlinx.locale.number/PluralRuleSource) // dev.carcara.kotlinx.locale.number/FallbackPluralRules.<init>|<init>(dev.carcara.kotlinx.locale.number.PluralRuleSource;dev.carcara.kotlinx.locale.number.PluralRuleSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.number/FallbackPluralRules.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.number/FallbackPluralRules.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.number/FallbackPluralRules.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.number/FallbackPluralRules.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 

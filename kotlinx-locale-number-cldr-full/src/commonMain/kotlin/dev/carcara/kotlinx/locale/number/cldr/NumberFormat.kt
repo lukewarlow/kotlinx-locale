@@ -22,6 +22,7 @@ package dev.carcara.kotlinx.locale.number.cldr
 
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
+import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
 import dev.carcara.kotlinx.locale.number.Decimal
 import dev.carcara.kotlinx.locale.number.NumberFormatSource
 import dev.carcara.kotlinx.locale.number.NumberGrouping
@@ -63,6 +64,7 @@ public object CldrNumberPlurals : PluralRuleSource by PayloadPluralRules(
     pluralRuleSetsRegistry,
     pluralRuleIndexRegistry,
     pluralRangesRegistry,
+    localeCatalogue = supportedLocalesOf(numberSymbolsRegistry),
 )
 
 /**

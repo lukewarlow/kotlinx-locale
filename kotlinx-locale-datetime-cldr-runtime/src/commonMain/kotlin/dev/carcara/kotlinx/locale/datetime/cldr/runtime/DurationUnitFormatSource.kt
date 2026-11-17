@@ -189,6 +189,10 @@ private fun fallbackWording(value: Decimal, unit: DurationUnit): String {
 public class FallbackDurationUnitFormats(private val primary: DurationUnitFormatSource, private val fallback: DurationUnitFormatSource) :
     DurationUnitFormatSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale> get() = primary.supportedLocales + fallback.supportedLocales
 
     override fun durationFormatOrNull(value: Decimal, unit: DurationUnit, width: UnitWidth, locale: Locale): String? =
@@ -289,6 +293,10 @@ public class PayloadDurationUnitFormats(
     private val records = records.toMap()
     private val decodedRecords = PreparedDateCache<String, DurationUnitRecord?>()
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
 
     override fun render(

@@ -24,12 +24,11 @@ import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
 import dev.carcara.kotlinx.locale.number.FormattedNumber
 import dev.carcara.kotlinx.locale.number.NumberFormatOptions
 import dev.carcara.kotlinx.locale.number.NumberFormatSource
-import dev.carcara.kotlinx.locale.number.NumberPart
-import dev.carcara.kotlinx.locale.number.NumberPartKind
 import dev.carcara.kotlinx.locale.number.NumberValue
 import dev.carcara.kotlinx.locale.number.PluralCategory
 import dev.carcara.kotlinx.locale.number.PluralRuleSource
 import dev.carcara.kotlinx.locale.number.PluralType
+import dev.carcara.kotlinx.locale.number.numberComposeUnit
 import dev.carcara.kotlinx.locale.unit.UnitFormatSource
 import dev.carcara.kotlinx.locale.unit.UnitWidth
 import kotlin.concurrent.atomics.AtomicReference
@@ -43,6 +42,11 @@ public class PayloadUnitFormats(
 ) : UnitFormatSource {
     private val records = records.toMap()
     private val patterns = PreparedUnitCache<Pair<String, String>, String?>(512)
+
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
     private fun lookup(key: String, locale: Locale): String? = patterns.getOrPut(locale.stripExtensions().toLanguageTag() to key) {
         sparseRecordValue(records, locale, 1, 2, key)
@@ -73,64 +77,25 @@ public class PayloadUnitFormats(
         } else {
             PluralCategory.OTHER
         }
-        val direct = pattern(unit, category.name.lowercase(), width, locale)
-        if (direct != null) return LocaleLookup.Value(apply(direct, number, unit))
-        val split = unit.split("-per-")
-        if (split.size != 2) return LocaleLookup.MissingData
-        val numerator = compose(number, split[0], locale, width)
-        if (numerator !is LocaleLookup.Value) return numerator
-        for (candidate in listOf(width.name.lowercase(), "short", "long").distinct()) {
-            lookup("$candidate/${split[1]}/per", locale)?.let {
-                return LocaleLookup.Value(apply(it, numerator.value, unit))
-            }
-        }
-        val denominator = lookup("${width.name.lowercase()}/${split[1]}/name", locale)
-            ?: lookup("long/${split[1]}/name", locale) ?: return LocaleLookup.MissingData
-        val compound = lookup("${width.name.lowercase()}/compound-per", locale)
-            ?: lookup("long/compound-per", locale) ?: return LocaleLookup.MissingData
-        val marker = compound.indexOf("{1}")
-        if (marker < 0) return LocaleLookup.MissingData
-        return LocaleLookup.Value(apply(compound.replace("{1}", denominator), numerator.value, unit))
+        val pattern = unitPattern(unit, category.name.lowercase(), width, locale) ?: return LocaleLookup.MissingData
+        return LocaleLookup.Value(numberComposeUnit(number, pattern, unit))
     }
 
-    private fun apply(pattern: String, number: FormattedNumber, unit: String): FormattedNumber {
-        val marker = pattern.indexOf("{0}")
-        val parts = ArrayList<NumberPart>()
-        fun appendWording(value: String) {
-            var start = 0
-            while (start < value.length) {
-                fun literal(char: Char): Boolean =
-                    char.isWhitespace() || char == '\u00a0' || char == '\u202f' || char == '\u200e' || char == '\u200f' || char == '\u061c'
-                val isLiteral = literal(value[start])
-                var end = start + 1
-                while (end < value.length && literal(value[end]) == isLiteral) end++
-                parts.add(
-                    NumberPart(
-                        if (isLiteral) NumberPartKind.LITERAL else NumberPartKind.UNIT,
-                        value.substring(start, end),
-                        if (isLiteral) null else unit,
-                    ),
-                )
-                start = end
-            }
+    /** Expand compound templates before rendering so the entire unit affix keeps its semantic boundary. */
+    private fun unitPattern(unit: String, category: String, width: UnitWidth, locale: Locale): String? {
+        pattern(unit, category, width, locale)?.let { return it }
+        val split = unit.split("-per-")
+        if (split.size != 2) return null
+        val numerator = unitPattern(split[0], category, width, locale) ?: return null
+        for (candidate in listOf(width.name.lowercase(), "short", "long").distinct()) {
+            lookup("$candidate/${split[1]}/per", locale)?.let { return it.replace("{0}", numerator) }
         }
-        if (marker < 0) {
-            appendWording(pattern)
-        } else {
-            appendWording(pattern.take(marker))
-            parts.addAll(number.parts.map { NumberPart(it.kind, it.value, if (it.kind == NumberPartKind.LITERAL) null else unit) })
-            appendWording(pattern.drop(marker + 3))
-        }
-        return FormattedNumber(
-            parts.joinToString("") {
-                it.value
-            },
-            number.operands.integerDigits,
-            number.operands.fractionDigits,
-            number.c,
-            parts,
-            number.notationExponent,
-        )
+        val denominator = lookup("${width.name.lowercase()}/${split[1]}/name", locale)
+            ?: lookup("long/${split[1]}/name", locale) ?: return null
+        val compound = lookup("${width.name.lowercase()}/compound-per", locale)
+            ?: lookup("long/compound-per", locale) ?: return null
+        if ("{1}" !in compound) return null
+        return compound.replace("{1}", denominator).replace("{0}", numerator)
     }
     public companion object
 }

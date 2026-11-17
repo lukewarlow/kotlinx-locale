@@ -69,6 +69,8 @@ public object CldrCurrency : CurrencyNameSource, CurrencyFormatSource {
     // The two tables cover the same locale set, so either answer is the same.
     override val supportedLocales: Set<Locale>
         get() = formats.supportedLocales
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = formats.localeCoverage
 
     override fun currencySymbolOrNull(currencyCode: String, locale: Locale): String? =
         names.currencySymbolOrNull(currencyCode, locale)

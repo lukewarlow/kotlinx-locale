@@ -128,6 +128,10 @@ public class PayloadRelativeTimeFormats(
     private val records = records.toMap()
     private val decodedRecords = PreparedDateCache<String, RelativeTimeRecord?>()
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
 
     override fun formatOrNull(

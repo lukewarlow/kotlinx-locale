@@ -78,6 +78,10 @@ public class PayloadLanguageNames(
     private val extendedRecords: Map<String, String> = emptyMap(),
 ) : LanguageNameSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
 
     override fun lookupName(

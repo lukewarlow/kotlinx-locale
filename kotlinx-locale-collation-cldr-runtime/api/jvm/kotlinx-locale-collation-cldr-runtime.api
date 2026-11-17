@@ -20,9 +20,14 @@ public final class dev/carcara/kotlinx/locale/collation/cldr/runtime/PayloadColl
 	public static final field Companion Ldev/carcara/kotlinx/locale/collation/cldr/runtime/PayloadCollationSource$Companion;
 	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;)V
 	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;Ljava/util/Set;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun capabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/collation/CollationCapabilities;
 	public fun collations ()Ljava/util/Set;
 	public fun comparatorOrNull (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;)Ljava/util/Comparator;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun getTailoredLocales ()Ljava/util/Set;
 	public fun resolve (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 

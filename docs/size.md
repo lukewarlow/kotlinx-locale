@@ -19,26 +19,26 @@ set. The budget is a ceiling `checkSize` enforces, not a target.
 | currency-codes | 25.0 KB | 74.4 KB | 30.0 KB | 4.9 KB |
 | currency-platform | 26.9 KB | 82.2 KB | 28.0 KB | 1.0 KB |
 | datetime-platform | 37.0 KB | 118.8 KB | 42.0 KB | 4.9 KB |
-| list-full | 40.9 KB | 131.9 KB | 50.0 KB | 9.0 KB |
+| list-full | 41.1 KB | 132.8 KB | 50.0 KB | 8.8 KB |
 | everything-platform | 49.9 KB | 156.2 KB | 54.0 KB | 4.0 KB |
 | personname-full | 53.1 KB | 385.6 KB | 60.0 KB | 6.8 KB |
 | phone-full | 79.9 KB | 276.2 KB | 110.0 KB | 30.0 KB |
-| metadata-full | 105.2 KB | 426.2 KB | 125.0 KB | 19.7 KB |
-| number-full | 107.2 KB | 417.4 KB | 110.0 KB | 2.7 KB |
-| datetime-durations | 150.9 KB | 936.3 KB | 180.0 KB | 29.0 KB |
-| datetime-relative | 178.6 KB | 988.1 KB | 190.0 KB | 11.3 KB |
-| country-full | 325.3 KB | 957.0 KB | 460.0 KB | 134.6 KB |
-| currency-full | 444.1 KB | 1553.6 KB | 500.0 KB | 55.8 KB |
-| timezone-full | 451.1 KB | 2414.1 KB | 700.0 KB | 248.8 KB |
-| datetime-full | 521.0 KB | 2823.9 KB | 650.0 KB | 128.9 KB |
-| unit-full | 523.0 KB | 2623.0 KB | 650.0 KB | 126.9 KB |
-| datetime-skeletons | 582.4 KB | 3184.2 KB | 750.0 KB | 167.5 KB |
-| datetime-intervals | 610.0 KB | 3558.7 KB | 850.0 KB | 239.9 KB |
-| timezone-cities | 693.0 KB | 3101.8 KB | 1200.0 KB | 506.9 KB |
-| currency-plurals | 707.5 KB | 2729.9 KB | 900.0 KB | 192.4 KB |
-| language-full | 994.3 KB | 2932.7 KB | 1400.0 KB | 405.6 KB |
-| everything | 1187.5 KB | 4929.2 KB | 1450.0 KB | 262.4 KB |
-| collation-full | 1734.2 KB | 7601.1 KB | 2200.0 KB | 465.7 KB |
+| metadata-full | 105.4 KB | 427.0 KB | 125.0 KB | 19.5 KB |
+| number-full | 107.7 KB | 418.1 KB | 110.0 KB | 2.2 KB |
+| datetime-durations | 151.7 KB | 937.3 KB | 180.0 KB | 28.2 KB |
+| datetime-relative | 179.2 KB | 989.1 KB | 190.0 KB | 10.7 KB |
+| country-full | 325.7 KB | 958.0 KB | 460.0 KB | 134.2 KB |
+| currency-full | 445.0 KB | 1555.0 KB | 500.0 KB | 54.9 KB |
+| timezone-full | 451.7 KB | 2414.8 KB | 700.0 KB | 248.2 KB |
+| datetime-full | 521.9 KB | 2824.9 KB | 650.0 KB | 128.0 KB |
+| unit-full | 523.8 KB | 2624.1 KB | 650.0 KB | 126.1 KB |
+| datetime-skeletons | 583.3 KB | 3185.3 KB | 750.0 KB | 166.6 KB |
+| datetime-intervals | 610.9 KB | 3560.0 KB | 850.0 KB | 239.0 KB |
+| timezone-cities | 693.7 KB | 3102.5 KB | 1200.0 KB | 506.2 KB |
+| currency-plurals | 708.2 KB | 2731.5 KB | 900.0 KB | 191.7 KB |
+| language-full | 994.6 KB | 2933.8 KB | 1400.0 KB | 405.3 KB |
+| everything | 1188.2 KB | 4931.3 KB | 1450.0 KB | 261.7 KB |
+| collation-full | 1739.7 KB | 7610.5 KB | 2200.0 KB | 460.2 KB |
 
 ## What the platform layer costs
 
@@ -48,7 +48,7 @@ between the two columns is the data and nothing else.
 
 | domain | platform | CLDR | what survives | saved |
 | --- | ---: | ---: | ---: | ---: |
-| country | 24.0 KB | 325.3 KB | 7.4% | 301.3 KB |
-| currency | 26.9 KB | 444.1 KB | 6.1% | 417.2 KB |
-| datetime | 37.0 KB | 521.0 KB | 7.1% | 484.0 KB |
-| all three | 49.9 KB | 1187.5 KB | 4.2% | 1137.5 KB |
+| country | 24.0 KB | 325.7 KB | 7.4% | 301.6 KB |
+| currency | 26.9 KB | 445.0 KB | 6.1% | 418.0 KB |
+| datetime | 37.0 KB | 521.9 KB | 7.1% | 484.9 KB |
+| all three | 49.9 KB | 1188.2 KB | 4.2% | 1138.3 KB |

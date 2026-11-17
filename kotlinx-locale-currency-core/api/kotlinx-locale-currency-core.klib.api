@@ -93,6 +93,8 @@ final class dev.carcara.kotlinx.locale.currency/CurrencyFormatOptions { // dev.c
 final class dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats : dev.carcara.kotlinx.locale.currency/CurrencyFormatSource { // dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.currency/CurrencyFormatSource, dev.carcara.kotlinx.locale.currency/CurrencyFormatSource) // dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats.<init>|<init>(dev.carcara.kotlinx.locale.currency.CurrencyFormatSource;dev.carcara.kotlinx.locale.currency.CurrencyFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -106,6 +108,8 @@ final class dev.carcara.kotlinx.locale.currency/FallbackCurrencyFormats : dev.ca
 final class dev.carcara.kotlinx.locale.currency/FallbackCurrencyNames : dev.carcara.kotlinx.locale.currency/CurrencyNameSource { // dev.carcara.kotlinx.locale.currency/FallbackCurrencyNames|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.currency/CurrencyNameSource, dev.carcara.kotlinx.locale.currency/CurrencyNameSource) // dev.carcara.kotlinx.locale.currency/FallbackCurrencyNames.<init>|<init>(dev.carcara.kotlinx.locale.currency.CurrencyNameSource;dev.carcara.kotlinx.locale.currency.CurrencyNameSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.currency/FallbackCurrencyNames.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.currency/FallbackCurrencyNames.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.currency/FallbackCurrencyNames.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.currency/FallbackCurrencyNames.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 

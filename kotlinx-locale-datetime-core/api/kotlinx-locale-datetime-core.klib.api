@@ -352,6 +352,8 @@ final class dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext { // dev.c
 final class dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats : dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource { // dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource, dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource) // dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats.<init>|<init>(dev.carcara.kotlinx.locale.datetime.DateTimeFormatSource;dev.carcara.kotlinx.locale.datetime.DateTimeFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -369,6 +371,8 @@ final class dev.carcara.kotlinx.locale.datetime/FallbackDateTimeFormats : dev.ca
 final class dev.carcara.kotlinx.locale.datetime/FallbackRelativeTimeFormats : dev.carcara.kotlinx.locale.datetime/RelativeTimeFormatSource { // dev.carcara.kotlinx.locale.datetime/FallbackRelativeTimeFormats|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.datetime/RelativeTimeFormatSource, dev.carcara.kotlinx.locale.datetime/RelativeTimeFormatSource) // dev.carcara.kotlinx.locale.datetime/FallbackRelativeTimeFormats.<init>|<init>(dev.carcara.kotlinx.locale.datetime.RelativeTimeFormatSource;dev.carcara.kotlinx.locale.datetime.RelativeTimeFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime/FallbackRelativeTimeFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime/FallbackRelativeTimeFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime/FallbackRelativeTimeFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime/FallbackRelativeTimeFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 

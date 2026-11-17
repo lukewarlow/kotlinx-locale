@@ -41,6 +41,11 @@ public object CldrTerritory {
     /** Every locale this build carries names for. */
     public val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(countryNamesRegistry) }
 
+    /** Enumerated locale identities, with root fallback reported separately. */
+    public val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(countryNamesRegistry, supportedLocales)
+    }
+
     /**
      * The name of the territory [alpha2] in [locale], or `null`.
      *

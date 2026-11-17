@@ -1,0 +1,15 @@
+public final class dev/carcara/kotlinx/locale/casing/unicode/UnicodeCasing {
+	public static final field INSTANCE Ldev/carcara/kotlinx/locale/casing/unicode/UnicodeCasing;
+	public final fun getSupportedLanguages ()Ljava/util/Set;
+	public final fun getUnicodeVersion ()Ljava/lang/String;
+	public final fun lowercase (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public final fun uppercase (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/casing/unicode/UnicodeCasingKt {
+	public static final fun casingLowercase (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public static synthetic fun casingLowercase$default (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun casingUppercase (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+	public static synthetic fun casingUppercase$default (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ljava/lang/String;
+}
+

@@ -179,7 +179,11 @@ private fun mergeCompactWithFallback(declared: Map<String, String>, fallback: Ma
  * Sparse per-locale currency-name payloads: the parent tag, the symbols this
  * locale's own file declares, and the display names it declares.
  */
-fun buildCurrencyNamePayloads(flattener: Flattener, extras: ExtrasResolver): Map<String, String> {
+fun buildCurrencyNamePayloads(
+    flattener: Flattener,
+    extras: ExtrasResolver,
+    currencies: List<CurrencyEntry> = emptyList(),
+): Map<String, String> {
     fun entries(map: Map<String, String>): String = map.entries
         .sortedBy { it.key }
         .joinToString(LIST_SEPARATOR) { (code, value) -> code + KEY_SEPARATOR + value }
@@ -188,9 +192,15 @@ fun buildCurrencyNamePayloads(flattener: Flattener, extras: ExtrasResolver): Map
     for (id in listOf("root") + flattener.localeIds) {
         val partial = extras.partial(id)
         val parentTag = flattener.dataChain(id).getOrNull(1)?.let(::canonicalTag).orEmpty()
+        val names = partial.currencyNames.toMutableMap()
+        // ISO can assign a currency after the pinned CLDR release. Its official
+        // English name fills an English-only gap; other languages remain missing.
+        if (id == "en") {
+            for (currency in currencies.filter { it.isCurrent }) names.putIfAbsent(currency.code, currency.englishName)
+        }
         payloads[canonicalTag(id)] = parentTag + FIELD_SEPARATOR +
             entries(partial.currencySymbols) + FIELD_SEPARATOR +
-            entries(partial.currencyNames)
+            entries(names)
     }
     return payloads
 }

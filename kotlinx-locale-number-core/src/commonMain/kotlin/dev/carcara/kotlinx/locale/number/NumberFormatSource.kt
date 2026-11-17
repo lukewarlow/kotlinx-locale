@@ -212,6 +212,10 @@ public fun NumberFormatSource.formatPercentValue(
 public class FallbackNumberFormats(private val primary: NumberFormatSource, private val fallback: NumberFormatSource) :
     NumberFormatSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale> get() = primary.supportedLocales + fallback.supportedLocales
 
     override fun symbolsOrNull(locale: Locale): NumberSymbols? = primary.symbolsOrNull(locale) ?: fallback.symbolsOrNull(locale)

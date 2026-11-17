@@ -3,12 +3,17 @@ public final class dev/carcara/kotlinx/locale/collation/cldr/CldrCollation : dev
 	public fun capabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/collation/CollationCapabilities;
 	public fun collations ()Ljava/util/Set;
 	public fun comparatorOrNull (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;)Ljava/util/Comparator;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun getTailoredLocales ()Ljava/util/Set;
 	public fun resolve (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/collation/cldr/CollationKt {
 	public static final fun collationComparator (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;)Ljava/util/Comparator;
 	public static synthetic fun collationComparator$default (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;ILjava/lang/Object;)Ljava/util/Comparator;
+	public static final fun collationLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public static final fun collationTailoringLocales ()Ljava/util/Set;
 }
 
 public final class dev/carcara/kotlinx/locale/collation/cldr/IntlCollationKt {

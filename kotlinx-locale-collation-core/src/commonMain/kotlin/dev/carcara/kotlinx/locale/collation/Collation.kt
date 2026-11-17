@@ -47,6 +47,20 @@ public enum class CollationStrength {
  * names [collationComparator] rather than this.
  */
 public interface CollationSource {
+    /** Service identities, including inherited locales; empty when this source cannot enumerate them. */
+    public val supportedLocales: Set<Locale> get() = emptySet()
+
+    /** Negotiation coverage, separate from dedicated tailoring records. */
+    public val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = if (supportedLocales.isEmpty()) {
+            dev.carcara.kotlinx.locale.LocaleCoverage.Unknown
+        } else {
+            dev.carcara.kotlinx.locale.LocaleCoverage.Enumerated(supportedLocales)
+        }
+
+    /** Locales with dedicated tailoring records; distinct from the service catalogue. */
+    public val tailoredLocales: Set<Locale> get() = emptySet()
+
     /** Actual public collation variants carried by this source; excludes standard/search. */
     public fun collations(): Set<String> = emptySet()
 
@@ -58,7 +72,7 @@ public interface CollationSource {
         options: CollationOptions = CollationOptions(),
     ): dev.carcara.kotlinx.locale.LocaleLookup<ResolvedCollation> = dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Collation options")
     public fun capabilities(locale: Locale): CollationCapabilities =
-        CollationCapabilities(dev.carcara.kotlinx.locale.LocaleCoverage.Unknown, emptySet(), emptySet(), false, false)
+        CollationCapabilities(localeCoverage, emptySet(), emptySet(), false, false)
 
     public companion object
 }

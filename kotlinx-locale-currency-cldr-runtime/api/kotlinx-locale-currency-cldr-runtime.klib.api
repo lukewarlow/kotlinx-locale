@@ -66,6 +66,8 @@ final class dev.carcara.kotlinx.locale.currency.cldr.runtime/CurrencyPluralForma
 final class dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPluralNames : dev.carcara.kotlinx.locale.currency.cldr.runtime/CurrencyPluralNameSource { // dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPluralNames|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.currency.cldr.runtime/CurrencyPluralNameSource, dev.carcara.kotlinx.locale.currency.cldr.runtime/CurrencyPluralNameSource) // dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPluralNames.<init>|<init>(dev.carcara.kotlinx.locale.currency.cldr.runtime.CurrencyPluralNameSource;dev.carcara.kotlinx.locale.currency.cldr.runtime.CurrencyPluralNameSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPluralNames.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPluralNames.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPluralNames.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPluralNames.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -78,6 +80,8 @@ final class dev.carcara.kotlinx.locale.currency.cldr.runtime/FallbackCurrencyPlu
 final class dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyFormats : dev.carcara.kotlinx.locale.currency/CurrencyFormatSource { // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyFormats|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin.collections/Map<kotlin/String, kotlin/String> = ..., dev.carcara.kotlinx.locale.number.cldr.runtime/FormattedNumberSelector = ..., dev.carcara.kotlinx.locale.number/NumberFormatSource? = ..., dev.carcara.kotlinx.locale.number/PluralRuleSource? = ...) // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyFormats.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.number.cldr.runtime.FormattedNumberSelector;dev.carcara.kotlinx.locale.number.NumberFormatSource?;dev.carcara.kotlinx.locale.number.PluralRuleSource?){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -92,6 +96,8 @@ final class dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyForm
 final class dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyNames : dev.carcara.kotlinx.locale.currency/CurrencyNameSource { // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyNames|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>) // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyNames.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyNames.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyNames.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyNames.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyNames.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -105,6 +111,8 @@ final class dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyName
 final class dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyPluralNames : dev.carcara.kotlinx.locale.currency.cldr.runtime/CurrencyPluralNameSource { // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyPluralNames|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, dev.carcara.kotlinx.locale.currency/CurrencyNameSource, dev.carcara.kotlinx.locale.number/PluralRuleSource) // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyPluralNames.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.currency.CurrencyNameSource;dev.carcara.kotlinx.locale.number.PluralRuleSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyPluralNames.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyPluralNames.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyPluralNames.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.currency.cldr.runtime/PayloadCurrencyPluralNames.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 

@@ -97,6 +97,10 @@ public class PayloadTimeZoneNames(
     private val regionName: (String, Locale) -> String? = { _, _ -> null },
 ) : TimeZoneNameSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(formats, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(formats) }
 
     override fun displayNameOrNull(zone: TimeZone, style: TimeZoneNameStyle, offset: UtcOffset?, locale: Locale): String? {

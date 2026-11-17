@@ -101,6 +101,10 @@ public fun PluralRuleSource.pluralCategory(
 /** Answers from [primary], and from [fallback] wherever primary has nothing. */
 public class FallbackPluralRules(private val primary: PluralRuleSource, private val fallback: PluralRuleSource) : PluralRuleSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale> get() = primary.supportedLocales + fallback.supportedLocales
 
     override fun pluralCategoryOrNull(number: FormattedNumber, type: PluralType, locale: Locale): PluralCategory? =

@@ -63,6 +63,9 @@ public class PayloadCurrencyNames(records: Map<String, String>) : CurrencyNameSo
             sparseRecordValue(records, locale, field, 3, key)
         }
 
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy {
         supportedLocalesOf(this.records)
     }
@@ -143,6 +146,9 @@ public class PayloadCurrencyFormats(
     // the same currency in the same locale over and over.
     private val parseTokenCache = PreparedCurrencyCache<String, List<String>>()
 
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.formatRecords, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy {
         supportedLocalesOf(this.formatRecords)
     }

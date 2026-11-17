@@ -69,7 +69,7 @@ public class BindingSpec(
 
     /** How the country binding reaches the names, which differs by layout. */
     public fun countryNamesArgument(): String = if (hasSharedTerritory) {
-        "PayloadCountryNames(\n        |    $territoryName::nameOrNull,\n        |    $territoryName.supportedLocales,\n        |)"
+        "PayloadCountryNames(\n        |    $territoryName::nameOrNull,\n        |    $territoryName.supportedLocales,\n        |    $territoryName.localeCoverage,\n        |)"
     } else {
         "PayloadCountryNames(countryNamesRegistry)"
     }
@@ -215,6 +215,8 @@ public fun emitCurrencyBinding(outputRoot: File, spec: BindingSpec, numberObject
         |    // The two tables cover the same locale set, so either answer is the same.
         |    override val supportedLocales: Set<Locale>
         |        get() = formats.supportedLocales
+        |    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        |        get() = formats.localeCoverage
         |
         |    override fun currencySymbolOrNull(currencyCode: String, locale: Locale): String? =
         |        names.currencySymbolOrNull(currencyCode, locale)

@@ -42,6 +42,7 @@ fun main(args: Array<String>) {
             val bundle = bundleFile(rootDir).bufferedReader().use(LocaleDataBundle::readFrom)
             generateSources(bundle = bundle, roots = shippedRoots(rootDir))
             generateSegmentationData(rootDir)
+            generateCasingData(rootDir)
         }
         "metadata" -> {
             val cldr = ensureCloned(rootDir, CLDR_REPO)
@@ -61,6 +62,23 @@ fun main(args: Array<String>) {
         }
         "identityFixtures" -> emitLocaleMetadataFixtures(rootDir, ensureCloned(rootDir, CLDR_REPO))
         "segmentation" -> generateSegmentationData(rootDir)
+        "casing" -> generateCasingData(rootDir)
+        "currencyNames" -> {
+            val cldr = ensureCloned(rootDir, CLDR_REPO)
+            val bundle = bundleFile(rootDir).bufferedReader().use(LocaleDataBundle::readFrom)
+            val supplemental = parseSupplemental(cldr)
+            val flattener = Flattener(cldr, supplemental)
+            val extras = ExtrasResolver(cldr, flattener, supplemental, emptySet(), bundle.currencies.map { it.code }.toSet())
+            val updated = bundle.toBuilder().section(
+                "currencyNames",
+                buildCurrencyNamePayloads(flattener, extras, bundle.currencies),
+            ).build()
+            bundleFile(rootDir).bufferedWriter().use(updated::writeTo)
+            generateSources(
+                updated,
+                SourceRoots.Builder().table(GeneratedTable.CURRENCY_NAMES, rootDir.sourceRoot("kotlinx-locale-currency-cldr-full")).build(),
+            )
+        }
         else -> error("Unknown mode '$mode'. Use 'clone', 'generate', 'regenerate' or 'segmentation'.")
     }
 }
@@ -166,6 +184,7 @@ private fun generate(rootDir: File, cldrDir: File, icuDir: File) {
     // The same call the Gradle plugin makes, with the shipped roots and packages.
     generateSources(bundle, shippedRoots(rootDir))
     generateSegmentationData(rootDir)
+    generateCasingData(rootDir)
 
     println("[codegen] done")
 }
@@ -643,7 +662,7 @@ private fun extractBundle(rootDir: File, cldrDir: File, icuDir: File): LocaleDat
         .table(BundleTables.WORD_BREAK_MID, parseWordBreakMidLetters())
         .section("countryNames", buildCountryNamePayloads(flattener, extras))
         .section("currencyFormats", buildCurrencyFormatPayloads(flattener, extras))
-        .section("currencyNames", buildCurrencyNamePayloads(flattener, extras))
+        .section("currencyNames", buildCurrencyNamePayloads(flattener, extras, currencyEntries))
         .section("currencyPluralNames", buildCurrencyPluralNamePayloads(flattener, extras))
         .section("skeletonFormats", skeletonFormats)
         .section("skeletonAppendFormats", skeletonAppendFormats)

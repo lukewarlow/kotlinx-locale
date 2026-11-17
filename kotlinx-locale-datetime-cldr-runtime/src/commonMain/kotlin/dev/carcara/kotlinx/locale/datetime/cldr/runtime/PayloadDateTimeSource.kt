@@ -83,6 +83,10 @@ public class PayloadDateTimeFormats(
     private val standaloneRecords = standaloneRecords.toMap()
     private val decodedRecords = PreparedDateCache<String, DateTimeRecord?>()
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy {
         supportedLocalesOf(this.records)
     }
@@ -91,7 +95,7 @@ public class PayloadDateTimeFormats(
         val data =
             recordFor(locale)
                 ?: return DateTimeCapabilities(localeCoverage, emptySet(), null, emptySet(), null, null, null, null, false, false)
-        val coverage = if ("root" in records) dev.carcara.kotlinx.locale.LocaleCoverage.RootFallback(supportedLocales) else localeCoverage
+        val coverage = localeCoverage
         val numbering = defaultNumbers?.capabilities(locale)?.numberingSystems ?: setOf(data.defaultNumberingSystem)
         val hour = selectedDateTimeFormat(data.timePattern(FormatStyle.SHORT, null), locale, null).hourCycle
         return DateTimeCapabilities(

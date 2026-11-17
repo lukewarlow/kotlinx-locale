@@ -167,6 +167,10 @@ public fun CurrencyPluralNameSource.formatPluralName(
 public class FallbackCurrencyPluralNames(private val primary: CurrencyPluralNameSource, private val fallback: CurrencyPluralNameSource) :
     CurrencyPluralNameSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale>
         get() = primary.supportedLocales + fallback.supportedLocales
 
@@ -274,6 +278,10 @@ public class PayloadCurrencyPluralNames(
 
     private val formatCache = PreparedCurrencyCache<String, CurrencyPluralFormat>()
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
 
     /**

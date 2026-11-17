@@ -146,6 +146,10 @@ public class PayloadSkeletonFormats(
     private val dateTimeRecords = dateTimeRecords.toMap()
     private val standaloneRecords = standaloneRecords.toMap()
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.skeletonFormats, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.skeletonFormats) }
 
     private val matchers = PreparedDateCache<Pair<String, HourCycle?>, LocaleSkeletons?>()

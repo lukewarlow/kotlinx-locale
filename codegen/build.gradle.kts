@@ -68,6 +68,22 @@ tasks.test {
 }
 
 // Unicode-only regeneration needs no CLDR checkout.
+tasks.register<JavaExec>("generateCurrencyNames") {
+    group = "codegen"
+    description = "Regenerate currency display names with official ISO English names where CLDR has none"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = mainClassFqn
+    args("currencyNames", rootDir.absolutePath)
+}
+
+tasks.register<JavaExec>("generateCasingData") {
+    group = "codegen"
+    description = "Generate Unicode full case mappings and contextual properties"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = mainClassFqn
+    args("casing", rootDir.absolutePath)
+}
+
 tasks.register<JavaExec>("generateSegmentationData") {
     group = "codegen"
     description = "Generate standalone Unicode word/sentence properties and conformance fixtures"

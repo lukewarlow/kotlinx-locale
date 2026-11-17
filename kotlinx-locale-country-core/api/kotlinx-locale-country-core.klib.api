@@ -15,6 +15,8 @@ abstract interface dev.carcara.kotlinx.locale.country/CountryNameSource : dev.ca
 final class dev.carcara.kotlinx.locale.country/FallbackCountryNames : dev.carcara.kotlinx.locale.country/CountryNameSource { // dev.carcara.kotlinx.locale.country/FallbackCountryNames|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.country/CountryNameSource, dev.carcara.kotlinx.locale.country/CountryNameSource) // dev.carcara.kotlinx.locale.country/FallbackCountryNames.<init>|<init>(dev.carcara.kotlinx.locale.country.CountryNameSource;dev.carcara.kotlinx.locale.country.CountryNameSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.country/FallbackCountryNames.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.country/FallbackCountryNames.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.country/FallbackCountryNames.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.country/FallbackCountryNames.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 

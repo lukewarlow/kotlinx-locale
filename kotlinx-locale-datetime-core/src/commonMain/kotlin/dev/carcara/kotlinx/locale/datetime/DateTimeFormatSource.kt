@@ -151,6 +151,10 @@ public fun DateTimeFormatSource.displayName(dayOfWeek: DayOfWeek, style: TextSty
 public class FallbackDateTimeFormats(private val primary: DateTimeFormatSource, private val fallback: DateTimeFormatSource) :
     DateTimeFormatSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale>
         get() = primary.supportedLocales + fallback.supportedLocales
 

@@ -168,6 +168,10 @@ public fun CurrencyFormatSource.parseFormattedOrNull(text: String, locale: Local
 public class FallbackCurrencyFormats(private val primary: CurrencyFormatSource, private val fallback: CurrencyFormatSource) :
     CurrencyFormatSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale>
         get() = primary.supportedLocales + fallback.supportedLocales
 

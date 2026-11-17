@@ -35,10 +35,24 @@ public fun emitNumberBinding(
     hasPluralRanges: Boolean = false,
     hasNumberSystems: Boolean = false,
 ) {
+    emitNumberBinding(outputRoot, spec, hasCompact, hasOrdinals, hasPluralRanges, hasNumberSystems, null)
+}
+
+/** Emit an explicit catalogue, or reuse symbol-registry identities when no separate catalogue is supplied. */
+public fun emitNumberBinding(
+    outputRoot: File,
+    spec: BindingSpec,
+    hasCompact: Boolean,
+    hasOrdinals: Boolean,
+    hasPluralRanges: Boolean = false,
+    hasNumberSystems: Boolean = false,
+    localeCatalogue: Set<String>?,
+) {
     val file = outputRoot.packageFile(spec.packageName, "NumberFormat.kt")
     val imports = buildList {
         add("dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi")
         add("dev.carcara.kotlinx.locale.Locale")
+        add("dev.carcara.kotlinx.locale.internal.supportedLocalesOf")
         add("dev.carcara.kotlinx.locale.number.Decimal")
         add("dev.carcara.kotlinx.locale.number.NumberFormatSource")
         add("dev.carcara.kotlinx.locale.number.NumberGrouping")
@@ -94,6 +108,13 @@ public fun emitNumberBinding(
         |    pluralRuleSetsRegistry,
         |    pluralRuleIndexRegistry,
         |    $ranges,
+        |    localeCatalogue = ${localeCatalogue?.let {
+            "\"${kotlinEscape(
+                it.filter { tag ->
+                    tag != "root"
+                }.sorted().joinToString(" "),
+            )}\".split(' ').filter { it.isNotEmpty() }.mapTo(linkedSetOf(), Locale::forLanguageTag)"
+        } ?: "supportedLocalesOf(numberSymbolsRegistry)"},
         |)
         |
         |/**

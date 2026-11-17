@@ -36,6 +36,11 @@ public class PayloadListFormats(records: Map<String, String>) : ListFormatSource
     private val records = records.toMap()
     private val patterns = PreparedListCache<Triple<String, String, String>, String?>(256)
     private val templates = PreparedListCache<String, List<TemplatePiece>>(128)
+
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(this.records, supportedLocales)
+    }
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
     private fun pattern(type: String, item: String, locale: Locale): String? =
         patterns.getOrPut(Triple(locale.stripExtensions().toLanguageTag(), type, item)) { resolvePattern(type, item, locale) }

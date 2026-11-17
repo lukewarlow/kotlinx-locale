@@ -20,6 +20,16 @@ import java.io.File
 
 /** `CldrCollation`-shaped binding: the source object plus the comparator entry points. */
 public fun emitCollationBinding(outputRoot: File, spec: BindingSpec, availableCollations: Set<String> = emptySet()) {
+    emitCollationBinding(outputRoot, spec, availableCollations, null)
+}
+
+/** Emit an explicit service catalogue separately from tailoring identities. */
+public fun emitCollationBinding(
+    outputRoot: File,
+    spec: BindingSpec,
+    availableCollations: Set<String> = emptySet(),
+    localeCatalogue: Set<String>?,
+) {
     val file = outputRoot.packageFile(spec.packageName, "Collation.kt")
     file.writeText(
         preamble(
@@ -54,7 +64,20 @@ public fun emitCollationBinding(outputRoot: File, spec: BindingSpec, availableCo
         |public object ${spec.objectName} : CollationSource by PayloadCollationSource(
         |    collationRootRegistry, normalizationRegistry, collationTailoringsRegistry,
         |    availableCollations = setOf(${availableCollations.sorted().joinToString(", ") { "\"${kotlinEscape(it)}\"" }}),
+        |    localeCatalogue = ${localeCatalogue?.let {
+            "\"${kotlinEscape(
+                it.filter { tag ->
+                    tag != "root"
+                }.sorted().joinToString(" "),
+            )}\".split(' ').filter { it.isNotEmpty() }.mapTo(linkedSetOf(), Locale::forLanguageTag)"
+        } ?: "null"},
         |)
+        |
+        |/** The service catalogue and whether other locales can use root fallback. */
+        |public fun collationLocaleCoverage(): dev.carcara.kotlinx.locale.LocaleCoverage = ${spec.objectName}.localeCoverage
+        |
+        |/** Locales with dedicated tailoring records, including records that only change defaults. */
+        |public fun collationTailoringLocales(): Set<Locale> = ${spec.objectName}.tailoredLocales
         |
         |/**
         | * The order [locale] reads a list in.

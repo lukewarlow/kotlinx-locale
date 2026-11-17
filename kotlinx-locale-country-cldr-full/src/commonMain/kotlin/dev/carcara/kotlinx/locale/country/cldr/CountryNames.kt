@@ -37,6 +37,7 @@ import dev.carcara.kotlinx.locale.territory.cldr.CldrTerritory
 public object CldrCountry : CountryNameSource by PayloadCountryNames(
     CldrTerritory::nameOrNull,
     CldrTerritory.supportedLocales,
+    CldrTerritory.localeCoverage,
 )
 
 /**

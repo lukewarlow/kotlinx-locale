@@ -55,6 +55,7 @@ dependencyResolutionManagement {
 rootProject.name = "kotlinx-locale-project"
 
 val published = listOf(
+    "kotlinx-locale-casing-unicode",
     "kotlinx-locale-list-core",
     "kotlinx-locale-list-cldr-runtime",
     "kotlinx-locale-list-cldr-full",

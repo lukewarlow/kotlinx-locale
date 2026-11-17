@@ -80,6 +80,9 @@ public abstract interface class dev/carcara/kotlinx/locale/collation/CollationSo
 	public fun capabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/collation/CollationCapabilities;
 	public fun collations ()Ljava/util/Set;
 	public abstract fun comparatorOrNull (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationStrength;)Ljava/util/Comparator;
+	public fun getLocaleCoverage ()Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public fun getSupportedLocales ()Ljava/util/Set;
+	public fun getTailoredLocales ()Ljava/util/Set;
 	public fun resolve (Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static synthetic fun resolve$default (Ldev/carcara/kotlinx/locale/collation/CollationSource;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
@@ -90,6 +93,9 @@ public final class dev/carcara/kotlinx/locale/collation/CollationSource$Companio
 public final class dev/carcara/kotlinx/locale/collation/CollationSource$DefaultImpls {
 	public static fun capabilities (Ldev/carcara/kotlinx/locale/collation/CollationSource;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/collation/CollationCapabilities;
 	public static fun collations (Ldev/carcara/kotlinx/locale/collation/CollationSource;)Ljava/util/Set;
+	public static fun getLocaleCoverage (Ldev/carcara/kotlinx/locale/collation/CollationSource;)Ldev/carcara/kotlinx/locale/LocaleCoverage;
+	public static fun getSupportedLocales (Ldev/carcara/kotlinx/locale/collation/CollationSource;)Ljava/util/Set;
+	public static fun getTailoredLocales (Ldev/carcara/kotlinx/locale/collation/CollationSource;)Ljava/util/Set;
 	public static fun resolve (Ldev/carcara/kotlinx/locale/collation/CollationSource;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static synthetic fun resolve$default (Ldev/carcara/kotlinx/locale/collation/CollationSource;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/collation/CollationOptions;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }

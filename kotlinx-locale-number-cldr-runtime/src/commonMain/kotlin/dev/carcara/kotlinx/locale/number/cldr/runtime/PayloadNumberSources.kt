@@ -405,11 +405,24 @@ public class PayloadPluralRules(
     /** locale tag -> `"<cardinalId> <ordinalId>"`. */
     private val ruleIndex: Map<String, String>,
     private val rangeRecords: Map<String, String> = emptyMap(),
+    /** Service identities independent of rule storage; null retains the rule-index enumeration. */
+    localeCatalogue: Set<Locale>?,
 ) : PluralRuleSource {
+
+    /** Preserves the original constructor for callers without an explicit service catalogue. */
+    public constructor(
+        ruleSets: Map<String, String>,
+        ruleIndex: Map<String, String>,
+        rangeRecords: Map<String, String> = emptyMap(),
+    ) : this(ruleSets, ruleIndex, rangeRecords, null)
 
     private val parsed = PreparedNumberCache<String, PluralRuleSet>(128)
 
-    override val supportedLocales: Set<Locale> get() = supportedLocalesOf(ruleIndex)
+    private val catalogue = localeCatalogue?.toSet()
+    override val supportedLocales: Set<Locale> by lazy { catalogue ?: supportedLocalesOf(ruleIndex) }
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        dev.carcara.kotlinx.locale.internal.payloadLocaleCoverage(ruleIndex, supportedLocales)
+    }
 
     override fun pluralCategoriesOrNull(type: PluralType, locale: Locale): Set<PluralCategory>? {
         val ids = (resolvedRecord(ruleIndex, locale) ?: return null).split(' ')

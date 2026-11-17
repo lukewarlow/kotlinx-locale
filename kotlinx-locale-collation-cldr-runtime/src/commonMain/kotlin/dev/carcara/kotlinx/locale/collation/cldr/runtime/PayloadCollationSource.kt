@@ -42,7 +42,27 @@ public class PayloadCollationSource(
     private val normalization: Map<String, String>,
     private val tailorings: Map<String, String>,
     private val availableCollations: Set<String> = emptySet(),
+    /** Service identities independent of tailoring storage; null enumerates only tailoring records. */
+    localeCatalogue: Set<Locale>?,
 ) : CollationSource {
+
+    /** Original construction path when the caller cannot supply a separate catalogue. */
+    public constructor(
+        roots: Map<String, String>,
+        normalization: Map<String, String>,
+        tailorings: Map<String, String>,
+        availableCollations: Set<String> = emptySet(),
+    ) : this(roots, normalization, tailorings, availableCollations, null)
+    private val catalogue = localeCatalogue?.toSet()
+    override val tailoredLocales: Set<Locale> by lazy { supportedLocalesOf(tailorings) }
+    override val supportedLocales: Set<Locale> by lazy { catalogue ?: tailoredLocales }
+    override val localeCoverage: LocaleCoverage by lazy {
+        if ("root" in roots && "root" in normalization && "root" in tailorings) {
+            LocaleCoverage.RootFallback(supportedLocales)
+        } else {
+            LocaleCoverage.Enumerated(supportedLocales)
+        }
+    }
     override fun collations(): Set<String> = availableCollations.toSet()
 
     private val cache = HashMap<String, PayloadCollation.Tailored>()
@@ -71,7 +91,7 @@ public class PayloadCollationSource(
     override fun capabilities(locale: Locale): CollationCapabilities {
         val variants = variants(locale)
         return CollationCapabilities(
-            LocaleCoverage.RootFallback(supportedLocalesOf(tailorings)),
+            localeCoverage,
             variants - setOf("standard", "search"),
             if ("search" in variants) CollationUsage.entries.toSet() else setOf(CollationUsage.SORT),
             true,

@@ -114,6 +114,10 @@ public fun CurrencyNameSource.displayName(currency: Currency, locale: Locale): S
 public class FallbackCurrencyNames(private val primary: CurrencyNameSource, private val fallback: CurrencyNameSource) :
     CurrencyNameSource {
 
+    @OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage
+        get() = dev.carcara.kotlinx.locale.internal.combinedLocaleCoverage(primary.localeCoverage, fallback.localeCoverage)
+
     override val supportedLocales: Set<Locale>
         get() = primary.supportedLocales + fallback.supportedLocales
 

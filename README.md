@@ -250,6 +250,8 @@ locale-personname-cldr-full = { module = "dev.carcara:kotlinx-locale-personname-
 # Unicode grapheme, word and sentence segmentation.
 locale-segmentation-core = { module = "dev.carcara:kotlinx-locale-segmentation-core", version.ref = "kotlinx-locale" }
 locale-segmentation-unicode = { module = "dev.carcara:kotlinx-locale-segmentation-unicode", version.ref = "kotlinx-locale" }
+# Full Unicode casing, with Turkish, Azerbaijani and Lithuanian rules.
+locale-casing-unicode = { group = "dev.carcara", name = "kotlinx-locale-casing-unicode", version.ref = "kotlinx-locale" }
 locale-collation-core = { module = "dev.carcara:kotlinx-locale-collation-core", version.ref = "kotlinx-locale" }
 locale-collation-cldr-runtime = { module = "dev.carcara:kotlinx-locale-collation-cldr-runtime", version.ref = "kotlinx-locale" }
 locale-collation-cldr-full = { module = "dev.carcara:kotlinx-locale-collation-cldr-full", version.ref = "kotlinx-locale" }
@@ -461,6 +463,7 @@ plugin flag beside the artifact for every domain that has one.
 | `kotlinx-locale-personname-cldr-runtime` | Pattern selection, field modifiers and the empty-field cleanup. Carries no records. |
 | `kotlinx-locale-personname-cldr-full` | `CldrPersonName`, `personNameFormat` and `personNameOrder`: a name written the way a locale writes one, and its initials. |
 | `kotlinx-locale-segmentation-core` | Segmentation contracts and UTF-16 segment ranges. The source reports whether grapheme, word or sentence segmentation is available. |
+| `kotlinx-locale-casing-unicode` | Full Unicode 15.1.0 lowercase and uppercase conversion. Includes contextual rules and Turkish, Azerbaijani and Lithuanian tailoring, with identical data on every target. |
 | `kotlinx-locale-segmentation-unicode` | Default grapheme, word and sentence boundaries using Unicode 15.1.0 properties. Initializes its own data, reports explicit locale coverage, preserves UTF-16 ranges and caches boundaries. No dictionary segmentation or locale tailoring. |
 | `kotlinx-locale-collation-core` | `CollationStrength` and `CollationSource`: how much of a difference counts, and the contract a table answers through. No algorithm. |
 | `kotlinx-locale-collation-cldr-runtime` | The Unicode Collation Algorithm over a weight table it does not carry: contractions, prefixes, script reordering and sort keys. |

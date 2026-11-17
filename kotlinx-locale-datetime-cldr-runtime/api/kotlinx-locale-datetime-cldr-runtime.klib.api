@@ -231,6 +231,8 @@ final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/DurationUnitRecord 
 final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/FallbackDurationUnitFormats : dev.carcara.kotlinx.locale.datetime.cldr.runtime/DurationUnitFormatSource { // dev.carcara.kotlinx.locale.datetime.cldr.runtime/FallbackDurationUnitFormats|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.datetime.cldr.runtime/DurationUnitFormatSource, dev.carcara.kotlinx.locale.datetime.cldr.runtime/DurationUnitFormatSource) // dev.carcara.kotlinx.locale.datetime.cldr.runtime/FallbackDurationUnitFormats.<init>|<init>(dev.carcara.kotlinx.locale.datetime.cldr.runtime.DurationUnitFormatSource;dev.carcara.kotlinx.locale.datetime.cldr.runtime.DurationUnitFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/FallbackDurationUnitFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/FallbackDurationUnitFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime.cldr.runtime/FallbackDurationUnitFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime.cldr.runtime/FallbackDurationUnitFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -254,6 +256,8 @@ final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/IntervalRecord { //
 final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeFormats : dev.carcara.kotlinx.locale.datetime/CalendarCapitalizationSource, dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource, dev.carcara.kotlinx.locale.datetime/DurationPatternSource { // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeFormats|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin.collections/Map<kotlin/String, kotlin/String> = ..., dev.carcara.kotlinx.locale.number/NumberFormatSource? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource? = ...) // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeFormats.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.number.NumberFormatSource?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource?){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -276,6 +280,8 @@ final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDateTimeForm
 final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnitFormats : dev.carcara.kotlinx.locale.datetime.cldr.runtime/DurationUnitFormatSource { // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnitFormats|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, dev.carcara.kotlinx.locale.number/PluralRuleSource, dev.carcara.kotlinx.locale.number/NumberFormatSource) // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnitFormats.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.number.PluralRuleSource;dev.carcara.kotlinx.locale.number.NumberFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnitFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnitFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnitFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnitFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -290,6 +296,8 @@ final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadDurationUnit
 final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalFormats : dev.carcara.kotlinx.locale.datetime.cldr.runtime/IntervalFormatSource { // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalFormats|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats) // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalFormats.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.datetime.cldr.runtime.PayloadSkeletonFormats){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -304,6 +312,8 @@ final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadIntervalForm
 final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTimeFormats : dev.carcara.kotlinx.locale.datetime/RelativeTimeFormatSource { // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTimeFormats|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, dev.carcara.kotlinx.locale.number/PluralRuleSource, dev.carcara.kotlinx.locale.number/NumberFormatSource) // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTimeFormats.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.number.PluralRuleSource;dev.carcara.kotlinx.locale.number.NumberFormatSource){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTimeFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTimeFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTimeFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTimeFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
@@ -318,6 +328,8 @@ final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadRelativeTime
 final class dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats : dev.carcara.kotlinx.locale.datetime.cldr.runtime/SkeletonFormatSource { // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin.collections/Map<kotlin/String, kotlin/String> = ..., dev.carcara.kotlinx.locale.number/NumberFormatSource? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource? = ...) // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.collections.Map<kotlin.String,kotlin.String>;dev.carcara.kotlinx.locale.number.NumberFormatSource?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource?){}[0]
 
+    final val localeCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats.localeCoverage|{}localeCoverage[0]
+        final fun <get-localeCoverage>(): dev.carcara.kotlinx.locale/LocaleCoverage // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats.localeCoverage.<get-localeCoverage>|<get-localeCoverage>(){}[0]
     final val supportedLocales // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats.supportedLocales|{}supportedLocales[0]
         final fun <get-supportedLocales>(): kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale> // dev.carcara.kotlinx.locale.datetime.cldr.runtime/PayloadSkeletonFormats.supportedLocales.<get-supportedLocales>|<get-supportedLocales>(){}[0]
 
