@@ -116,6 +116,8 @@ internal fun renderDateTimeTokens(
         numbers?.symbolsOrNull(format.locale, system)
             ?: if (system == data.defaultNumberingSystem) null else return LocaleLookup.Unsupported("Numbering system $system")
     }
+    val oldDigits = symbols?.let { codePointsAsStrings(data.digits) }
+    val remapDigits = symbols != null && symbols.digits != oldDigits
     val parts = ArrayList<DateTimePart>()
     for (token in tokens) {
         if (token is PatternToken.Literal) {
@@ -187,8 +189,8 @@ internal fun renderDateTimeTokens(
                 val numeric =
                     field !in setOf(DateTimeField.ERA, DateTimeField.WEEKDAY, DateTimeField.DAY_PERIOD) &&
                         !(field in setOf(DateTimeField.MONTH, DateTimeField.QUARTER) && token.count >= 3)
-                if (symbols != null && numeric) {
-                    val oldDigits = codePointsAsStrings(data.digits)
+                if (symbols != null && numeric && remapDigits) {
+                    val oldDigits = oldDigits!!
                     rendered = buildString {
                         var i = 0
                         while (i < rendered.length) {
@@ -211,11 +213,15 @@ internal fun renderDateTimeTokens(
     return LocaleLookup.Value(FormattedDateTime(parts))
 }
 
-private fun codePointsAsStrings(text: String): List<String> = buildList {
-    var i = 0
-    while (i < text.length) {
-        val size = if (text[i].isHighSurrogate() && i + 1 < text.length && text[i + 1].isLowSurrogate()) 2 else 1
-        add(text.substring(i, i + size))
-        i += size
+private val digitSets = PreparedDateCache<String, List<String>>(128)
+
+private fun codePointsAsStrings(text: String): List<String> = digitSets.getOrPut(text) {
+    buildList {
+        var i = 0
+        while (i < text.length) {
+            val size = if (text[i].isHighSurrogate() && i + 1 < text.length && text[i + 1].isLowSurrogate()) 2 else 1
+            add(text.substring(i, i + size))
+            i += size
+        }
     }
 }

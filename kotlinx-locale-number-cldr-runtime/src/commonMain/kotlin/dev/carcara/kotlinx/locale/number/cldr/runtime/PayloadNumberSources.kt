@@ -43,6 +43,8 @@ import dev.carcara.kotlinx.locale.number.PluralCategory
 import dev.carcara.kotlinx.locale.number.PluralRuleSource
 import dev.carcara.kotlinx.locale.number.PluralType
 import dev.carcara.kotlinx.locale.number.pluralCategory
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * A number source over the generated tables.
@@ -52,30 +54,43 @@ import dev.carcara.kotlinx.locale.number.pluralCategory
  * formats many numbers in one locale.
  */
 public class PayloadNumberFormats(
-    private val symbolRecords: Map<String, String>,
-    private val patternRecords: Map<String, String>,
-    private val compactShortRecords: Map<String, String>,
-    private val compactLongRecords: Map<String, String>,
+    symbolRecords: Map<String, String>,
+    patternRecords: Map<String, String>,
+    compactShortRecords: Map<String, String>,
+    compactLongRecords: Map<String, String>,
     private val plurals: PluralRuleSource,
-    private val numberingSystemRecords: Map<String, String> = emptyMap(),
+    numberingSystemRecords: Map<String, String> = emptyMap(),
 ) : NumberFormatSource {
 
-    private val cache = HashMap<String, LocaleNumbers?>()
+    // Own the input tables so prepared results cannot become stale after caller mutations.
+    private val symbolRecords = symbolRecords.toMap()
+    private val patternRecords = patternRecords.toMap()
+    private val compactShortRecords = compactShortRecords.toMap()
+    private val compactLongRecords = compactLongRecords.toMap()
+    private val numberingSystemRecords = numberingSystemRecords.toMap()
+    private val cache = PreparedNumberCache<String, LocaleNumbers?>()
+    private val systemSymbols = PreparedNumberCache<Pair<String, String>, NumberSymbols?>()
+    private val capabilityCache = PreparedNumberCache<String, NumberFormatCapabilities>()
 
-    override val supportedLocales: Set<Locale> get() = supportedLocalesOf(symbolRecords)
-    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage get() = if ("root" in
-        symbolRecords
-    ) {
-        dev.carcara.kotlinx.locale.LocaleCoverage.RootFallback(supportedLocales)
-    } else {
-        dev.carcara.kotlinx.locale.LocaleCoverage.Enumerated(supportedLocales)
+    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.symbolRecords) }
+    override val localeCoverage: dev.carcara.kotlinx.locale.LocaleCoverage by lazy {
+        if ("root" in
+            this.symbolRecords
+        ) {
+            dev.carcara.kotlinx.locale.LocaleCoverage.RootFallback(supportedLocales)
+        } else {
+            dev.carcara.kotlinx.locale.LocaleCoverage.Enumerated(supportedLocales)
+        }
     }
 
     override fun symbolsOrNull(locale: Locale): NumberSymbols? = numbersFor(locale)?.symbols
 
     private fun systemValue(key: String, locale: Locale): String? = sparseRecordValue(numberingSystemRecords, locale, 1, 2, key)
 
-    override fun symbolsOrNull(locale: Locale, numberingSystem: String): NumberSymbols? {
+    override fun symbolsOrNull(locale: Locale, numberingSystem: String): NumberSymbols? =
+        systemSymbols.getOrPut(locale.stripExtensions().toLanguageTag() to numberingSystem) { resolveSymbols(locale, numberingSystem) }
+
+    private fun resolveSymbols(locale: Locale, numberingSystem: String): NumberSymbols? {
         val base = symbolsOrNull(locale) ?: return null
         if (numberingSystemRecords.isEmpty()) return base.takeIf { it.numberingSystem == numberingSystem }
         val digits = systemValue("$numberingSystem/digits", locale)?.let(::digitStringsOf) ?: return null
@@ -107,7 +122,10 @@ public class PayloadNumberFormats(
         return LocaleNumbers(symbols, base.decimalPattern, base.percentPattern, base.compactShort, base.compactLong)
     }
 
-    override fun capabilities(locale: Locale): NumberFormatCapabilities {
+    override fun capabilities(locale: Locale): NumberFormatCapabilities =
+        capabilityCache.getOrPut(locale.stripExtensions().toLanguageTag()) { prepareCapabilities(locale) }
+
+    private fun prepareCapabilities(locale: Locale): NumberFormatCapabilities {
         val symbols = symbolsOrNull(locale)
         val notations = mutableSetOf(NumberNotation.STANDARD, NumberNotation.SCIENTIFIC, NumberNotation.ENGINEERING)
         if (compactShortRecords.isNotEmpty()) notations.add(NumberNotation.COMPACT_SHORT)
@@ -190,12 +208,13 @@ public class PayloadNumberFormats(
                 } else {
                     LocaleLookup.MissingData
                 }
+        val capabilities = capabilities(locale)
         if (options.numberingSystem != null &&
-            options.numberingSystem !in capabilities(locale).numberingSystems
+            options.numberingSystem !in capabilities.numberingSystems
         ) {
             return LocaleLookup.Unsupported("numbering system ${options.numberingSystem}")
         }
-        if (options.notation !in capabilities(locale).notations) return LocaleLookup.Unsupported("notation ${options.notation}")
+        if (options.notation !in capabilities.notations) return LocaleLookup.Unsupported("notation ${options.notation}")
         return LocaleLookup.Value(
             when (value) {
                 is NumberValue.Finite -> render(numbers, numbers.decimalPattern, value.value, locale, options)
@@ -341,9 +360,11 @@ public class PayloadNumberFormats(
         )
     }
 
-    private fun numbersFor(locale: Locale): LocaleNumbers? {
-        val key = locale.toLanguageTag()
-        if (cache.containsKey(key)) return cache[key]
+    private fun numbersFor(locale: Locale): LocaleNumbers? = cache.getOrPut(locale.stripExtensions().toLanguageTag()) {
+        prepareNumbers(locale)
+    }
+
+    private fun prepareNumbers(locale: Locale): LocaleNumbers? {
         val symbolRecord = resolvedRecord(symbolRecords, locale)
         val patternRecord = resolvedRecord(patternRecords, locale)
         val numbers = if (symbolRecord == null || patternRecord == null) {
@@ -357,7 +378,6 @@ public class PayloadNumberFormats(
                 compactLong = CompactPatternTable(resolvedRecord(compactLongRecords, locale).orEmpty()),
             )
         }
-        cache[key] = numbers
         return numbers
     }
 
@@ -387,7 +407,7 @@ public class PayloadPluralRules(
     private val rangeRecords: Map<String, String> = emptyMap(),
 ) : PluralRuleSource {
 
-    private val parsed = HashMap<String, PluralRuleSet>()
+    private val parsed = PreparedNumberCache<String, PluralRuleSet>(128)
 
     override val supportedLocales: Set<Locale> get() = supportedLocalesOf(ruleIndex)
 
@@ -429,7 +449,7 @@ public class PayloadOrdinalFormats(
     private val plurals: PluralRuleSource,
 ) : OrdinalFormatSource {
 
-    private val parsed = HashMap<String, OrdinalRuleClosure>()
+    private val parsed = PreparedNumberCache<String, OrdinalRuleClosure>()
 
     override val supportedLocales: Set<Locale> get() = supportedLocalesOf(index)
 
@@ -444,4 +464,21 @@ public class PayloadOrdinalFormats(
     }
 
     public companion object
+}
+
+/** Bounded immutable publication, including negative lookups; never mutate a shared map. */
+@OptIn(ExperimentalAtomicApi::class)
+private class PreparedNumberCache<K, V>(private val limit: Int = 64) {
+    private val entries = AtomicReference<Map<K, V>>(emptyMap())
+    fun getOrPut(key: K, create: () -> V): V {
+        val initial = entries.load()
+        if (initial.containsKey(key)) return initial.getValue(key)
+        val value = create()
+        while (true) {
+            val previous = entries.load()
+            if (previous.containsKey(key)) return previous.getValue(key)
+            val retained = if (previous.size < limit) previous else previous.entries.drop(1).associate { it.key to it.value }
+            if (entries.compareAndSet(previous, retained + (key to value))) return value
+        }
+    }
 }

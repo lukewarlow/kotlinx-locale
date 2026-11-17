@@ -70,9 +70,9 @@ internal fun formatCurrency(
     val accounting = options.signDisplay.usesAccountingPattern
     val basePattern = if (accounting) data.accountingPattern else data.standardPattern
     val alphaPattern = if (accounting) data.accountingAlphaPattern else data.standardAlphaPattern
-    var pattern = NumberPattern.parse(basePattern)
+    var pattern = preparedCurrencyPattern(basePattern)
     if (alphaPattern != basePattern && isAlphaAdjacent(pattern, currencyText)) {
-        pattern = NumberPattern.parse(alphaPattern)
+        pattern = preparedCurrencyPattern(alphaPattern)
     }
 
     val affix = AffixSubstitution { run ->
@@ -151,3 +151,7 @@ internal val NO_PLURAL_RULES: FormattedNumberSelector = FormattedNumberSelector 
 
 /** True when [signDisplay] asks for CLDR's accounting pattern. */
 internal fun usesAccounting(signDisplay: SignDisplay): Boolean = signDisplay.usesAccountingPattern
+
+private val preparedPatterns = PreparedCurrencyCache<String, NumberPattern>(256)
+
+internal fun preparedCurrencyPattern(pattern: String): NumberPattern = preparedPatterns.getOrPut(pattern) { NumberPattern.parse(pattern) }

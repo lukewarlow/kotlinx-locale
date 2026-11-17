@@ -143,12 +143,13 @@ private fun widenedSkeleton(requested: String, difference: Char): String? {
  * candidate list.
  */
 @InternalKotlinxLocaleApi
-public class PayloadIntervalFormats(private val records: Map<String, String>, private val skeletons: PayloadSkeletonFormats) :
+public class PayloadIntervalFormats(records: Map<String, String>, private val skeletons: PayloadSkeletonFormats) :
     IntervalFormatSource {
 
-    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
+    private val records = records.toMap()
+    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
 
-    private val decoded = HashMap<String, IntervalRecord?>()
+    private val decoded = PreparedDateCache<String, IntervalRecord?>()
 
     override fun intervalFormatOrNull(start: LocalDate, end: LocalDate, skeleton: String, locale: Locale): String? =
         render(skeleton, locale, startDate = start, endDate = end, startTime = null, endTime = null)
@@ -332,12 +333,8 @@ public class PayloadIntervalFormats(private val records: Map<String, String>, pr
         return LocaleLookup.Value(FormattedDateTimeRange(output))
     }
 
-    private fun recordFor(locale: Locale): IntervalRecord? {
-        val key = locale.toLanguageTag()
-        if (key in decoded) return decoded[key]
-        val built = resolvedRecord(records, locale)?.let(::IntervalRecord)
-        decoded[key] = built
-        return built
+    private fun recordFor(locale: Locale): IntervalRecord? = decoded.getOrPut(locale.stripExtensions().toLanguageTag()) {
+        resolvedRecord(records, locale)?.let(::IntervalRecord)
     }
 
     public companion object

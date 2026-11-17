@@ -122,7 +122,12 @@ internal class SkeletonMatcher(
      * The locale's pattern for [skeleton], or `null` when the skeleton names a
      * field this library cannot render.
      */
-    fun bestPatternOrNull(skeleton: String, extended: Boolean = false): String? {
+    private val preparedPatterns = PreparedDateCache<Pair<String, Boolean>, String?>(128)
+
+    fun bestPatternOrNull(skeleton: String, extended: Boolean = false): String? =
+        preparedPatterns.getOrPut(skeleton to extended) { preparePattern(skeleton, extended) }
+
+    private fun preparePattern(skeleton: String, extended: Boolean): String? {
         val mapped = resolveHourMetacharacters(skeleton)
         if (mapped.skeleton.any { it.isAsciiLetter() && it !in REQUESTABLE_LETTERS && !(extended && it in "zvO") }) return null
         val request = SkeletonFields.of(mapped.skeleton) ?: return null

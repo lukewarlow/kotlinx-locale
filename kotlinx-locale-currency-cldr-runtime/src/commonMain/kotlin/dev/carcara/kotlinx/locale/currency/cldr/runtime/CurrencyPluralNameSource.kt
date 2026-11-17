@@ -272,7 +272,7 @@ public class PayloadCurrencyPluralNames(
     private val plurals: PluralRuleSource,
 ) : CurrencyPluralNameSource {
 
-    private val formatCache = HashMap<String, CurrencyPluralFormat>()
+    private val formatCache = PreparedCurrencyCache<String, CurrencyPluralFormat>()
 
     override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
 

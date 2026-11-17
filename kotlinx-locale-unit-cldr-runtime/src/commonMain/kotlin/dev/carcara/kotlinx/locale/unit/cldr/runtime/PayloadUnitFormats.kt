@@ -32,15 +32,21 @@ import dev.carcara.kotlinx.locale.number.PluralRuleSource
 import dev.carcara.kotlinx.locale.number.PluralType
 import dev.carcara.kotlinx.locale.unit.UnitFormatSource
 import dev.carcara.kotlinx.locale.unit.UnitWidth
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 @OptIn(InternalKotlinxLocaleApi::class)
 public class PayloadUnitFormats(
-    private val records: Map<String, String>,
+    records: Map<String, String>,
     private val numbers: NumberFormatSource,
     private val plurals: PluralRuleSource,
 ) : UnitFormatSource {
-    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
-    private fun lookup(key: String, locale: Locale): String? = sparseRecordValue(records, locale, 1, 2, key)
+    private val records = records.toMap()
+    private val patterns = PreparedUnitCache<Pair<String, String>, String?>(512)
+    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
+    private fun lookup(key: String, locale: Locale): String? = patterns.getOrPut(locale.stripExtensions().toLanguageTag() to key) {
+        sparseRecordValue(records, locale, 1, 2, key)
+    }
     private fun pattern(unit: String, category: String, width: UnitWidth, locale: Locale): String? {
         for (candidate in listOf(width.name.lowercase(), "short", "long").distinct()) {
             lookup("$candidate/$unit/$category", locale)?.let { return it }
@@ -127,4 +133,21 @@ public class PayloadUnitFormats(
         )
     }
     public companion object
+}
+
+/** Bounded immutable publication, including negative lookups; never mutate a shared map. */
+@OptIn(ExperimentalAtomicApi::class)
+private class PreparedUnitCache<K, V>(private val limit: Int = 64) {
+    private val entries = AtomicReference<Map<K, V>>(emptyMap())
+    fun getOrPut(key: K, create: () -> V): V {
+        val initial = entries.load()
+        if (initial.containsKey(key)) return initial.getValue(key)
+        val value = create()
+        while (true) {
+            val previous = entries.load()
+            if (previous.containsKey(key)) return previous.getValue(key)
+            val retained = if (previous.size < limit) previous else previous.entries.drop(1).associate { it.key to it.value }
+            if (entries.compareAndSet(previous, retained + (key to value))) return value
+        }
+    }
 }

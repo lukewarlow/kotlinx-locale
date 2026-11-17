@@ -52,8 +52,13 @@ private val ZONE_FIELD_LETTERS = setOf('z', 'Z', 'v', 'V', 'O', 'x', 'X')
  * Parses a CLDR date/time pattern into tokens. Handles `'quoted literals'` and
  * the `''` escape for a literal apostrophe.
  */
+private val parsedPatterns = PreparedDateCache<String, List<PatternToken>>(256)
+
 @InternalKotlinxLocaleApi
-public fun parseDateTimePattern(pattern: String): List<PatternToken> {
+public fun parseDateTimePattern(pattern: String): List<PatternToken> =
+    parsedPatterns.getOrPut(pattern) { parseDateTimePatternUncached(pattern) }
+
+private fun parseDateTimePatternUncached(pattern: String): List<PatternToken> {
     val tokens = ArrayList<PatternToken>()
     var literal = StringBuilder()
 

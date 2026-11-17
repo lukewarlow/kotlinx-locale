@@ -41,7 +41,6 @@ import dev.carcara.kotlinx.locale.number.PluralType
 import dev.carcara.kotlinx.locale.number.cldr.runtime.AffixSubstitution
 import dev.carcara.kotlinx.locale.number.cldr.runtime.CompactPatternTable
 import dev.carcara.kotlinx.locale.number.cldr.runtime.FormattedNumberSelector
-import dev.carcara.kotlinx.locale.number.cldr.runtime.NumberPattern
 import dev.carcara.kotlinx.locale.number.cldr.runtime.digitStringsOf
 import dev.carcara.kotlinx.locale.number.cldr.runtime.formatCompact
 import dev.carcara.kotlinx.locale.number.cldr.runtime.isAlphaAdjacent
@@ -56,14 +55,19 @@ import dev.carcara.kotlinx.locale.number.cldr.runtime.renderSpecialNumber
  * declares, so one table answers both questions and a lookup walks the parent
  * chain for whatever the locale leaves out.
  */
-public class PayloadCurrencyNames(private val records: Map<String, String>) : CurrencyNameSource {
+public class PayloadCurrencyNames(records: Map<String, String>) : CurrencyNameSource {
+    private val records = records.toMap()
+    private val lookups = PreparedCurrencyCache<Triple<String, Int, String>, String?>(256)
+    private fun lookup(locale: Locale, field: Int, key: String): String? =
+        lookups.getOrPut(Triple(locale.stripExtensions().toLanguageTag(), field, key)) {
+            sparseRecordValue(records, locale, field, 3, key)
+        }
 
     override val supportedLocales: Set<Locale> by lazy {
-        supportedLocalesOf(records)
+        supportedLocalesOf(this.records)
     }
 
-    override fun currencySymbolOrNull(currencyCode: String, locale: Locale): String? =
-        sparseRecordValue(records, locale, field = 1, fieldCount = 3, key = currencyCode)
+    override fun currencySymbolOrNull(currencyCode: String, locale: Locale): String? = lookup(locale, 1, currencyCode)
 
     /**
      * The alternative spellings share the symbol table under a suffixed key, so
@@ -73,11 +77,10 @@ public class PayloadCurrencyNames(private val records: Map<String, String>) : Cu
      */
     override fun currencySymbolOrNull(currencyCode: String, locale: Locale, style: CurrencySymbolStyle): String? {
         val alt = style.altKey ?: return currencySymbolOrNull(currencyCode, locale)
-        return sparseRecordValue(records, locale, field = 1, fieldCount = 3, key = "$currencyCode#$alt")
+        return lookup(locale, 1, "$currencyCode#$alt")
     }
 
-    override fun currencyNameOrNull(currencyCode: String, locale: Locale): String? =
-        sparseRecordValue(records, locale, field = 2, fieldCount = 3, key = currencyCode)
+    override fun currencyNameOrNull(currencyCode: String, locale: Locale): String? = lookup(locale, 2, currencyCode)
 
     public companion object
 }
@@ -105,7 +108,7 @@ internal val CurrencySymbolStyle.altKey: String?
  * what fixes the scale an ISO minor-unit amount sits on.
  */
 public class PayloadCurrencyFormats(
-    private val formatRecords: Map<String, String>,
+    formatRecords: Map<String, String>,
     nameRecords: Map<String, String>,
     /**
      * The compact money patterns, empty when this build did not ask for them.
@@ -114,7 +117,7 @@ public class PayloadCurrencyFormats(
      * standard pattern, which is what CLDR's own `0` sentinel means for a
      * magnitude a locale has no compact form for.
      */
-    private val compactRecords: Map<String, String> = emptyMap(),
+    compactRecords: Map<String, String> = emptyMap(),
     /**
      * How a divided value's plural category is chosen, which is step 8 of the
      * compact algorithm. Answers `other` when this build has no plural rules.
@@ -124,21 +127,24 @@ public class PayloadCurrencyFormats(
     private val plurals: PluralRuleSource? = null,
 ) : CurrencyFormatSource {
 
-    private val names = PayloadCurrencyNames(nameRecords)
-    private val compactCache = HashMap<String, CompactPatternTable>()
+    private val formatRecords = formatRecords.toMap()
+    private val compactRecords = compactRecords.toMap()
+    private val decodedRecords = PreparedCurrencyCache<String, CurrencyNumberFormat?>()
+    private val names = PayloadCurrencyNames(nameRecords.toMap())
+    private val compactCache = PreparedCurrencyCache<String, CompactPatternTable>()
 
     // Building one walks every currency in the entry set and every spelling of
     // it, so it is built once per locale and kept, the way ICU caches its
     // parsing tries.
-    private val parseIndexCache = HashMap<String, CurrencyParseIndex>()
+    private val parseIndexCache = PreparedCurrencyCache<String, CurrencyParseIndex>()
 
     // Same reason, one currency at a time: the six spellings a named currency is
     // recognized by are six walks up the parent chain, and an application parses
     // the same currency in the same locale over and over.
-    private val parseTokenCache = HashMap<String, List<String>>()
+    private val parseTokenCache = PreparedCurrencyCache<String, List<String>>()
 
     override val supportedLocales: Set<Locale> by lazy {
-        supportedLocalesOf(formatRecords)
+        supportedLocalesOf(this.formatRecords)
     }
 
     override fun formatOrNull(minorUnits: Long, currencyCode: String, locale: Locale, options: CurrencyFormatOptions): String? {
@@ -189,8 +195,8 @@ public class PayloadCurrencyFormats(
         val accounting = options.signDisplay.usesAccountingPattern
         val base = if (accounting) data.accountingPattern else data.standardPattern
         val alpha = if (accounting) data.accountingAlphaPattern else data.standardAlphaPattern
-        val plain = NumberPattern.parse(base)
-        val pattern = if (alpha != base && isAlphaAdjacent(plain, text)) NumberPattern.parse(alpha) else plain
+        val plain = preparedCurrencyPattern(base)
+        val pattern = if (alpha != base && isAlphaAdjacent(plain, text)) preparedCurrencyPattern(alpha) else plain
         val affix = AffixSubstitution { run ->
             if (run ==
                 1
@@ -253,7 +259,9 @@ public class PayloadCurrencyFormats(
     override fun currencyCodeOrNull(text: String, locale: Locale): String? =
         parseIndexCache.getOrPut(locale.toLanguageTag()) { CurrencyParseIndex(names, locale) }.codeIn(text)
 
-    private fun numberFormatFor(locale: Locale): CurrencyNumberFormat? = resolvedRecord(formatRecords, locale)?.let(::CurrencyNumberFormat)
+    private fun numberFormatFor(locale: Locale): CurrencyNumberFormat? = decodedRecords.getOrPut(locale.stripExtensions().toLanguageTag()) {
+        resolvedRecord(formatRecords, locale)?.let(::CurrencyNumberFormat)
+    }
 
     public companion object
 }

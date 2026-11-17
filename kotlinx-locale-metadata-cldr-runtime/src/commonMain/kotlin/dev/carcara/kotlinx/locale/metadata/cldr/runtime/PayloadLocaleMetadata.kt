@@ -25,16 +25,89 @@ import dev.carcara.kotlinx.locale.metadata.RegionOrigin
 import dev.carcara.kotlinx.locale.metadata.RegionPreference
 import dev.carcara.kotlinx.locale.metadata.TextDirection
 import dev.carcara.kotlinx.locale.metadata.TimeZoneIdentifier
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /** Immutable, standalone CLDR locale identity and preference tables. */
 public class PayloadLocaleMetadata(override val dataVersion: String, encoded: String) : LocaleMetadataSource {
     private val tables: Map<String, Map<String, String>> = encoded.split('\u001e').filter { it.isNotEmpty() }
         .map { it.split('\u001f', limit = 3).also { fields -> require(fields.size == 3) } }
         .groupBy({ it[0] }, { it[1] to it[2] }).mapValues { (_, pairs) -> pairs.toMap() }
-    private val languageAliases = table("languageAlias").entries.sortedWith(
-        compareByDescending<Map.Entry<String, String>> { it.key.substringBefore('-') != "und" }
-            .thenByDescending { it.key.count { c -> c == '-' } }.thenBy { it.key },
+    private data class LanguageAlias(val pattern: Locale, val target: Locale)
+
+    private val languageAliases: Map<String, List<LanguageAlias>> by lazy {
+        table("languageAlias").entries.sortedWith(
+            compareByDescending<Map.Entry<String, String>> { it.key.substringBefore('-') != "und" }
+                .thenByDescending { it.key.count { c -> c == '-' } }.thenBy { it.key },
+        ).mapNotNull { (key, replacement) ->
+            val pattern = Locale.forUnicodeLanguageTagOrNull(key) ?: return@mapNotNull null
+            val target = Locale.forUnicodeLanguageTagOrNull(replacement.substringBefore(' ')) ?: return@mapNotNull null
+            LanguageAlias(pattern, target)
+        }.groupBy { it.pattern.language }
+    }
+
+    private data class PreparedCandidate(val locale: Locale, val identity: Locale, val maximal: Locale)
+    private data class CandidateMatch(val locale: Locale, val distance: Int)
+    private data class PreparedRequest(val identity: Locale, val match: CandidateMatch?)
+
+    @OptIn(ExperimentalAtomicApi::class)
+    private class PreparedLocales(val snapshot: Set<Locale>, val candidates: List<PreparedCandidate>) {
+        val requests = AtomicReference<List<PreparedRequest>>(emptyList())
+    }
+
+    // Immutable snapshots are atomically published. At most eight caller sets are retained;
+    // racing callers may prepare twice, but never observe partly initialized candidates.
+    @OptIn(ExperimentalAtomicApi::class)
+    private val preparedLocales = AtomicReference<List<PreparedLocales>>(emptyList())
+
+    private data class DistanceField(val literal: String?, val members: Set<String>?, val negated: Boolean = false)
+    private data class DistanceRule(
+        val desired: List<DistanceField>,
+        val supported: List<DistanceField>,
+        val distance: Int?,
+        val oneWay: Boolean,
     )
+
+    private val distanceRules: Map<Int, List<DistanceRule>> by lazy {
+        fun regions(group: String, seen: Set<String> = emptySet()): Set<String> {
+            if (group in seen) return emptySet()
+            return setOf(group) + table("containment")[group].orEmpty().split(' ').filter { it.isNotEmpty() }
+                .flatMap { regions(it, seen + group) }
+        }
+        val variables = table("matchVariable").mapValues { (_, groups) -> groups.split('+').flatMap { regions(it) }.toSet() }
+        fun pattern(value: String): List<DistanceField> = value.split('_').map { field ->
+            when {
+                field == "*" -> DistanceField(null, null)
+                field.startsWith("$") -> {
+                    val negated = field.startsWith("$!")
+                    val variable = if (negated) "$" + field.drop(2) else field
+                    DistanceField(null, variables[variable].orEmpty(), negated)
+                }
+                else -> DistanceField(field, null)
+            }
+        }
+        table("distance").values.map { value ->
+            val fields = value.split(' ')
+            DistanceRule(pattern(fields[0]), pattern(fields[1]), fields.getOrNull(2)?.toIntOrNull(), fields.getOrNull(3) == "true")
+        }.groupBy { it.desired.size }
+    }
+
+    private val preferenceCache = PreparedMetadataCache<String, LocalePreferences>(128)
+    private val directionCache = PreparedMetadataCache<String?, String?>()
+    private val zoneCatalogue: List<TimeZoneIdentifier> by lazy { prepareTimeZoneIdentifiers() }
+    private val zoneIndex: Map<String, TimeZoneIdentifier> by lazy {
+        buildMap {
+            for (zone in zoneCatalogue) {
+                val key = zone.identifier.map { it.uppercaseChar().lowercaseChar() }.joinToString("")
+                if (key !in
+                    this
+                ) {
+                    put(key, zone)
+                }
+            }
+        }
+    }
+    private val currencyCatalogue: List<CurrencyMetadata> by lazy { prepareCurrencies() }
 
     private fun table(name: String): Map<String, String> = tables[name].orEmpty()
     private fun tag(locale: Locale): String = locale.stripExtensions().toLanguageTag().lowercase()
@@ -46,8 +119,9 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
         var value = locale
         repeat(32) {
             val previous = value.toLanguageTag()
-            for ((key, replacement) in languageAliases) {
-                val pattern = Locale.forUnicodeLanguageTagOrNull(key) ?: continue
+            val aliases = languageAliases[value.language].orEmpty()
+            val fallbacks = if (value.language == "und") emptyList() else languageAliases["und"].orEmpty()
+            for ((pattern, target) in aliases + fallbacks) {
                 if ((pattern.language != "und" && pattern.language != value.language) ||
                     (pattern.script != null && pattern.script != value.script) ||
                     (pattern.region != null && pattern.region != value.region) ||
@@ -55,7 +129,6 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
                 ) {
                     continue
                 }
-                val target = Locale.forUnicodeLanguageTagOrNull(replacement.substringBefore(' ')) ?: continue
                 value = value.withLanguageId(
                     language = if (target.language == "und") value.language else target.language,
                     script = if (pattern.script != null || value.script == null) target.script else value.script,
@@ -196,7 +269,10 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
         return null
     }
 
-    override fun preferences(locale: Locale): LocalePreferences {
+    override fun preferences(locale: Locale): LocalePreferences =
+        preferenceCache.getOrPut(locale.toLanguageTag()) { preparePreferences(locale) }
+
+    private fun preparePreferences(locale: Locale): LocalePreferences {
         val canonical = canonicalize(locale)
         val region = regionPreference(canonical).region
         val hours = (
@@ -205,10 +281,12 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
             ).split(' ').distinct()
         val numbered = lookup("number", canonical) ?: "latn"
         val script = maximizeId(canonical).script
-        val direction = table("direction").entries.firstOrNull { (id, _) ->
-            val language = Locale.forUnicodeLanguageTagOrNull(id) ?: return@firstOrNull false
-            maximizeId(language).script == script
-        }?.value ?: lookup("direction", maximizeId(canonical)) ?: lookup("direction", canonical)
+        val direction = directionCache.getOrPut(script) {
+            table("direction").entries.firstOrNull { (id, _) ->
+                val language = Locale.forUnicodeLanguageTagOrNull(id) ?: return@firstOrNull false
+                maximizeId(language).script == script
+            }?.value
+        } ?: lookup("direction", maximizeId(canonical)) ?: lookup("direction", canonical)
         return LocalePreferences(
             calendars = (table("calendar")[region] ?: table("calendar")["001"] ?: "gregory").split(' ').map {
                 canonicalizeUnicodeValue("ca", it)
@@ -223,91 +301,108 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
     }
 
     override fun timeZonesForRegion(region: String): List<String> = table("zones")[region.uppercase()]?.split(' ') ?: emptyList()
-    override fun timeZoneIdentifiers(): List<TimeZoneIdentifier> = table("zoneAlias").map { (identifier, value) ->
+    override fun timeZoneIdentifiers(): List<TimeZoneIdentifier> = zoneCatalogue.toList()
+
+    private fun prepareTimeZoneIdentifiers(): List<TimeZoneIdentifier> = table("zoneAlias").map { (identifier, value) ->
         TimeZoneIdentifier(identifier, value.substringBefore(' '), value.substringAfter(' ', "").ifEmpty { null })
     }.sortedBy { it.identifier }
 
     override fun timeZoneIdentifierOrNull(identifier: String): TimeZoneIdentifier? {
         if (identifier.any { it.code >= 128 }) return null
-        return timeZoneIdentifiers().firstOrNull { it.identifier.equals(identifier, ignoreCase = true) }
+        return zoneIndex[identifier.lowercase()]
     }
 
-    override fun currencies(): List<CurrencyMetadata> = table("currency").map { (code, row) ->
+    override fun currencies(): List<CurrencyMetadata> = currencyCatalogue.toList()
+
+    private fun prepareCurrencies(): List<CurrencyMetadata> = table("currency").map { (code, row) ->
         val values = row.split(' ').map(String::toInt)
         CurrencyMetadata(code, values[0].takeIf { it >= 0 }, values[1], values[2], values[3], values[4], values[5] != 0)
     }.sortedBy { it.code }
 
+    @OptIn(ExperimentalAtomicApi::class)
+    private fun prepare(available: Set<Locale>): PreparedLocales {
+        // Set equality ignores caller iteration order. Copy even on a cache hit because
+        // callers can mutate their sets between calls; identity alone is not a key.
+        val snapshot = available.toSet()
+        preparedLocales.load().firstOrNull { it.snapshot == snapshot }?.let { return it }
+        val candidates = snapshot.map { canonicalize(it) }.sortedBy { it.toLanguageTag() }.map {
+            PreparedCandidate(it, it.stripExtensions(), maximizeId(it))
+        }
+        val prepared = PreparedLocales(snapshot, candidates)
+        while (true) {
+            val previous = preparedLocales.load()
+            previous.firstOrNull { it.snapshot == snapshot }?.let { return it }
+            if (preparedLocales.compareAndSet(previous, listOf(prepared) + previous.take(7))) return prepared
+        }
+    }
+
+    private fun matches(pattern: List<DistanceField>, locale: Locale): Boolean = pattern.indices.all { index ->
+        val actual = when (index) {
+            0 -> locale.language
+            1 -> locale.script.orEmpty()
+            else -> locale.region.orEmpty()
+        }
+        val field = pattern[index]
+        when {
+            field.literal != null -> field.literal.equals(actual, ignoreCase = true)
+            field.members != null -> (actual in field.members) != field.negated
+            else -> true
+        }
+    }
+
+    private fun distance(desired: Locale, supported: Locale): Int {
+        var total = 0
+        for (level in 1..3) {
+            val same = when (level) {
+                1 -> desired.language == supported.language
+                2 -> desired.script == supported.script
+                else -> desired.region == supported.region
+            }
+            if (same) continue
+            val rule = distanceRules[level].orEmpty().firstOrNull {
+                (matches(it.desired, desired) && matches(it.supported, supported)) ||
+                    (!it.oneWay && matches(it.supported, desired) && matches(it.desired, supported))
+            }
+            total += rule?.distance ?: when (level) {
+                1 -> 80
+                2 -> 50
+                else -> 4
+            }
+        }
+        return total
+    }
+
+    @OptIn(ExperimentalAtomicApi::class)
+    private fun bestCandidate(canonical: Locale, prepared: PreparedLocales): CandidateMatch? {
+        val identity = canonical.stripExtensions()
+        prepared.requests.load().firstOrNull { it.identity == identity }?.let { return it.match }
+        val desired = maximizeId(canonical)
+        var best: CandidateMatch? = null
+        for (candidate in prepared.candidates) {
+            val value = if (identity == candidate.identity) 0 else distance(desired, candidate.maximal)
+            if (value < 50 && (best == null || value < best.distance)) best = CandidateMatch(candidate.locale, value)
+        }
+        // Request priorities are applied by the caller. Cache only the canonical
+        // comparison identity, retaining neither extensions nor the caller's request.
+        while (true) {
+            val previous = prepared.requests.load()
+            previous.firstOrNull { it.identity == identity }?.let { return it.match }
+            if (prepared.requests.compareAndSet(previous, listOf(PreparedRequest(identity, best)) + previous.take(31))) return best
+        }
+    }
+
     /** CLDR language/script/region distances, with deterministic available-tag tie breaking. */
     override fun bestFitOrNull(requested: List<Locale>, available: Set<Locale>): LocaleMatch? {
-        val candidates = available.map { canonicalize(it) }.sortedBy { it.toLanguageTag() }
-        if (candidates.isEmpty()) return null
-        fun inRegion(region: String, group: String, seen: Set<String> = emptySet()): Boolean {
-            if (region == group) return true
-            if (group in seen) return false
-            return table("containment")[group]?.split(' ')?.any { inRegion(region, it, seen + group) } == true
-        }
-        fun matches(pattern: String, locale: Locale): Boolean {
-            val fields = pattern.split('_')
-            val actual = listOf(locale.language, locale.script.orEmpty(), locale.region.orEmpty())
-            return fields.indices.all { index ->
-                val field = fields[index]
-                when {
-                    field == "*" -> true
-                    field.startsWith("$") -> {
-                        val negated = field.startsWith("$!")
-                        val variable = if (negated) "$" + field.drop(2) else field
-                        val found = table("matchVariable")[variable]?.split('+')?.any { inRegion(actual[index], it) } == true
-                        found != negated
-                    }
-                    else -> field.equals(actual[index], ignoreCase = true)
-                }
-            }
-        }
-        val rules = table("distance").values.map { it.split(' ') }
-        fun distance(desired: Locale, supported: Locale): Int {
-            var total = 0
-            for (level in 1..3) {
-                val same = when (level) {
-                    1 -> desired.language == supported.language
-                    2 -> desired.script == supported.script
-                    else ->
-                        desired.region ==
-                            supported.region
-                }
-                if (same) continue
-                val rule = rules.firstOrNull {
-                    it[0].split('_').size == level &&
-                        (
-                            (matches(it[0], desired) && matches(it[1], supported)) ||
-                                (it.getOrNull(3) != "true" && matches(it[1], desired) && matches(it[0], supported))
-                            )
-                }
-                total += rule?.getOrNull(2)?.toIntOrNull() ?: when (level) {
-                    1 -> 80
-                    2 -> 50
-                    else -> 4
-                }
-            }
-            return total
-        }
+        if (requested.isEmpty() || available.isEmpty()) return null
+        val prepared = prepare(available)
         var best: LocaleMatch? = null
         var score = Int.MAX_VALUE
         for ((index, request) in requested.withIndex()) {
-            val desired = maximize(request)
-            for (candidate in candidates) {
-                val value = if (canonicalize(request).stripExtensions() ==
-                    candidate.stripExtensions()
-                ) {
-                    0
-                } else {
-                    distance(desired, maximize(candidate))
-                }
-                if (value >= 50) continue
-                val weighted = value.toLong() + index.toLong() * 5
-                if (weighted < score) {
-                    score = weighted.toInt()
-                    best = LocaleMatch(request, candidate, value)
-                }
+            val candidate = bestCandidate(canonicalize(request), prepared) ?: continue
+            val weighted = candidate.distance.toLong() + index.toLong() * 5
+            if (weighted < score) {
+                score = weighted.toInt()
+                best = LocaleMatch(request, candidate.locale, candidate.distance)
             }
         }
         return best
@@ -316,4 +411,21 @@ public class PayloadLocaleMetadata(override val dataVersion: String, encoded: St
     override fun numberingSystems(): Set<String> = table("digits").keys.toSet()
     override fun numberingSystemDigitsOrNull(identifier: String): String? = table("digits")[identifier]
     public companion object
+}
+
+/** Bounded immutable publication, including negative lookups; never mutate a shared map. */
+@OptIn(ExperimentalAtomicApi::class)
+private class PreparedMetadataCache<K, V>(private val limit: Int = 64) {
+    private val entries = AtomicReference<Map<K, V>>(emptyMap())
+    fun getOrPut(key: K, create: () -> V): V {
+        val initial = entries.load()
+        if (initial.containsKey(key)) return initial.getValue(key)
+        val value = create()
+        while (true) {
+            val previous = entries.load()
+            if (previous.containsKey(key)) return previous.getValue(key)
+            val retained = if (previous.size < limit) previous else previous.entries.drop(1).associate { it.key to it.value }
+            if (entries.compareAndSet(previous, retained + (key to value))) return value
+        }
+    }
 }

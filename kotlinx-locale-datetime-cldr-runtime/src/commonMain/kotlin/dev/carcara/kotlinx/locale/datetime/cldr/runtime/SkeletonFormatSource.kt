@@ -25,6 +25,7 @@ import dev.carcara.kotlinx.locale.LocaleLookup
 import dev.carcara.kotlinx.locale.datetime.DateTimeRenderContext
 import dev.carcara.kotlinx.locale.datetime.FormatStyle
 import dev.carcara.kotlinx.locale.datetime.FormattedDateTime
+import dev.carcara.kotlinx.locale.datetime.HourCycle
 import dev.carcara.kotlinx.locale.datetime.SelectedDateTimeFormat
 import dev.carcara.kotlinx.locale.datetime.format
 import dev.carcara.kotlinx.locale.datetime.hourCycle
@@ -122,10 +123,10 @@ public fun SkeletonFormatSource.format(dateTime: LocalDateTime, skeleton: String
  * repeatedly.
  */
 public class PayloadSkeletonFormats(
-    private val skeletonFormats: Map<String, String>,
-    private val skeletonAppendFormats: Map<String, String>,
-    private val skeletonNames: Map<String, String>,
-    private val dateTimeRecords: Map<String, String>,
+    skeletonFormats: Map<String, String>,
+    skeletonAppendFormats: Map<String, String>,
+    skeletonNames: Map<String, String>,
+    dateTimeRecords: Map<String, String>,
     /**
      * The stand-alone names, empty when this build did not generate them.
      *
@@ -134,14 +135,20 @@ public class PayloadSkeletonFormats(
      * without this table the `L` renders as the format name, giving
      * `de maig del 2026` where CLDR means `maig del 2026`.
      */
-    private val standaloneRecords: Map<String, String> = emptyMap(),
+    standaloneRecords: Map<String, String> = emptyMap(),
     private val defaultNumbers: NumberFormatSource? = null,
     private val defaultZones: TimeZoneNameSource? = null,
 ) : SkeletonFormatSource {
 
-    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(skeletonFormats) }
+    private val skeletonFormats = skeletonFormats.toMap()
+    private val skeletonAppendFormats = skeletonAppendFormats.toMap()
+    private val skeletonNames = skeletonNames.toMap()
+    private val dateTimeRecords = dateTimeRecords.toMap()
+    private val standaloneRecords = standaloneRecords.toMap()
 
-    private val matchers = HashMap<String, LocaleSkeletons?>()
+    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.skeletonFormats) }
+
+    private val matchers = PreparedDateCache<Pair<String, HourCycle?>, LocaleSkeletons?>()
 
     override fun selectSkeleton(skeleton: String, locale: Locale, numberingSystem: String?): LocaleLookup<SelectedDateTimeFormat> {
         val data = skeletonsFor(locale) ?: return LocaleLookup.MissingData
@@ -263,8 +270,11 @@ public class PayloadSkeletonFormats(
      * the pool instead of building a second matcher per locale.
      */
     internal fun skeletonsFor(locale: Locale): LocaleSkeletons? {
-        val key = locale.toLanguageTag()
-        if (key in matchers) return matchers[key]
+        val key = locale.stripExtensions().toLanguageTag() to locale.hourCycle
+        return matchers.getOrPut(key) { prepareSkeletons(locale) }
+    }
+
+    private fun prepareSkeletons(locale: Locale): LocaleSkeletons? {
         val formats = resolvedRecord(skeletonFormats, locale)
         val appendFormats = resolvedRecord(skeletonAppendFormats, locale)
         val names = resolvedRecord(skeletonNames, locale)
@@ -276,7 +286,6 @@ public class PayloadSkeletonFormats(
             val dateTimeRecord = DateTimeRecord(dateTime, resolvedRecord(standaloneRecords, locale))
             LocaleSkeletons(record, dateTimeRecord, SkeletonMatcher(record, dateTimeRecord, locale.hourCycle))
         }
-        matchers[key] = built
         return built
     }
 

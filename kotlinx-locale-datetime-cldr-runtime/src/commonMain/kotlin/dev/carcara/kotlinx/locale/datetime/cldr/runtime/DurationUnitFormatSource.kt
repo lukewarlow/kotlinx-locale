@@ -281,12 +281,15 @@ public class DurationUnitRecord(record: String) {
  * what puts Arabic-Indic digits in an Arabic phrase.
  */
 public class PayloadDurationUnitFormats(
-    private val records: Map<String, String>,
+    records: Map<String, String>,
     private val plurals: PluralRuleSource,
     private val numbers: NumberFormatSource,
 ) : DurationUnitFormatSource {
 
-    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
+    private val records = records.toMap()
+    private val decodedRecords = PreparedDateCache<String, DurationUnitRecord?>()
+
+    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
 
     override fun render(
         value: Decimal,
@@ -328,7 +331,8 @@ public class PayloadDurationUnitFormats(
     override fun durationUnitNameOrNull(unit: DurationUnit, width: UnitWidth, locale: Locale): String? =
         recordFor(locale)?.unitName(unit, width)
 
-    private fun recordFor(locale: Locale): DurationUnitRecord? = resolvedRecord(records, locale)?.let(::DurationUnitRecord)
+    private fun recordFor(locale: Locale): DurationUnitRecord? =
+        decodedRecords.getOrPut(locale.stripExtensions().toLanguageTag()) { resolvedRecord(records, locale)?.let(::DurationUnitRecord) }
 
     public companion object
 }

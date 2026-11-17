@@ -64,7 +64,7 @@ private const val LIST_SEPARATOR = '\u001E'
  * needs and a lookup is one map hit.
  */
 public class PayloadDateTimeFormats(
-    private val records: Map<String, String>,
+    records: Map<String, String>,
     /**
      * The stand-alone names, empty when this build did not generate them.
      *
@@ -72,15 +72,19 @@ public class PayloadDateTimeFormats(
      * format names, which is what CLDR root's own alias says for the 838 locales
      * that declare no stand-alone form.
      */
-    private val standaloneRecords: Map<String, String> = emptyMap(),
+    standaloneRecords: Map<String, String> = emptyMap(),
     private val defaultNumbers: NumberFormatSource? = null,
     private val defaultZones: TimeZoneNameSource? = null,
 ) : DateTimeFormatSource,
     CalendarCapitalizationSource,
     DurationPatternSource {
 
+    private val records = records.toMap()
+    private val standaloneRecords = standaloneRecords.toMap()
+    private val decodedRecords = PreparedDateCache<String, DateTimeRecord?>()
+
     override val supportedLocales: Set<Locale> by lazy {
-        supportedLocalesOf(records)
+        supportedLocalesOf(this.records)
     }
 
     override fun capabilities(locale: Locale): DateTimeCapabilities {
@@ -230,8 +234,10 @@ public class PayloadDateTimeFormats(
         return titlecaseFirstWord(name, locale.language)
     }
 
-    private fun recordFor(locale: Locale): DateTimeRecord? = resolvedRecord(records, locale)
-        ?.let { DateTimeRecord(it, resolvedRecord(standaloneRecords, locale)) }
+    private fun recordFor(locale: Locale): DateTimeRecord? = decodedRecords.getOrPut(locale.stripExtensions().toLanguageTag()) {
+        resolvedRecord(records, locale)
+            ?.let { DateTimeRecord(it, resolvedRecord(standaloneRecords, locale)) }
+    }
 
     public companion object
 }

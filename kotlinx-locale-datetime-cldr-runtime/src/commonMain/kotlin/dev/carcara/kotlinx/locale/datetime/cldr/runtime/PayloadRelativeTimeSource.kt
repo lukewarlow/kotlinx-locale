@@ -120,12 +120,15 @@ public class RelativeTimeRecord(record: String) {
  * what puts Arabic-Indic digits in an Arabic sentence.
  */
 public class PayloadRelativeTimeFormats(
-    private val records: Map<String, String>,
+    records: Map<String, String>,
     private val plurals: PluralRuleSource,
     private val numbers: NumberFormatSource,
 ) : RelativeTimeFormatSource {
 
-    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(records) }
+    private val records = records.toMap()
+    private val decodedRecords = PreparedDateCache<String, RelativeTimeRecord?>()
+
+    override val supportedLocales: Set<Locale> by lazy { supportedLocalesOf(this.records) }
 
     override fun formatOrNull(
         value: Long,
@@ -175,7 +178,8 @@ public class PayloadRelativeTimeFormats(
     override fun unitNameOrNull(unit: RelativeTimeUnit, style: RelativeTimeStyle, locale: Locale): String? =
         recordFor(locale)?.unitName(unit, style)
 
-    private fun recordFor(locale: Locale): RelativeTimeRecord? = resolvedRecord(records, locale)?.let(::RelativeTimeRecord)
+    private fun recordFor(locale: Locale): RelativeTimeRecord? =
+        decodedRecords.getOrPut(locale.stripExtensions().toLanguageTag()) { resolvedRecord(records, locale)?.let(::RelativeTimeRecord) }
 
     public companion object
 }
