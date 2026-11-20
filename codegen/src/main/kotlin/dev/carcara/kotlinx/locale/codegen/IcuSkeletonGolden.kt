@@ -128,7 +128,9 @@ fun goldenSkeletons(skeletonFormats: Map<String, String>): List<String> {
     for (payload in skeletonFormats.values) {
         for (entry in payload.split(LIST_SEPARATOR)) {
             val separator = entry.indexOf(KEY_SEPARATOR)
-            if (separator > 0) declared.add(entry.substring(0, separator))
+            if (separator > 0 && isSupportedSkeleton(entry.substring(0, separator), entry.substring(separator + KEY_SEPARATOR.length))) {
+                declared.add(entry.substring(0, separator))
+            }
         }
     }
     return (declared + EXTRA_GOLDEN_SKELETONS).sorted()

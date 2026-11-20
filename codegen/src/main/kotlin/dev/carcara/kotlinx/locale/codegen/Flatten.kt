@@ -532,8 +532,13 @@ fun isSupportedSkeleton(id: String, pattern: String): Boolean = id.none { it in 
     patternFieldLetters(pattern).none { it in UNSUPPORTED_FIELD_LETTERS }
 
 /** The skeleton table: `id<KEY>pattern` entries joined by the list separator. */
+private val STRUCTURED_UNSUPPORTED_FIELD_LETTERS = UNSUPPORTED_FIELD_LETTERS - setOf('z', 'v', 'O')
+
 fun ResolvedSkeletonData.encodeFormats(): String = availableFormats.entries
-    .filter { (id, pattern) -> isSupportedSkeleton(id, pattern) }
+    .filter { (id, pattern) ->
+        id.none { it in STRUCTURED_UNSUPPORTED_FIELD_LETTERS } &&
+            patternFieldLetters(pattern).none { it in STRUCTURED_UNSUPPORTED_FIELD_LETTERS }
+    }
     .joinToString(LIST_SEPARATOR) { (id, pattern) -> id + KEY_SEPARATOR + pattern }
 
 /** The appendItem patterns alone, positional against [DATE_FIELD_TYPES]. */
@@ -595,9 +600,9 @@ fun Flattener.resolveIntervals(id: String): ResolvedIntervalData {
         // this build will not offer a pattern for must not carry an interval
         // pattern either.
         formats = formats
-            .filterKeys { skeleton -> skeleton.none { it in UNSUPPORTED_FIELD_LETTERS } }
+            .filterKeys { skeleton -> skeleton.none { it in STRUCTURED_UNSUPPORTED_FIELD_LETTERS } }
             .mapValues { (_, byDifference) ->
-                byDifference.filterValues { patternFieldLetters(it).none { letter -> letter in UNSUPPORTED_FIELD_LETTERS } }
+                byDifference.filterValues { patternFieldLetters(it).none { letter -> letter in STRUCTURED_UNSUPPORTED_FIELD_LETTERS } }
             }
             .filterValues { it.isNotEmpty() }
             .toSortedMap(),

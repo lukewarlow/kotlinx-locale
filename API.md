@@ -239,16 +239,12 @@ value is `"true"` or hyphen-separated runs of three to eight alphanumerics. It
 never checks whether the key is one this library acts on, because a caller has
 every right to carry a keyword through that only the far end understands.
 
-Of all the `-u-` keys, `hc` is the only one that changes what the bundled CLDR
-sources render, and [the hour cycle](#the-hour-cycle) is where it does.
-
-Every other key is kept, canonicalized and written back by `toLanguageTag`, and
-those sources act on none of them. `th-TH-u-nu-thai` writes the same digits as
-`th-TH`, because the [numbering system](#numbering-systems) comes from the
-locale's own data. `en-US-u-ca-buddhist` writes the same calendar as `en-US`,
-because only the gregorian calendar is implemented. That is the statement
-UAX35-C2 asks an implementation to make: say which keys are acted on, and
-preserve the rest. It describes the bundled path.
+Structured number and date/time APIs accept selected numbering systems. Date/time
+selection honors `hc` and supports `ca-gregory` and `ca-iso8601`. The optional
+calendar presentation artifact accepts additional calendar identities with
+caller-supplied converted fields. The older LocalDate convenience functions
+continue to take ISO fields and do not perform calendar conversion. Unused
+keywords remain available for serialization or another data source.
 
 The `-platform` sources sit outside it. Each one hands the host what
 `toLanguageTag` wrote, extensions included, so a key the bundled path ignores
@@ -596,7 +592,7 @@ flexible day period, so its short times read:
 
 | Time | zh-Hant SHORT | Period |
 | --- | --- | --- |
-| 00:00 | 午夜12:00 | midnight, exact time only |
+| 00:00 | 凌晨12:00 | ordinary flexible night period |
 | 02:05 | 凌晨2:05 | night |
 | 06:05 | 清晨6:05 | early morning |
 | 09:05 | 上午9:05 | morning |
@@ -609,6 +605,25 @@ Boundaries are locale-specific. Night runs 21:00 to 24:00 in `en` but 22:00 to
 variant get `12:00 noon` in `en`, while German has a name for midnight but none
 for noon, so 12:00 stays `PM`. A period the locale has no name for falls back to
 AM or PM, so something is always produced.
+
+Midnight names are suppressed by default because they can refer to either end
+of a day. The `b` field falls back to AM; `B` skips the midnight rule and uses
+the ordinary flexible period. Noon remains enabled. Midnight names and rules
+remain in the data. Structured rendering can opt in when the caller can
+disambiguate the day boundary:
+
+```kotlin
+DateTimeRenderContext(
+    time = LocalTime(0, 0),
+    midnightPolicy = DateTimeMidnightPolicy.ALLOW,
+)
+```
+
+`DateTimeMidnightPolicy` is in `dev.carcara.kotlinx.locale.datetime`. Existing
+context constructors default to `SUPPRESS`; copying a context preserves its
+policy unless explicitly changed. Strings, parts, interval comparison values
+and interval rendering use the same policy. Legacy style and skeleton string
+formatting suppress midnight; use structured rendering for the opt-in.
 
 ### The hour cycle
 
@@ -1846,7 +1861,7 @@ Boundaries are computed once per result; `containingOrNull` searches them in
 logarithmic time. Iterators have independent positions, and segmenters and
 results are immutable and safe to share.
 
-All three granularities use Unicode 15.1.0 default rules from
+All three granularities use Unicode 18.0.0 default rules from
 [UAX #29](https://unicode.org/reports/tr29/). Every locale uses the same rules.
 Word segmentation retains every segment and supplies a Boolean `isWordLike`.
 It is true when a segment contains a Unicode Letter or Number, or a code point
@@ -2443,6 +2458,7 @@ localeCanonicalizeUnicodeValue(key: String, value: String): String
 localeMaximize(value: Locale): Locale
 localeMinimize(value: Locale): Locale
 localePreferences(locale: Locale): LocalePreferences
+localeScriptDirectionOrNull(script: String): TextDirection?
 localeRegionPreference(locale: Locale): RegionPreference
 localeCurrencies(): List<CurrencyMetadata>
 localeTimeZones(region: String): List<String>
@@ -2450,6 +2466,7 @@ localeTimeZoneIdentifiers(): List<TimeZoneIdentifier>
 localeTimeZoneIdentifierOrNull(identifier: String): TimeZoneIdentifier?
 localeNumberingSystems(): Set<String>
 localeMatchOrNull(requested: List<Locale>, available: Set<Locale>): LocaleMatch?
+localePrepareMatcher(available: Set<Locale>): PreparedLocaleMatcher
 ```
 
 Canonicalization uses CLDR language, script, region, variant, subdivision and
@@ -2457,6 +2474,9 @@ Unicode-value aliases. Maximize/minimize preserve variants and extensions. They
 leave a canonical identifier unchanged when likely-subtag data has no entry
 for its language. Unicode `rg` and `sd` values follow subdivision aliases,
 including replacements with regions.
+Unicode values are ASCII case-normalized; a canonical value of `true` becomes
+the empty string for every Unicode key, while `false` remains `false`.
+Transformed-extension values follow a separate path and retain `true`.
 Regional preference resolution considers `rg`, an explicit region, `sd`, likely
 subtags and the world default, in that order; the result records its origin.
 Preferences include calendars, collations, numbering systems, concrete hour
@@ -2466,7 +2486,22 @@ so callers can distinguish it from the world fallback in `weekInfoForRegion`. Cu
 ISO storage precision separately from CLDR rendering/cash defaults. Zone records
 retain recognized alias spellings and CLDR's IANA primary mapping; the UTC family
 maps to UTC. Unknown regions return an empty zone list. Matching uses the pinned
-CLDR language-distance rules with deterministic available-tag tie breaking.
+CLDR language-distance rules. An exact canonical identity wins a distance tie
+within one request. Other ties use sorted available tags; request order retains
+its existing distance weighting. Extensions remain associated with the original
+request.
+
+`localeScriptDirectionOrNull` reads script metadata directly. It returns `LTR`,
+`RTL` or `null` for unknown ordering, without language or root fallback.
+For example, `Latn` is LTR, `Arab` is RTL, and `Zyyy`, `Zinh`, `Zzzz` and
+`Brai` are unknown. Unlisted, private-use and reserved script codes are unknown
+too. This lookup is separate from the default direction in locale preferences.
+
+Retain `localePrepareMatcher(available)` beside an immutable service catalogue
+and call `matcher.bestFitOrNull(requested)` repeatedly. Preparation snapshots the
+set once. Later changes to the caller's set do not change that matcher. The
+set-taking function snapshots each call and is suitable when coverage can change.
+Prepared state and bounded request caches support concurrent callers.
 
 ### Unicode string casing
 
@@ -2482,15 +2517,21 @@ casingUppercase(text: String, locale: Locale = Locale.current): String
 
 casingLowercase("Iİ", Locale.of("tr")) // "ıi"
 casingUppercase("straße", Locale.of("de")) // "STRASSE"
+casingLowercase("I", Locale.of("und")) // "i", independently of the host locale
+casingUppercase("\u019B", Locale.of("und")) // "\uA7DC"
 
-UnicodeCasing.unicodeVersion // "15.1.0"
+UnicodeCasing.unicodeVersion // "18.0.0"
 UnicodeCasing.supportedLanguages // setOf("az", "lt", "tr")
 ```
 
 Every locale is accepted. `supportedLanguages` lists languages with special
 casing rules; other languages use default Unicode casing, including contextual
-Greek final sigma. Both operations use the original string to evaluate context,
-preserve lone surrogates and allow mappings to multiple characters. They do not
+Greek final sigma. An explicit `Locale.of("und")` selects default Unicode casing
+independently of the host locale. The generated Unicode 18.0.0 mappings and
+contextual properties come from the same pinned release.
+
+Both operations evaluate context in the original string, preserve lone
+surrogates and allow mappings to multiple characters. They do not
 normalize the input or depend on the host's Unicode version. Titlecasing and
 case folding are outside these operations.
 
@@ -2644,18 +2685,56 @@ dateTimeSelectSkeleton(skeleton, locale, numberingSystem)
 dateTimeCandidates(locale, numberingSystem)
 dateTimeFormat(value: DateTimeRenderContext, format: SelectedDateTimeFormat)
 intervalFormatSelected(start, end, format, skeleton)
+intervalSelectedPatterns(format, skeleton): LocaleLookup<SelectedDateTimeIntervals>
+intervalComparisonValues(value, format): LocaleLookup<Map<DateTimeField, String>>
+intervalFormatPattern(start, end, format, pattern): LocaleLookup<FormattedDateTimeRange>
 ```
 
 SelectedDateTimeFormat contains the actual pattern, component widths, concrete
-hour cycle, fractional-second count, calendar and numbering system. Candidate
+hour cycle, fractional-second count, calendar and numbering system.
+`dayPeriodKind` distinguishes AM/PM (`AM_PM`), noon/midnight (`NOON_MIDNIGHT`)
+and flexible periods (`FLEXIBLE`); the component width remains in `fields`.
+A rendered `DAY_PERIOD` part does not imply an explicitly requested component. Candidate
 records let an embedding engine perform its own BasicFormatMatcher. Date and
 time fields are already converted by the caller. Rendering returns typed parts;
 missing required date, time or zone context is an unsupported operation rather
-than a silently omitted field. Gregorian is the implemented calendar.
+than a silently omitted field. Gregorian and ISO 8601 identities are supported
+by the standard bundle. Select ISO explicitly with
+`dateTimeSelect(dateStyle, timeStyle, locale, calendar = "iso8601")`, or
+`dateTimeSelectSkeleton(skeleton, locale, calendar = "iso8601")`. ISO selection
+retains its identity through parts and intervals.
 
-Style intervals retain the selected style pattern. Skeleton intervals use CLDR's
-interval patterns when available; fallback renders both endpoints with the
-selected pattern. Range parts carry endpoint/shared provenance.
+Skeleton selection also accepts `fieldLengthMatching`, with type
+`dev.carcara.kotlinx.locale.datetime.cldr.runtime.SkeletonFieldLengthMatching`.
+Existing overloads retain `LOCALE_PREFERRED`. Opt into `REQUESTED_NUMERIC` to
+use requested numeric field lengths while retaining the selected locale's
+ordering, literals and field-letter conventions:
+
+```kotlin
+dateTimeSelectSkeleton(
+    "hhmmss", locale,
+    fieldLengthMatching = SkeletonFieldLengthMatching.REQUESTED_NUMERIC,
+)
+```
+
+The same option is available on `calendarSelectSkeleton`, including explicit
+calendar selection. An English `hhmmss` request then selects a two-digit hour;
+the pattern, field metadata, rendered parts and prepared intervals all use that
+width. Fractional seconds and the selected numbering system remain in effect.
+
+Selected interval data includes compatible compact records, their difference
+fields, concrete hour cycle, pattern fragments and endpoint/shared sources.
+The localized fallback uses `{0}` and `{1}` for complete endpoint formats.
+`intervalComparisonValues` supplies relevant field values, localized day periods
+and rendered zone names. An embedding engine can select a record itself and
+pass it to `intervalFormatPattern`. Each endpoint retains its own zone instant.
+Styles use compact records only when compatible with the selected fields and
+widths; other ranges render the full selected pattern at both endpoints.
+Compatible hour/minute interval records can include selected seconds and
+fractional seconds, using separators from the selected pattern. Combined
+date/time records can then share the date and retain separate endpoint times
+and periods. Period-adjacent literals follow the locale's interval convention,
+which may differ from its single-value pattern.
 
 `timeZoneName` in `dev.carcara.kotlinx.locale.timezone.cldr` accepts a
 TimeZoneNameContext with identifier, offset seconds, optional epoch seconds,
@@ -2664,3 +2743,65 @@ Historical metazones are selected using half-open UTC instant ranges. Offsets
 through ±23:59 are accepted without constructing kotlinx-datetime UtcOffset.
 The caller owns instant conversion and DST calculations; the library owns names
 and localized offset patterns.
+
+### Converted calendar fields
+
+From the optional `kotlinx-locale-datetime-cldr-calendars` artifact, import
+`dev.carcara.kotlinx.locale.datetime.cldr.calendars.*`:
+
+```kotlin
+calendarCapabilities(locale): DateTimeCapabilities
+calendarEras(calendar, locale): LocaleLookup<List<String>>
+calendarSelect(dateStyle, timeStyle, locale, calendar, hourCycle, numberingSystem)
+calendarSelectSkeleton(skeleton, locale, calendar, numberingSystem)
+calendarCandidates(locale, calendar, numberingSystem): LocaleLookup<List<SelectedDateTimeFormat>>
+calendarFormat(value: DateTimeRenderContext, format: SelectedDateTimeFormat)
+calendarFormatRange(start, end, format, skeleton)
+```
+
+This bundle renders Buddhist, Japanese, ROC, Persian, Hebrew, Indian, Coptic,
+Ethiopic, Ethiopic Amete Alem, Islamic variants, Chinese and Dangi fields.
+Gregorian and ISO formats remain available. Capabilities report implemented
+presentation identities separately from locale calendar preferences.
+
+An explicit `calendar` selects that calendar for styles, skeletons and candidate
+records while preserving the supplied locale on the selected formats. It does
+not add or replace a `ca` keyword in their locale identity. Candidate records
+let a caller implement its own format matcher; skeleton selection supplies the
+library's best-fit matching.
+
+Supply `DateTimeRenderContext(calendarDate = CalendarDateFields(...))` for
+already-converted dates. Fields include extended year, era-year, era code,
+month code, the numeric month to display, day, ISO weekday, leap-year status,
+related year and cyclic-year index. Supply only the fields the selected pattern
+needs. `calendarEras` returns accepted era codes in data order, including named
+codes such as `reiwa`; historical entries without a CLDR code use `era-N`.
+Japanese-selected formats also accept Gregorian `bce` and `ce` codes supplied
+by modern ICU4X calendar calculations. They use localized Gregorian era names
+while retaining the Japanese calendar identity. The caller supplies the
+era-year and decides which era applies; the library does not calculate the
+1873 calendar-policy boundary. Gregorian year 1 remains numeric rather than
+using the Japanese first-year spelling.
+
+Month codes use `M01` through `M13`, with `L` for a leap month. The numeric month
+is supplied separately because month codes and displayed month ordinals can
+differ. Hebrew `M05L` is Adar I; `M06` with `isLeapYear = true` selects Adar II.
+Numeric Hebrew presentation uses the supplied ordinal `monthNumber`: common-year
+Adar is 6; in a leap year Adar I is 6, Adar II is 7 and Nisan is 8. Supply that
+ordinal from the converted calendar date, rather than deriving it from the
+month code. Two-digit widths pad the ordinal using the selected numbering
+system. This retains ICU4J-style numbering; ICU4X's `6a`/`6b` numeric policy is
+not applied. Named widths retain the pinned ICU/CLDR names.
+Chinese and Dangi leap months use localized leap-month patterns. Parts include
+`ERA`, `RELATED_YEAR` and `YEAR_NAME` where the pattern uses them. Numeric
+weekday, week-number and calendar-quarter calculations are unsupported.
+
+Calendar names and patterns use the pinned ICU 78.3 resources, whose reported
+CLDR version is 48.0.0.0. Supplemental era codes and shared Gregorian/time data
+come from the checkout's CLDR 48.2 bundle. ICU runs during generation only.
+
+The caller performs calendar conversion, validates real dates and supplies
+weekday and time-zone context. The library does not balance fields or compute
+calendar arithmetic. Supplying both `date` and `calendarDate`, or fields for a
+different selected calendar, is rejected. The separate artifact keeps these
+presentation tables out of Gregorian-only applications.

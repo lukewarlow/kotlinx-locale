@@ -10,7 +10,9 @@ public final class dev/carcara/kotlinx/locale/metadata/cldr/CldrLocaleMetadata :
 	public fun numberingSystemDigitsOrNull (Ljava/lang/String;)Ljava/lang/String;
 	public fun numberingSystems ()Ljava/util/Set;
 	public fun preferences (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/LocalePreferences;
+	public fun prepareMatcher (Ljava/util/Set;)Ldev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher;
 	public fun regionPreference (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
+	public fun scriptDirectionOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TextDirection;
 	public fun timeZoneIdentifierOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TimeZoneIdentifier;
 	public fun timeZoneIdentifiers ()Ljava/util/List;
 	public fun timeZonesForRegion (Ljava/lang/String;)Ljava/util/List;
@@ -28,8 +30,13 @@ public final class dev/carcara/kotlinx/locale/metadata/cldr/LocaleMetadataKt {
 	public static synthetic fun localePreferences$default (Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/metadata/LocalePreferences;
 	public static final fun localeRegionPreference (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
 	public static synthetic fun localeRegionPreference$default (Ldev/carcara/kotlinx/locale/Locale;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
+	public static final fun localeScriptDirectionOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TextDirection;
 	public static final fun localeTimeZoneIdentifierOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TimeZoneIdentifier;
 	public static final fun localeTimeZoneIdentifiers ()Ljava/util/List;
 	public static final fun localeTimeZones (Ljava/lang/String;)Ljava/util/List;
+}
+
+public final class dev/carcara/kotlinx/locale/metadata/cldr/PreparedMatchingKt {
+	public static final fun localePrepareMatcher (Ljava/util/Set;)Ldev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher;
 }
 

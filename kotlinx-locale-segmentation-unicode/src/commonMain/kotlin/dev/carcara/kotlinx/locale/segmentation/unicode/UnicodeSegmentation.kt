@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(InternalKotlinxLocaleApi::class)
-
 package dev.carcara.kotlinx.locale.segmentation.unicode
 
-import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
 import dev.carcara.kotlinx.locale.Locale
-import dev.carcara.kotlinx.locale.internal.GraphemeBreakRules
 import dev.carcara.kotlinx.locale.segmentation.SegmentationGranularity
 import dev.carcara.kotlinx.locale.segmentation.SegmentationLocaleCoverage
 import dev.carcara.kotlinx.locale.segmentation.SegmentationSource
@@ -47,7 +43,7 @@ import dev.carcara.kotlinx.locale.segmentation.TextSegments
  * This is a classification policy, not dictionary segmentation.
  */
 public object UnicodeSegmentation : SegmentationSource {
-    private val graphemeRules = GraphemeBreakRules(graphemeBreakTable)
+    private val graphemeRules = GraphemeBoundaryRules(graphemeBreakTable)
     private val wordRules = WordBoundaryRules(wordBreakProperties)
     private val sentenceRules = SentenceBoundaryRules(sentenceBreakProperties)
 
@@ -65,16 +61,7 @@ public object UnicodeSegmentation : SegmentationSource {
         override fun segment(text: String): TextSegments {
             // Scan from the beginning once, preserving the context needed by UAX #29.
             val result = when (granularity) {
-                SegmentationGranularity.GRAPHEME -> {
-                    val boundaries = ArrayList<Int>()
-                    boundaries.add(0)
-                    var index = 0
-                    while (index < text.length) {
-                        index += graphemeRules.clusterLengthAt(text, index)
-                        boundaries.add(index)
-                    }
-                    SegmentationBoundaries(boundaries.toIntArray())
-                }
+                SegmentationGranularity.GRAPHEME -> graphemeRules.segment(text)
                 SegmentationGranularity.WORD -> wordRules.segment(text)
                 SegmentationGranularity.SENTENCE -> sentenceRules.segment(text)
             }

@@ -66,11 +66,22 @@ public interface LocaleMetadataSource {
     public fun minimize(locale: Locale): Locale
     public fun regionPreference(locale: Locale): RegionPreference
     public fun preferences(locale: Locale): LocalePreferences
+
+    /** Script metadata only; null means unknown, with no language or root fallback. */
+    public fun scriptDirectionOrNull(script: String): TextDirection? = null
     public fun timeZonesForRegion(region: String): List<String>
     public fun timeZoneIdentifiers(): List<TimeZoneIdentifier>
     public fun timeZoneIdentifierOrNull(identifier: String): TimeZoneIdentifier?
     public fun currencies(): List<CurrencyMetadata>
     public fun bestFitOrNull(requested: List<Locale>, available: Set<Locale>): LocaleMatch?
+
+    /** Snapshot coverage once and retain this matcher beside an immutable service catalogue. */
+    public fun prepareMatcher(available: Set<Locale>): PreparedLocaleMatcher {
+        val snapshot = available.toSet()
+        return object : PreparedLocaleMatcher {
+            override fun bestFitOrNull(requested: List<Locale>): LocaleMatch? = bestFitOrNull(requested, snapshot)
+        }
+    }
     public fun numberingSystems(): Set<String>
     public fun numberingSystemDigitsOrNull(identifier: String): String?
     public companion object
@@ -95,5 +106,11 @@ public data class CurrencyMetadata(
 }
 
 public data class LocaleMatch(public val requested: Locale, public val available: Locale, public val distance: Int) {
+    public companion object
+}
+
+/** Owned immutable coverage with bounded, thread-safe implementation caches. */
+public interface PreparedLocaleMatcher {
+    public fun bestFitOrNull(requested: List<Locale>): LocaleMatch?
     public companion object
 }

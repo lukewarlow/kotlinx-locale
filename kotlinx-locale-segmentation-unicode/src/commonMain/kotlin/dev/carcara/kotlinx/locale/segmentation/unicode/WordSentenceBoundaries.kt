@@ -20,7 +20,7 @@ package dev.carcara.kotlinx.locale.segmentation.unicode
 internal class SegmentationBoundaries(val boundaries: IntArray, val wordLike: BooleanArray? = null)
 
 /** Immutable, range-compressed UCD properties; absent ranges have property Other. */
-private class BoundaryPropertyTable(encoded: String) {
+internal class BoundaryPropertyTable(encoded: String) {
     private val starts: IntArray
     private val ends: IntArray
     private val values: IntArray
@@ -54,7 +54,7 @@ private class BoundaryPropertyTable(encoded: String) {
 }
 
 /** Decode code points without replacing lone surrogates, retaining every original UTF-16 offset. */
-private class BoundaryInput(text: String, table: BoundaryPropertyTable, divisor: Int) {
+internal class BoundaryInput(text: String, table: BoundaryPropertyTable, divisor: Int) {
     val classes: IntArray
     val flags: IntArray
     val offsets: IntArray

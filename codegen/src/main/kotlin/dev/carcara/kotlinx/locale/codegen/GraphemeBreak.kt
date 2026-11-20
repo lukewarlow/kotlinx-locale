@@ -153,9 +153,11 @@ private fun parseRange(field: String): Pair<Int, Int> {
  * looks them up by binary search and a shorter table is a smaller artifact and a
  * faster search for the same answers.
  */
-fun parseGraphemeBreakRanges(): List<BreakRange> {
+fun parseGraphemeBreakRanges(): List<BreakRange> = parseGraphemeBreakRanges(UCD_VERSION, ::ucdLines)
+
+internal fun parseGraphemeBreakRanges(version: String, rows: (String) -> List<List<String>>): List<BreakRange> {
     val gcb = HashMap<Int, GraphemeBreakClass>()
-    for (fields in ucdLines("GraphemeBreakProperty.txt")) {
+    for (fields in rows("GraphemeBreakProperty.txt")) {
         val value = classOf(fields.getOrNull(1).orEmpty()) ?: continue
         val (first, last) = parseRange(fields[0])
         for (cp in first..last) gcb[cp] = value
@@ -163,16 +165,17 @@ fun parseGraphemeBreakRanges(): List<BreakRange> {
 
     // Extended_Pictographic is a separate file and a separate property. It only
     // ever applies where the break class is Other, so it never overwrites one.
-    for (fields in ucdLines("emoji-data.txt")) {
+    for (fields in rows("emoji-data.txt")) {
         if (fields.getOrNull(1) != "Extended_Pictographic") continue
         val (first, last) = parseRange(fields[0])
         for (cp in first..last) {
-            if (gcb[cp] == null) gcb[cp] = GraphemeBreakClass.EXTENDED_PICTOGRAPHIC
+            check(gcb[cp] == null) { "Extended_Pictographic overlaps ${gcb[cp]} at U+${cp.toString(16)}" }
+            gcb[cp] = GraphemeBreakClass.EXTENDED_PICTOGRAPHIC
         }
     }
 
     val incb = HashMap<Int, IndicConjunctBreak>()
-    for (fields in ucdLines("IndicConjunctBreak.txt")) {
+    for (fields in rows("IndicConjunctBreak.txt")) {
         if (fields.getOrNull(1) != "InCB") continue
         val value = when (fields.getOrNull(2)) {
             "Consonant" -> IndicConjunctBreak.CONSONANT
@@ -198,7 +201,7 @@ fun parseGraphemeBreakRanges(): List<BreakRange> {
             merged.add(BreakRange(cp, cp, g, i))
         }
     }
-    println("[codegen] grapheme break: ${merged.size} ranges from Unicode $UCD_VERSION")
+    println("[codegen] grapheme break: ${merged.size} ranges from Unicode $version")
     return merged
 }
 

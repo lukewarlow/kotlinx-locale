@@ -168,7 +168,12 @@ public class BundleSection(
             // The same reasoning: thirty-three rule closures cover every locale.
             BundleSection("ordinalRuleSets", narrowed = false),
             BundleSection("ordinalRuleIndex", narrowed = false),
-        )
+        ) + listOf(
+            "buddhist", "japanese", "roc", "persian", "hebrew", "indian", "coptic", "ethiopic", "ethioaa",
+            "islamic", "islamic-civil", "islamic-tbla", "islamic-umalqura", "islamic-rgsa", "chinese", "dangi",
+        ).flatMap { calendar ->
+            listOf("dateTime", "standalone", "skeletons", "intervals").map { BundleSection("calendar.$calendar.$it", sparseFields = 1) }
+        } + BundleSection("calendarDefaults")
 
         public val BY_NAME: Map<String, BundleSection> = ALL.associateBy(BundleSection::name)
     }

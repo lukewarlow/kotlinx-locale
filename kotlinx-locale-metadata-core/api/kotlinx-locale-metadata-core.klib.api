@@ -52,8 +52,16 @@ abstract interface dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource { //
     abstract fun timeZoneIdentifierOrNull(kotlin/String): dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier? // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.timeZoneIdentifierOrNull|timeZoneIdentifierOrNull(kotlin.String){}[0]
     abstract fun timeZoneIdentifiers(): kotlin.collections/List<dev.carcara.kotlinx.locale.metadata/TimeZoneIdentifier> // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.timeZoneIdentifiers|timeZoneIdentifiers(){}[0]
     abstract fun timeZonesForRegion(kotlin/String): kotlin.collections/List<kotlin/String> // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.timeZonesForRegion|timeZonesForRegion(kotlin.String){}[0]
+    open fun prepareMatcher(kotlin.collections/Set<dev.carcara.kotlinx.locale/Locale>): dev.carcara.kotlinx.locale.metadata/PreparedLocaleMatcher // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.prepareMatcher|prepareMatcher(kotlin.collections.Set<dev.carcara.kotlinx.locale.Locale>){}[0]
+    open fun scriptDirectionOrNull(kotlin/String): dev.carcara.kotlinx.locale.metadata/TextDirection? // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.scriptDirectionOrNull|scriptDirectionOrNull(kotlin.String){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.metadata/LocaleMetadataSource.Companion|null[0]
+}
+
+abstract interface dev.carcara.kotlinx.locale.metadata/PreparedLocaleMatcher { // dev.carcara.kotlinx.locale.metadata/PreparedLocaleMatcher|null[0]
+    abstract fun bestFitOrNull(kotlin.collections/List<dev.carcara.kotlinx.locale/Locale>): dev.carcara.kotlinx.locale.metadata/LocaleMatch? // dev.carcara.kotlinx.locale.metadata/PreparedLocaleMatcher.bestFitOrNull|bestFitOrNull(kotlin.collections.List<dev.carcara.kotlinx.locale.Locale>){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.metadata/PreparedLocaleMatcher.Companion|null[0]
 }
 
 final class dev.carcara.kotlinx.locale.metadata/CurrencyMetadata { // dev.carcara.kotlinx.locale.metadata/CurrencyMetadata|null[0]

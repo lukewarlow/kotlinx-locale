@@ -89,7 +89,7 @@ val UnicodeSegmentationTest by matrixSuite(matrixConfig { testConfig = TestConfi
     }
 
     test("all Unicode grapheme fixtures through the public API") {
-        assertTrue(graphemeBreakCases.size > 1000)
+        assertEquals(853, graphemeBreakCases.size)
         for (case in graphemeBreakCases) {
             val (points, breaks) = case.split(':')
             val offsets = ArrayList<Int>()

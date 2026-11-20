@@ -35,6 +35,16 @@ internal fun encodeLocaleMetadata(cldrDir: File, currencies: List<CurrencyEntry>
         }
     }
     val supplemental = cldrDir.resolve("common/supplemental")
+    for (line in cldrDir.resolve("common/properties/scriptMetadata.txt").readLines()) {
+        val fields = line.substringBefore('#').split(';').map(String::trim)
+        if (fields.size < 7) continue
+        val direction = when (fields[6]) {
+            "YES" -> "rtl"
+            "NO" -> "ltr"
+            else -> continue
+        }
+        put("scriptDirection", fields[0].lowercase(), direction)
+    }
     for (kind in listOf("language", "script", "territory", "variant", "subdivision")) {
         for (e in elements(supplemental.resolve("supplementalMetadata.xml"), kind + "Alias")) {
             put(kind + "Alias", e.getAttribute("type").replace('_', '-').lowercase(), e.getAttribute("replacement").replace('_', '-'))

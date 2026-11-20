@@ -33,7 +33,8 @@ import kotlinx.datetime.LocalTime
 /**
  * Covers the day period pattern fields: `B` (flexible day periods selected by
  * the CLDR rules from dayPeriods.xml) and `b` (AM/PM plus exact noon and
- * midnight). Expected values are the format/abbreviated names from CLDR.
+ * midnight). Raw-name checks opt into midnight; public formatting suppresses
+ * its ambiguous name. Expected names remain the format/abbreviated CLDR data.
  */
 val DayPeriodTest by matrixSuite(matrixConfig { testConfig = TestConfig.testScope(isEnabled = false) }) {
 
@@ -42,6 +43,7 @@ val DayPeriodTest by matrixSuite(matrixConfig { testConfig = TestConfig.testScop
         localeDataFor(Locale.forLanguageTag(tag)),
         date = null,
         time = time,
+        midnightPolicy = DateTimeMidnightPolicy.ALLOW,
     )
 
     test("flexibleDayPeriodsInEnglish") {
@@ -108,7 +110,7 @@ val DayPeriodTest by matrixSuite(matrixConfig { testConfig = TestConfig.testScop
         assertEquals("中午12:05", LocalTime(12, 5).format(FormatStyle.SHORT, zhHant))
         assertEquals("下午3:05", LocalTime(15, 5).format(FormatStyle.SHORT, zhHant))
         assertEquals("晚上8:05", LocalTime(20, 5).format(FormatStyle.SHORT, zhHant))
-        assertEquals("午夜12:00", LocalTime(0, 0).format(FormatStyle.SHORT, zhHant))
+        assertEquals("凌晨12:00", LocalTime(0, 0).format(FormatStyle.SHORT, zhHant))
     }
 
     test("stripsBracketedZoneFieldsFromChineseTimeStyles") {

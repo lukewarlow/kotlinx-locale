@@ -64,6 +64,10 @@ public interface DateTimeFormatSource : LocaleDataSource {
     public fun capabilities(locale: Locale): DateTimeCapabilities =
         DateTimeCapabilities(localeCoverage, emptySet(), null, emptySet(), null, null, null, null, false, false)
 
+    /** Stable era codes accepted by converted calendar fields, in data order. */
+    public fun calendarEras(calendar: String, locale: Locale): dev.carcara.kotlinx.locale.LocaleLookup<List<String>> =
+        dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Calendar era catalogue")
+
     public fun formatDateOrNull(date: LocalDate, style: FormatStyle, locale: Locale): String?
 
     public fun formatTimeOrNull(time: LocalTime, style: FormatStyle, locale: Locale): String?
@@ -98,6 +102,26 @@ public interface DateTimeFormatSource : LocaleDataSource {
         numberingSystem: String? = null,
     ): dev.carcara.kotlinx.locale.LocaleLookup<SelectedDateTimeFormat> =
         dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Selected date/time formats")
+
+    /** Explicit calendar identity; existing overloads keep their locale/default behavior. */
+    public fun select(
+        dateStyle: FormatStyle?,
+        timeStyle: FormatStyle?,
+        locale: Locale,
+        calendar: String,
+        hourCycle: HourCycle? = null,
+        numberingSystem: String? = null,
+    ): dev.carcara.kotlinx.locale.LocaleLookup<SelectedDateTimeFormat> = if (calendar !in capabilities(locale).calendars) {
+        dev.carcara.kotlinx.locale.LocaleLookup.Unsupported("Calendar $calendar")
+    } else {
+        when (val result = select(dateStyle, timeStyle, locale.withUnicodeKeyword("ca", calendar), hourCycle, numberingSystem)) {
+            is dev.carcara.kotlinx.locale.LocaleLookup.Value -> dev.carcara.kotlinx.locale.LocaleLookup.Value(
+                result.value.copy(locale = locale),
+            )
+            is dev.carcara.kotlinx.locale.LocaleLookup.Unsupported -> result
+            dev.carcara.kotlinx.locale.LocaleLookup.MissingData -> dev.carcara.kotlinx.locale.LocaleLookup.MissingData
+        }
+    }
 
     /** Typed output from the formatting pass. Missing required fields are unsupported. */
     public fun render(

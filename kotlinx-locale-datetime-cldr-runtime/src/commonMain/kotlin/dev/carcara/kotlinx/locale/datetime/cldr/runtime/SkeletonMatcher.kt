@@ -29,7 +29,7 @@ import dev.carcara.kotlinx.locale.datetime.HourCycle
  * number, a fractional second, a non-gregorian cyclic year — is rejected rather
  * than quietly answered with a pattern that renders one field short.
  */
-private const val REQUESTABLE_LETTERS = "GyuQqMLdDEecabBhHKkmsjJC"
+private const val REQUESTABLE_LETTERS = "GyurUQqMLdDEecabBhHKkmsjJC"
 
 /** ICU's stand-in when a locale declares no append format for a field. */
 private const val DEFAULT_APPEND_FORMAT = "{0} ├{2}: {1}┤"
@@ -122,13 +122,19 @@ internal class SkeletonMatcher(
      * The locale's pattern for [skeleton], or `null` when the skeleton names a
      * field this library cannot render.
      */
-    private val preparedPatterns = PreparedDateCache<Pair<String, Boolean>, String?>(128)
+    private val preparedPatterns = PreparedDateCache<Triple<String, Boolean, SkeletonFieldLengthMatching>, String?>(128)
 
-    fun bestPatternOrNull(skeleton: String, extended: Boolean = false): String? =
-        preparedPatterns.getOrPut(skeleton to extended) { preparePattern(skeleton, extended) }
+    fun bestPatternOrNull(
+        skeleton: String,
+        extended: Boolean = false,
+        fieldLengthMatching: SkeletonFieldLengthMatching = SkeletonFieldLengthMatching.LOCALE_PREFERRED,
+    ): String? = preparedPatterns.getOrPut(Triple(skeleton, extended, fieldLengthMatching)) {
+        preparePattern(skeleton, extended, fieldLengthMatching)
+    }
 
-    private fun preparePattern(skeleton: String, extended: Boolean): String? {
+    private fun preparePattern(skeleton: String, extended: Boolean, fieldLengthMatching: SkeletonFieldLengthMatching): String? {
         val mapped = resolveHourMetacharacters(skeleton)
+        if (mapped.skeleton.isEmpty()) return null
         if (mapped.skeleton.any { it.isAsciiLetter() && it !in REQUESTABLE_LETTERS && !(extended && it in "zvO") }) return null
         val request = SkeletonFields.of(mapped.skeleton) ?: return null
 
@@ -136,15 +142,15 @@ internal class SkeletonMatcher(
         val best = bestRaw(request, includeMask = -1, into = difference) ?: return null
         // An exact cover is returned as it stands: no gluing, no appending.
         if (difference.missing == 0 && difference.extra == 0) {
-            return adjustFieldTypes(best, request, mapped.usesCapitalJ)
+            return adjustFieldTypes(best, request, mapped.usesCapitalJ, fieldLengthMatching)
         }
 
         // Otherwise the request is answered in two halves and joined with the
         // locale's own date-time glue, which is what keeps "3:05 PM" from
         // landing in the middle of a date.
         val needed = request.fieldMask()
-        val datePart = bestAppending(request, needed and SkeletonField.DATE_MASK, mapped.usesCapitalJ)
-        val timePart = bestAppending(request, needed and SkeletonField.TIME_MASK, mapped.usesCapitalJ)
+        val datePart = bestAppending(request, needed and SkeletonField.DATE_MASK, mapped.usesCapitalJ, fieldLengthMatching)
+        val timePart = bestAppending(request, needed and SkeletonField.TIME_MASK, mapped.usesCapitalJ, fieldLengthMatching)
         if (datePart == null) return timePart
         if (timePart == null) return datePart
         val glue = record.glueAtTimeFormats[glueStyleFor(request.canonicalString())]
@@ -178,16 +184,21 @@ internal class SkeletonMatcher(
      * can supply several fields at once; the append format used is the one for
      * the highest-numbered field it supplied.
      */
-    private fun bestAppending(request: SkeletonFields, missingFields: Int, usesCapitalJ: Boolean): String? {
+    private fun bestAppending(
+        request: SkeletonFields,
+        missingFields: Int,
+        usesCapitalJ: Boolean,
+        fieldLengthMatching: SkeletonFieldLengthMatching,
+    ): String? {
         if (missingFields == 0) return null
         val difference = FieldDifference()
         val first = bestRaw(request, missingFields, difference) ?: return null
-        var result = adjustFieldTypes(first, request, usesCapitalJ)
+        var result = adjustFieldTypes(first, request, usesCapitalJ, fieldLengthMatching)
 
         while (difference.missing != 0) {
             val stillMissing = difference.missing
             val next = bestRaw(request, stillMissing, difference) ?: break
-            val addition = adjustFieldTypes(next, request, usesCapitalJ)
+            val addition = adjustFieldTypes(next, request, usesCapitalJ, fieldLengthMatching)
             val covered = stillMissing and difference.missing.inv()
             // Every field has a bare pattern in the pool, so a round that covers
             // nothing cannot happen; bail rather than spin if one ever does.
@@ -211,7 +222,12 @@ internal class SkeletonMatcher(
      * whether a locale writes a stand-alone `L` or a formatting `M` is the
      * locale's business rather than the caller's.
      */
-    private fun adjustFieldTypes(candidate: SkeletonCandidate, request: SkeletonFields, usesCapitalJ: Boolean): String {
+    private fun adjustFieldTypes(
+        candidate: SkeletonCandidate,
+        request: SkeletonFields,
+        usesCapitalJ: Boolean,
+        fieldLengthMatching: SkeletonFieldLengthMatching,
+    ): String {
         val out = StringBuilder()
         for (token in parseDateTimePattern(candidate.pattern)) {
             when (token) {
@@ -249,7 +265,10 @@ internal class SkeletonMatcher(
                                         info.isNumeric != request.isNumeric(field)
                                     )
                             )
-                    val length = if (keepPatternWidth) token.count else requestedLength
+                    val preserveNumeric = fieldLengthMatching == SkeletonFieldLengthMatching.REQUESTED_NUMERIC &&
+                        info.isNumeric &&
+                        request.isNumeric(field)
+                    val length = if (keepPatternWidth && !preserveNumeric) token.count else requestedLength
 
                     val fromPattern = field == SkeletonField.HOUR ||
                         field == SkeletonField.MONTH ||
@@ -302,6 +321,17 @@ internal class SkeletonMatcher(
         if (skeleton.none { it == 'j' || it == 'J' || it == 'C' || it == '\'' }) {
             return MappedSkeleton(skeleton, usesCapitalJ = false)
         }
+        // Explicit periods own their semantics; hour metacharacters may only
+        // supply a period when the request did not contain one.
+        var inQuote = false
+        var explicitPeriod = false
+        var capitalJ = false
+        for (letter in skeleton) {
+            if (letter == '\'') inQuote = !inQuote
+            if (!inQuote && letter in "abB") explicitPeriod = true
+            if (!inQuote && letter == 'J') capitalJ = true
+        }
+        if (explicitPeriod && capitalJ) return MappedSkeleton("", usesCapitalJ = false)
         val out = StringBuilder(skeleton.length + 4)
         var usesCapitalJ = false
         var quoted = false
@@ -329,7 +359,7 @@ internal class SkeletonMatcher(
                     }
                     val hourLength = 1 + (extra and 1)
                     var dayPeriodLength = if (extra < 2) 1 else 3 + (extra shr 1)
-                    if (hourChar == 'H' || hourChar == 'k') dayPeriodLength = 0
+                    if (hourChar == 'H' || hourChar == 'k' || explicitPeriod) dayPeriodLength = 0
                     repeat(dayPeriodLength) { out.append(dayPeriodChar) }
                     repeat(hourLength) { out.append(hourChar) }
                 }

@@ -19,6 +19,7 @@
 package dev.carcara.kotlinx.locale.datetime.cldr.runtime
 
 import dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi
+import dev.carcara.kotlinx.locale.datetime.DateTimeMidnightPolicy
 import dev.carcara.kotlinx.locale.datetime.NameContext
 import dev.carcara.kotlinx.locale.datetime.TextStyle
 import kotlinx.datetime.LocalDate
@@ -204,12 +205,23 @@ public fun formatPattern(
     date: LocalDate?,
     time: LocalTime?,
     skeletons: SkeletonRecord? = null,
+): String = formatPattern(tokens, data, date, time, skeletons, DateTimeMidnightPolicy.SUPPRESS)
+
+/** Render with explicit control over the retained midnight names and rules. */
+@InternalKotlinxLocaleApi
+public fun formatPattern(
+    tokens: List<PatternToken>,
+    data: DateTimeRecord,
+    date: LocalDate?,
+    time: LocalTime?,
+    skeletons: SkeletonRecord? = null,
+    midnightPolicy: DateTimeMidnightPolicy,
 ): String {
     val sb = StringBuilder()
     for (token in tokens) {
         when (token) {
             is PatternToken.Literal -> sb.append(token.text)
-            is PatternToken.Field -> formatField(sb, token.letter, token.count, data, date, time, skeletons)
+            is PatternToken.Field -> formatField(sb, token.letter, token.count, data, date, time, skeletons, midnightPolicy)
         }
     }
     return sb.toString()
@@ -223,6 +235,7 @@ private fun formatField(
     date: LocalDate?,
     time: LocalTime?,
     skeletons: SkeletonRecord?,
+    midnightPolicy: DateTimeMidnightPolicy,
 ) {
     when (letter) {
         'G' -> if (date != null) sb.append(data.eraName(if (date.year > 0) 1 else 0, count))
@@ -279,8 +292,8 @@ private fun formatField(
             }
         }
         'a' -> if (time != null) sb.append(data.amPm(time, count))
-        'b' -> if (time != null) sb.append(amPmNoonMidnight(time, data, count))
-        'B' -> if (time != null) sb.append(flexibleDayPeriod(time, data, count))
+        'b' -> if (time != null) sb.append(amPmNoonMidnight(time, data, count, midnightPolicy))
+        'B' -> if (time != null) sb.append(flexibleDayPeriod(time, data, count, midnightPolicy))
         'h' -> if (time != null) sb.appendNumber(((time.hour + 11) % 12) + 1, count, data.digits)
         'H' -> if (time != null) sb.appendNumber(time.hour, count, data.digits)
         'K' -> if (time != null) sb.appendNumber(time.hour % 12, count, data.digits)
@@ -301,12 +314,14 @@ private fun DateTimeRecord.amPm(time: LocalTime, count: Int): String =
     dayPeriodName(if (time.hour < 12) DayPeriodCodes.AM else DayPeriodCodes.PM, count) ?: if (time.hour < 12) am else pm
 
 /**
- * The `b` field: AM/PM, except that exactly 00:00:00 and 12:00:00 use the
- * locale's midnight/noon names when it has them.
+ * The `b` field: AM/PM, with the locale's noon name at exactly 12:00:00.
+ * At exactly 00:00:00 its midnight name is used only when explicitly allowed.
  */
-private fun amPmNoonMidnight(time: LocalTime, data: DateTimeRecord, count: Int): String {
+private fun amPmNoonMidnight(time: LocalTime, data: DateTimeRecord, count: Int, midnightPolicy: DateTimeMidnightPolicy): String {
     if (time.minute == 0 && time.second == 0 && time.nanosecond == 0) {
-        if (time.hour == 0) data.dayPeriodName(DayPeriodCodes.MIDNIGHT, count)?.let { return it }
+        if (time.hour == 0 && midnightPolicy == DateTimeMidnightPolicy.ALLOW) {
+            data.dayPeriodName(DayPeriodCodes.MIDNIGHT, count)?.let { return it }
+        }
         if (time.hour == 12) data.dayPeriodName(DayPeriodCodes.NOON, count)?.let { return it }
     }
     return data.amPm(time, count)
@@ -315,12 +330,14 @@ private fun amPmNoonMidnight(time: LocalTime, data: DateTimeRecord, count: Int):
 /**
  * The `B` field: the flexible day period ("in the afternoon", 晚上) selected by
  * the locale's CLDR day period rules. Midnight/noon point rules only apply at
- * the exact time (zero seconds); a period the locale has no name for falls
- * back to AM/PM, per UTS #35.
+ * the exact time (zero seconds). Midnight is skipped under SUPPRESS so the
+ * ordinary flexible rule applies; noon remains enabled. A period the locale
+ * has no name for falls back to AM/PM, per UTS #35.
  */
-private fun flexibleDayPeriod(time: LocalTime, data: DateTimeRecord, count: Int): String {
+private fun flexibleDayPeriod(time: LocalTime, data: DateTimeRecord, count: Int, midnightPolicy: DateTimeMidnightPolicy): String {
     val minuteOfDay = time.hour * 60 + time.minute
     for (rule in data.dayPeriodRules) {
+        if (rule.code == DayPeriodCodes.MIDNIGHT && midnightPolicy == DateTimeMidnightPolicy.SUPPRESS) continue
         val matches = when {
             rule.isPoint -> minuteOfDay == rule.start && time.second == 0 && time.nanosecond == 0
             rule.start < rule.end -> minuteOfDay >= rule.start && minuteOfDay < rule.end

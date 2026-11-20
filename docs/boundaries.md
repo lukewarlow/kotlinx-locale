@@ -476,7 +476,7 @@ different, because its grouping in fours is in the standard, and it is on the
 ## Default segmentation without dictionaries or locale tailoring
 
 The Unicode segmentation backend implements the complete default grapheme, word
-and sentence rules for Unicode 15.1.0. Every locale can use those rules, which is
+and sentence rules for Unicode 18.0.0. Every locale can use those rules, which is
 what its explicit universal coverage reports. This is not a claim that every
 locale has dictionary-based word detection or tailored sentence boundaries.
 

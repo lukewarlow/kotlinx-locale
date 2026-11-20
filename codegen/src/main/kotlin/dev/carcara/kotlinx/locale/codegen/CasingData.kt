@@ -21,7 +21,7 @@ import java.security.MessageDigest
 
 /** Full case mappings and contextual properties from one pinned UCD release. */
 internal fun generateCasingData(rootDir: File) {
-    val version = "15.1.0"
+    val version = "18.0.0"
     fun resource(name: String): ByteArray = checkNotNull(
         object {}.javaClass.getResourceAsStream("/casing/$name"),
     ) { "Missing casing resource $name" }.use { it.readBytes() }

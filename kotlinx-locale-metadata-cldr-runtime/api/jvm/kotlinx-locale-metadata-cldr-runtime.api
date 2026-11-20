@@ -11,7 +11,9 @@ public final class dev/carcara/kotlinx/locale/metadata/cldr/runtime/PayloadLocal
 	public fun numberingSystemDigitsOrNull (Ljava/lang/String;)Ljava/lang/String;
 	public fun numberingSystems ()Ljava/util/Set;
 	public fun preferences (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/LocalePreferences;
+	public fun prepareMatcher (Ljava/util/Set;)Ldev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher;
 	public fun regionPreference (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
+	public fun scriptDirectionOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TextDirection;
 	public fun timeZoneIdentifierOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TimeZoneIdentifier;
 	public fun timeZoneIdentifiers ()Ljava/util/List;
 	public fun timeZonesForRegion (Ljava/lang/String;)Ljava/util/List;

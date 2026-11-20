@@ -35,6 +35,8 @@ public enum class DateTimeField {
     FRACTIONAL_SECOND,
     TIME_ZONE_NAME,
     QUARTER,
+    RELATED_YEAR,
+    YEAR_NAME,
     ;
 
     public companion object
@@ -63,6 +65,8 @@ public enum class DateTimePartKind {
     FRACTIONAL_SECOND,
     TIME_ZONE_NAME,
     QUARTER,
+    RELATED_YEAR,
+    YEAR_NAME,
     ;
 
     public companion object
@@ -71,7 +75,17 @@ public data class DateTimePart(public val kind: DateTimePartKind, public val val
     public companion object
 }
 
-/** Actual selected fields, rather than a copy of the requested skeleton. Gregorian only. */
+/** The selected pattern's period semantics, independent of whether a component was requested. */
+public enum class DateTimeDayPeriodKind {
+    AM_PM,
+    NOON_MIDNIGHT,
+    FLEXIBLE,
+    ;
+
+    public companion object
+}
+
+/** Actual selected fields, rather than a copy of the requested skeleton. */
 public data class SelectedDateTimeFormat(
     public val locale: Locale,
     public val pattern: String,
@@ -82,6 +96,31 @@ public data class SelectedDateTimeFormat(
     public val numberingSystem: String? = null,
     public val zoneNameStyle: DateTimeZoneNameStyle? = null,
 ) {
+    /** Period kind in the actual pattern; its width is [fields]' DAY_PERIOD entry. */
+    public val dayPeriodKind: DateTimeDayPeriodKind?
+        get() {
+            var quoted = false
+            for (letter in pattern) {
+                if (letter == '\'') quoted = !quoted
+                if (quoted) continue
+                when (letter) {
+                    'a' -> return DateTimeDayPeriodKind.AM_PM
+                    'b' -> return DateTimeDayPeriodKind.NOON_MIDNIGHT
+                    'B' -> return DateTimeDayPeriodKind.FLEXIBLE
+                }
+            }
+            return null
+        }
+
+    public companion object
+}
+
+/** Whether exact midnight may use a locale's potentially ambiguous midnight name. */
+public enum class DateTimeMidnightPolicy {
+    SUPPRESS,
+    ALLOW,
+    ;
+
     public companion object
 }
 
@@ -90,7 +129,43 @@ public data class DateTimeRenderContext(
     public val date: LocalDate? = null,
     public val time: LocalTime? = null,
     public val zone: TimeZoneNameContext? = null,
+    public val calendarDate: CalendarDateFields? = null,
+    public val midnightPolicy: DateTimeMidnightPolicy,
 ) {
+    /** Existing converted-field construction defaults to midnight suppression. */
+    public constructor(
+        date: LocalDate? = null,
+        time: LocalTime? = null,
+        zone: TimeZoneNameContext? = null,
+        calendarDate: CalendarDateFields?,
+    ) : this(date, time, zone, calendarDate, DateTimeMidnightPolicy.SUPPRESS)
+
+    /** Original JVM no-argument constructor retained. */
+    public constructor() : this(null, null, null, null)
+
+    /** Original constructor retained for existing consumers. */
+    public constructor(date: LocalDate? = null, time: LocalTime? = null, zone: TimeZoneNameContext? = null) :
+        this(date, time, zone, null)
+
+    init {
+        require(date == null || calendarDate == null) { "Supply ISO local date or converted calendar fields, not both" }
+    }
+
+    /** Original copy signature retained, including default arguments. */
+    public fun copy(
+        date: LocalDate? = this.date,
+        time: LocalTime? = this.time,
+        zone: TimeZoneNameContext? = this.zone,
+    ): DateTimeRenderContext = DateTimeRenderContext(date, time, zone, calendarDate, midnightPolicy)
+
+    /** Original converted-field copy signature, preserving the rendering policy. */
+    public fun copy(
+        date: LocalDate? = this.date,
+        time: LocalTime? = this.time,
+        zone: TimeZoneNameContext? = this.zone,
+        calendarDate: CalendarDateFields? = this.calendarDate,
+    ): DateTimeRenderContext = DateTimeRenderContext(date, time, zone, calendarDate, midnightPolicy)
+
     public companion object
 }
 public class FormattedDateTime(parts: List<DateTimePart>) {

@@ -74,16 +74,24 @@ internal fun emitIntlFacade(
                 dev.carcara.kotlinx.locale.datetime.cldr.runtime.durationDigitalFormat(locale, dateTimeSource, ${numberObject ?: "null"}, numberingSystem)
             public fun dateTimeCapabilities(locale: Locale = Locale.current): DateTimeCapabilities = $objectName.capabilities(locale)
             public fun dateTimeSelect(dateStyle: FormatStyle?, timeStyle: FormatStyle?, locale: Locale = Locale.current, hourCycle: HourCycle? = null, numberingSystem: String? = null): LocaleLookup<SelectedDateTimeFormat> = $objectName.select(dateStyle, timeStyle, locale, hourCycle, numberingSystem)
+            public fun dateTimeSelect(dateStyle: FormatStyle?, timeStyle: FormatStyle?, locale: Locale, calendar: String, hourCycle: HourCycle? = null, numberingSystem: String? = null): LocaleLookup<SelectedDateTimeFormat> = $objectName.select(dateStyle, timeStyle, locale, calendar, hourCycle, numberingSystem)
             public fun dateTimeFormat(value: DateTimeRenderContext, format: SelectedDateTimeFormat, numbers: NumberFormatSource? = null, zones: TimeZoneNameSource? = null): LocaleLookup<FormattedDateTime> = $objectName.render(value, format, numbers, zones)
         """
         GeneratedBinding.SKELETONS ->
             """
             public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale = Locale.current, numberingSystem: String? = null): LocaleLookup<SelectedDateTimeFormat> = $objectName.selectSkeleton(skeleton, locale, numberingSystem)
+            public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale, numberingSystem: String? = null, calendar: String): LocaleLookup<SelectedDateTimeFormat> = $objectName.selectSkeleton(skeleton, locale, numberingSystem, calendar)
+            public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale = Locale.current, numberingSystem: String? = null, fieldLengthMatching: dev.carcara.kotlinx.locale.datetime.cldr.runtime.SkeletonFieldLengthMatching): LocaleLookup<SelectedDateTimeFormat> = $objectName.selectSkeleton(skeleton, locale, numberingSystem, fieldLengthMatching)
+            public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale, numberingSystem: String? = null, calendar: String, fieldLengthMatching: dev.carcara.kotlinx.locale.datetime.cldr.runtime.SkeletonFieldLengthMatching): LocaleLookup<SelectedDateTimeFormat> = $objectName.selectSkeleton(skeleton, locale, numberingSystem, calendar, fieldLengthMatching)
+            public fun dateTimeCandidates(locale: Locale, numberingSystem: String? = null, calendar: String): LocaleLookup<List<SelectedDateTimeFormat>> = $objectName.candidates(locale, numberingSystem, calendar)
             public fun dateTimeCandidates(locale: Locale = Locale.current, numberingSystem: String? = null): LocaleLookup<List<SelectedDateTimeFormat>> = $objectName.candidates(locale, numberingSystem)
         """
         GeneratedBinding.INTERVALS ->
             """
             public fun intervalFormatSelected(start: DateTimeRenderContext, end: DateTimeRenderContext, format: SelectedDateTimeFormat, skeleton: String? = null, numbers: NumberFormatSource? = null, zones: TimeZoneNameSource? = null): LocaleLookup<FormattedDateTimeRange> = $objectName.renderRange(start, end, format, skeleton, numbers, zones)
+            public fun intervalSelectedPatterns(format: SelectedDateTimeFormat, skeleton: String? = null): LocaleLookup<SelectedDateTimeIntervals> = $objectName.selectedIntervals(format, skeleton)
+            public fun intervalComparisonValues(value: DateTimeRenderContext, format: SelectedDateTimeFormat, numbers: NumberFormatSource? = null, zones: TimeZoneNameSource? = null): LocaleLookup<Map<DateTimeField, String>> = $objectName.comparisonValues(value, format, numbers, zones)
+            public fun intervalFormatPattern(start: DateTimeRenderContext, end: DateTimeRenderContext, format: SelectedDateTimeFormat, pattern: DateTimeIntervalPattern, numbers: NumberFormatSource? = null, zones: TimeZoneNameSource? = null): LocaleLookup<FormattedDateTimeRange> = $objectName.renderIntervalPattern(start, end, format, pattern, numbers, zones)
         """
         GeneratedBinding.RELATIVE_TIME ->
             """

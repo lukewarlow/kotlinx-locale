@@ -24,3 +24,6 @@ import dev.carcara.kotlinx.locale.number.*
 import dev.carcara.kotlinx.locale.timezone.*
 
 public fun intervalFormatSelected(start: DateTimeRenderContext, end: DateTimeRenderContext, format: SelectedDateTimeFormat, skeleton: String? = null, numbers: NumberFormatSource? = null, zones: TimeZoneNameSource? = null): LocaleLookup<FormattedDateTimeRange> = CldrDateTimeIntervals.renderRange(start, end, format, skeleton, numbers, zones)
+public fun intervalSelectedPatterns(format: SelectedDateTimeFormat, skeleton: String? = null): LocaleLookup<SelectedDateTimeIntervals> = CldrDateTimeIntervals.selectedIntervals(format, skeleton)
+public fun intervalComparisonValues(value: DateTimeRenderContext, format: SelectedDateTimeFormat, numbers: NumberFormatSource? = null, zones: TimeZoneNameSource? = null): LocaleLookup<Map<DateTimeField, String>> = CldrDateTimeIntervals.comparisonValues(value, format, numbers, zones)
+public fun intervalFormatPattern(start: DateTimeRenderContext, end: DateTimeRenderContext, format: SelectedDateTimeFormat, pattern: DateTimeIntervalPattern, numbers: NumberFormatSource? = null, zones: TimeZoneNameSource? = null): LocaleLookup<FormattedDateTimeRange> = CldrDateTimeIntervals.renderIntervalPattern(start, end, format, pattern, numbers, zones)

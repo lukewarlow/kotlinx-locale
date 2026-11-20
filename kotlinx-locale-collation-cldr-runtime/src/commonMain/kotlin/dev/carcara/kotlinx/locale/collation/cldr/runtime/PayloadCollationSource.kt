@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class)
+@file:OptIn(dev.carcara.kotlinx.locale.InternalKotlinxLocaleApi::class, kotlin.concurrent.atomics.ExperimentalAtomicApi::class)
 
 package dev.carcara.kotlinx.locale.collation.cldr.runtime
 
@@ -29,19 +29,18 @@ import dev.carcara.kotlinx.locale.collation.CollationSource
 import dev.carcara.kotlinx.locale.collation.CollationStrength
 import dev.carcara.kotlinx.locale.collation.CollationUsage
 import dev.carcara.kotlinx.locale.collation.ResolvedCollation
-import dev.carcara.kotlinx.locale.internal.ENTRY_SEPARATOR
-import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
-import dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR
+import dev.carcara.kotlinx.locale.dataLookupTags
 import dev.carcara.kotlinx.locale.internal.Normalization
 import dev.carcara.kotlinx.locale.internal.resolvedRecord
 import dev.carcara.kotlinx.locale.internal.sparseRecordValue
 import dev.carcara.kotlinx.locale.internal.supportedLocalesOf
+import kotlin.concurrent.atomics.AtomicReference
 
 public class PayloadCollationSource(
-    private val roots: Map<String, String>,
-    private val normalization: Map<String, String>,
-    private val tailorings: Map<String, String>,
-    private val availableCollations: Set<String> = emptySet(),
+    roots: Map<String, String>,
+    normalization: Map<String, String>,
+    tailorings: Map<String, String>,
+    availableCollations: Set<String> = emptySet(),
     /** Service identities independent of tailoring storage; null enumerates only tailoring records. */
     localeCatalogue: Set<Locale>?,
 ) : CollationSource {
@@ -53,6 +52,10 @@ public class PayloadCollationSource(
         tailorings: Map<String, String>,
         availableCollations: Set<String> = emptySet(),
     ) : this(roots, normalization, tailorings, availableCollations, null)
+    private val roots = roots.toMap()
+    private val normalization = normalization.toMap()
+    private val tailorings = tailorings.toMap()
+    private val availableCollations = availableCollations.toSet()
     private val catalogue = localeCatalogue?.toSet()
     override val tailoredLocales: Set<Locale> by lazy { supportedLocalesOf(tailorings) }
     override val supportedLocales: Set<Locale> by lazy { catalogue ?: tailoredLocales }
@@ -72,15 +75,22 @@ public class PayloadCollationSource(
         PayloadCollation.install(root)
         return cache.getOrPut(delta) { PayloadCollation.tailored(delta) }
     }
-    private fun record(locale: Locale): List<String>? = resolvedRecord(tailorings, locale)?.split(FIELD_SEPARATOR)
-    private fun entries(value: String?): Map<String, String> = value.orEmpty().split(ENTRY_SEPARATOR).mapNotNull {
-        val separator = it.indexOf(KEY_SEPARATOR)
-        if (separator < 0) null else it.substring(0, separator) to it.substring(separator + 1)
-    }.toMap()
     private fun value(locale: Locale, field: Int, key: String): String? = sparseRecordValue(tailorings, locale, field, 3, key)
 
-    private fun variants(locale: Locale): Set<String> = (availableCollations + setOf("standard", "search"))
-        .filterTo(linkedSetOf()) { value(locale, 1, it) != null }
+    // Keys belong to the immutable payload, so retention is bounded by its
+    // record count rather than by arbitrary caller locale identities.
+    private val variantCache = AtomicReference<Map<String, Set<String>>>(emptyMap())
+    private fun variants(locale: Locale): Set<String> {
+        val key = locale.dataLookupTags().firstOrNull { it in tailorings } ?: "root"
+        variantCache.load()[key]?.let { return it }
+        val variants = (availableCollations + setOf("standard", "search"))
+            .filterTo(linkedSetOf()) { value(locale, 1, it) != null }.toSet()
+        while (true) {
+            val previous = variantCache.load()
+            previous[key]?.let { return it }
+            if (variantCache.compareAndSet(previous, previous + (key to variants))) return variants
+        }
+    }
 
     override fun comparatorOrNull(locale: Locale, strength: CollationStrength): Comparator<String>? {
         val type = value(locale, 2, "default") ?: "standard"
@@ -100,7 +110,7 @@ public class PayloadCollationSource(
     }
 
     override fun resolve(locale: Locale, options: CollationOptions): LocaleLookup<ResolvedCollation> {
-        if (record(locale) == null) return LocaleLookup.MissingData
+        if (resolvedRecord(tailorings, locale) == null) return LocaleLookup.MissingData
         val variants = variants(locale)
         val metadata = listOf("default").associateWith { value(locale, 2, it).orEmpty() }.toMutableMap()
         val requested = options.collation ?: locale.unicodeKeywordOrNull("co")

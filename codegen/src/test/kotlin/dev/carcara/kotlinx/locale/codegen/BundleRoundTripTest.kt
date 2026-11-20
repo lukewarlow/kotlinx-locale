@@ -72,7 +72,7 @@ val BundleRoundTripTest by matrixSuite(matrixConfig { testConfig = TestConfig.te
             // `expect` into commonMain and one packed `actual` into each of the
             // others. Comparing only commonMain would leave the data itself,
             // which is the part worth pinning, unchecked.
-            // The Unicode-only generator also writes the vendored word/sentence fixtures.
+            // The Unicode-only generator also writes all three vendored boundary fixtures.
             val sourceSets = listOf("commonMain", "utf8Main", "utf8PlainMain", "utf8DeflatedMain", "utf16Main", "commonTest")
             for (module in modules) {
                 for (sourceSet in sourceSets) {

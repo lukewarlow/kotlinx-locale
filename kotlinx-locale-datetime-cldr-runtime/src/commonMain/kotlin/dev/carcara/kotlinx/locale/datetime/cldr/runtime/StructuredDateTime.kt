@@ -43,7 +43,7 @@ internal fun selectedDateTimeFormat(pattern: String, locale: Locale, numberingSy
         if (token !is PatternToken.Field) continue
         val field = dateTimeFieldOrNull(token.letter) ?: continue
         fields[field] = when {
-            token.letter in "GabBEecvzVO" -> when {
+            token.letter in "GUabBEecvzVO" -> when {
                 token.count >= 5 -> DateTimeFieldWidth.NARROW
                 token.count == 4 -> DateTimeFieldWidth.LONG
                 else -> DateTimeFieldWidth.SHORT
@@ -81,6 +81,7 @@ internal fun selectedDateTimeFormat(pattern: String, locale: Locale, numberingSy
         fields.toMap(),
         cycle,
         fraction,
+        calendar = locale.unicodeKeywordOrNull("ca") ?: "gregory",
         numberingSystem = numberingSystem,
         zoneNameStyle = zoneStyle,
     )
@@ -89,6 +90,8 @@ internal fun selectedDateTimeFormat(pattern: String, locale: Locale, numberingSy
 internal fun dateTimeFieldOrNull(letter: Char): DateTimeField? = when (letter) {
     'G' -> DateTimeField.ERA
     'y', 'u' -> DateTimeField.YEAR
+    'r' -> DateTimeField.RELATED_YEAR
+    'U' -> DateTimeField.YEAR_NAME
     'M', 'L' -> DateTimeField.MONTH
     'd', 'D' -> DateTimeField.DAY
     'E', 'e', 'c' -> DateTimeField.WEEKDAY
@@ -111,7 +114,15 @@ internal fun renderDateTimeTokens(
     numbers: NumberFormatSource? = null,
     zones: TimeZoneNameSource? = null,
 ): LocaleLookup<FormattedDateTime> {
-    if (format.calendar != "gregory") return LocaleLookup.Unsupported("Calendar ${format.calendar}")
+    if (format.calendar != data.calendarIdentifier && !(format.calendar == "iso8601" && data.calendarIdentifier == "gregory")) {
+        return LocaleLookup.Unsupported("Calendar ${format.calendar}")
+    }
+    val calendarDate = context.calendarDate
+    if (calendarDate != null &&
+        calendarDate.calendar != format.calendar
+    ) {
+        return LocaleLookup.Unsupported("Calendar fields differ from selected calendar")
+    }
     val symbols = format.numberingSystem?.let { system ->
         numbers?.symbolsOrNull(format.locale, system)
             ?: if (system == data.defaultNumberingSystem) null else return LocaleLookup.Unsupported("Numbering system $system")
@@ -166,17 +177,21 @@ internal fun renderDateTimeTokens(
                     LocaleLookup.MissingData -> return LocaleLookup.MissingData
                 }
             }
+            calendarDate != null && field in CALENDAR_DATE_FIELDS -> {
+                when (val value = renderCalendarField(token, calendarDate, data, format, numbers)) {
+                    is LocaleLookup.Value -> value.value
+                    is LocaleLookup.Unsupported -> return value
+                    LocaleLookup.MissingData -> return LocaleLookup.MissingData
+                }
+            }
             else -> {
-                val needsDate =
-                    field in
-                        setOf(
-                            DateTimeField.ERA,
-                            DateTimeField.YEAR,
-                            DateTimeField.MONTH,
-                            DateTimeField.DAY,
-                            DateTimeField.WEEKDAY,
-                            DateTimeField.QUARTER,
-                        )
+                if (data.calendarIdentifier != "gregory" && field in CALENDAR_DATE_FIELDS) {
+                    return LocaleLookup.Unsupported("Converted calendar fields are required")
+                }
+                if (field == DateTimeField.RELATED_YEAR || field == DateTimeField.YEAR_NAME) {
+                    return LocaleLookup.Unsupported("Converted calendar fields are required")
+                }
+                val needsDate = field in CALENDAR_DATE_FIELDS
                 if (needsDate &&
                     context.date == null ||
                     !needsDate &&
@@ -185,7 +200,7 @@ internal fun renderDateTimeTokens(
                     return LocaleLookup.Unsupported("Local ${if (needsDate) "date" else "time"} is required")
                 }
                 if (field == DateTimeField.QUARTER && skeletons == null) return LocaleLookup.Unsupported("Quarter names are not included")
-                var rendered = formatPattern(listOf(token), data, context.date, context.time, skeletons)
+                var rendered = formatPattern(listOf(token), data, context.date, context.time, skeletons, context.midnightPolicy)
                 val numeric =
                     field !in setOf(DateTimeField.ERA, DateTimeField.WEEKDAY, DateTimeField.DAY_PERIOD) &&
                         !(field in setOf(DateTimeField.MONTH, DateTimeField.QUARTER) && token.count >= 3)

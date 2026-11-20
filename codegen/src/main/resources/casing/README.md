@@ -1,7 +1,7 @@
 # Unicode casing inputs
 
-These files are from the Unicode 15.1.0 Character Database:
-<https://www.unicode.org/Public/15.1.0/ucd/>.
+These files are from the Unicode 18.0.0 Character Database:
+<https://www.unicode.org/Public/18.0.0/ucd/>.
 
 `UnicodeData.txt` supplies simple mappings and canonical combining classes.
 `SpecialCasing.txt` supplies full mappings and conditions. `DerivedCoreProperties.txt`

@@ -34,12 +34,12 @@ import dev.carcara.kotlinx.locale.test.assertTrue
 
 val WordSentenceSegmentationTest by matrixSuite(matrixConfig { testConfig = TestConfig.testScope(isEnabled = false) }) {
     test("all word boundaries from the matching Unicode release") {
-        assertTrue(wordBreakCases.size > 1800)
+        assertEquals(1944, wordBreakCases.size)
         checkBoundaryFixtures(wordBreakCases, WORD_BREAK_VERSION, SegmentationGranularity.WORD)
     }
 
     test("all sentence boundaries from the matching Unicode release") {
-        assertTrue(sentenceBreakCases.size > 500)
+        assertEquals(512, sentenceBreakCases.size)
         checkBoundaryFixtures(sentenceBreakCases, SENTENCE_BREAK_VERSION, SegmentationGranularity.SENTENCE)
     }
 

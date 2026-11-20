@@ -24,4 +24,8 @@ import dev.carcara.kotlinx.locale.number.*
 import dev.carcara.kotlinx.locale.timezone.*
 
 public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale = Locale.current, numberingSystem: String? = null): LocaleLookup<SelectedDateTimeFormat> = CldrDateTimeSkeletons.selectSkeleton(skeleton, locale, numberingSystem)
+public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale, numberingSystem: String? = null, calendar: String): LocaleLookup<SelectedDateTimeFormat> = CldrDateTimeSkeletons.selectSkeleton(skeleton, locale, numberingSystem, calendar)
+public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale = Locale.current, numberingSystem: String? = null, fieldLengthMatching: dev.carcara.kotlinx.locale.datetime.cldr.runtime.SkeletonFieldLengthMatching): LocaleLookup<SelectedDateTimeFormat> = CldrDateTimeSkeletons.selectSkeleton(skeleton, locale, numberingSystem, fieldLengthMatching)
+public fun dateTimeSelectSkeleton(skeleton: String, locale: Locale, numberingSystem: String? = null, calendar: String, fieldLengthMatching: dev.carcara.kotlinx.locale.datetime.cldr.runtime.SkeletonFieldLengthMatching): LocaleLookup<SelectedDateTimeFormat> = CldrDateTimeSkeletons.selectSkeleton(skeleton, locale, numberingSystem, calendar, fieldLengthMatching)
+public fun dateTimeCandidates(locale: Locale, numberingSystem: String? = null, calendar: String): LocaleLookup<List<SelectedDateTimeFormat>> = CldrDateTimeSkeletons.candidates(locale, numberingSystem, calendar)
 public fun dateTimeCandidates(locale: Locale = Locale.current, numberingSystem: String? = null): LocaleLookup<List<SelectedDateTimeFormat>> = CldrDateTimeSkeletons.candidates(locale, numberingSystem)

@@ -234,6 +234,7 @@ locale-datetime-cldr-relative = { module = "dev.carcara:kotlinx-locale-datetime-
 locale-datetime-cldr-durations = { module = "dev.carcara:kotlinx-locale-datetime-cldr-durations", version.ref = "kotlinx-locale" }
 # Date and time ranges, on top of the skeletons. Opt in.
 locale-datetime-cldr-intervals = { module = "dev.carcara:kotlinx-locale-datetime-cldr-intervals", version.ref = "kotlinx-locale" }
+locale-datetime-cldr-calendars = { module = "dev.carcara:kotlinx-locale-datetime-cldr-calendars", version.ref = "kotlinx-locale" }
 locale-datetime-platform = { module = "dev.carcara:kotlinx-locale-datetime-platform", version.ref = "kotlinx-locale" }
 
 # Time zone names
@@ -292,6 +293,7 @@ locale-datetime-relative = ["locale-datetime-core", "locale-datetime-cldr-relati
 locale-datetime-durations = ["locale-datetime-core", "locale-datetime-cldr-durations"]
 # Ranges, which pull the skeletons in because an interval is a split of one.
 locale-datetime-intervals = ["locale-datetime-core", "locale-datetime-cldr-full", "locale-datetime-cldr-skeletons", "locale-datetime-cldr-intervals"]
+locale-datetime-calendars = ["locale-datetime-cldr-calendars"]
 locale-personname-cldr = ["locale-personname-core", "locale-personname-cldr-full"]
 # Sorting. The root weight table dominates, so this costs the same whether a
 # build sorts one language or all of them.
@@ -459,12 +461,13 @@ plugin flag beside the artifact for every domain that has one.
 | `kotlinx-locale-datetime-cldr-full` | `-cldr-runtime` plus the CLDR pattern data for all 1121 locales: `CldrDateTime`, `LocalDate.format` and friends. |
 | `kotlinx-locale-datetime-cldr-skeletons` | `-cldr-full` plus the skeleton tables: `CldrDateTimeSkeletons` and `date.format("yMMMd", locale)`, where you name the fields and the locale decides their order. Opt in, at around 61 KB gzipped on top of `-cldr-full`. |
 | `kotlinx-locale-datetime-cldr-intervals` | `CldrDateTimeIntervals` and `intervalFormat`: `Jul 18 \u2013 22, 2026`, with the parts both ends share written once. Builds on `-cldr-skeletons`, since a range is a split of the pattern the matcher picks, and adds around 28 KB gzipped over it. |
+| `kotlinx-locale-datetime-cldr-calendars` | Optional presentation data for additional calendars. Renders caller-converted fields, including leap months, eras and cyclic years, with structured parts and intervals. Provides no calendar arithmetic. |
 | `kotlinx-locale-personname-core` | `PersonName` and the option enums, plus `PersonNameSource`. No data. |
 | `kotlinx-locale-personname-cldr-runtime` | Pattern selection, field modifiers and the empty-field cleanup. Carries no records. |
 | `kotlinx-locale-personname-cldr-full` | `CldrPersonName`, `personNameFormat` and `personNameOrder`: a name written the way a locale writes one, and its initials. |
 | `kotlinx-locale-segmentation-core` | Segmentation contracts and UTF-16 segment ranges. The source reports whether grapheme, word or sentence segmentation is available. |
-| `kotlinx-locale-casing-unicode` | Full Unicode 15.1.0 lowercase and uppercase conversion. Includes contextual rules and Turkish, Azerbaijani and Lithuanian tailoring, with identical data on every target. |
-| `kotlinx-locale-segmentation-unicode` | Default grapheme, word and sentence boundaries using Unicode 15.1.0 properties. Initializes its own data, reports explicit locale coverage, preserves UTF-16 ranges and caches boundaries. No dictionary segmentation or locale tailoring. |
+| `kotlinx-locale-casing-unicode` | Full Unicode 18.0.0 lowercase and uppercase conversion. Includes contextual rules and Turkish, Azerbaijani and Lithuanian tailoring, with identical data on every target. |
+| `kotlinx-locale-segmentation-unicode` | Default grapheme, word and sentence boundaries using Unicode 18.0.0 properties. Initializes its own data, reports explicit locale coverage, preserves UTF-16 ranges and caches boundaries. No dictionary segmentation or locale tailoring. |
 | `kotlinx-locale-collation-core` | `CollationStrength` and `CollationSource`: how much of a difference counts, and the contract a table answers through. No algorithm. |
 | `kotlinx-locale-collation-cldr-runtime` | The Unicode Collation Algorithm over a weight table it does not carry: contractions, prefixes, script reordering and sort keys. |
 | `kotlinx-locale-collation-cldr-full` | `CldrCollation` and `collationComparator`: sorting text the way a reader reads it, per UTS #10 and the tailorings of UTS #35 Part 5. Costs the same at three locales as at 1121, because the root weight table does not vary by locale and it is nearly all of the weight. |
@@ -521,7 +524,7 @@ val granularity = SegmentationGranularity.WORD
 val segmenter = source.segmenterOrNull(Locale.forLanguageTag("en"), granularity)
 val coverage = source.localeCoverageOrNull(granularity)
 check(coverage == SegmentationLocaleCoverage.Universal)
-source.unicodeVersion // "15.1.0"
+source.unicodeVersion // "18.0.0"
 ```
 
 `localeCoverageOrNull` returns `Universal` when default segmentation is available for
@@ -538,11 +541,12 @@ dictionary word detection for Thai, Lao, Khmer, Myanmar, Chinese or Japanese,
 or sentence abbreviation dictionaries. See
 [segmentation limitations](docs/boundaries.md#default-segmentation-without-dictionaries-or-locale-tailoring).
 
-The Unicode-only tables and word/sentence fixtures can be regenerated without a
-CLDR checkout using `./gradlew :codegen:generateSegmentationData`. The grapheme
-properties are also carried in the committed CLDR bundle. Properties, rules and
-all three conformance fixtures use the Unicode release pinned by `UCD_VERSION`
-in `codegen/src/main/kotlin/dev/carcara/kotlinx/locale/codegen/Repos.kt`.
+The Unicode-only tables and all three conformance fixtures can be regenerated
+without a CLDR checkout using `./gradlew :codegen:generateSegmentationData`.
+Properties, rules and fixtures use Unicode 18.0.0, pinned independently of CLDR
+by `SEGMENTATION_UCD_VERSION` in `codegen/src/main/kotlin/dev/carcara/kotlinx/locale/codegen/SegmentationData.kt`.
+Downloaded inputs and their checksums live in `codegen/src/main/resources/segmentation/`.
+The legacy person-name helper and collation retain separate version pins.
 
 ## Naming the fields instead of picking a length
 
@@ -1130,6 +1134,7 @@ and it is why the zone tests skip where a zone cannot be built.
 | `kotlinx-locale-currency-cldr-full` | 🟢 | 🟢 | 🟢 | 🟢 |
 | `kotlinx-locale-datetime-cldr-full` | 🟢 | 🟢 | 🟢 | 🟢 |
 | `kotlinx-locale-datetime-cldr-skeletons` | 🟢 | 🟢 | 🟢 | 🟢 |
+| `kotlinx-locale-datetime-cldr-calendars` | 🟢 | 🟢 | 🟢 | 🟢 |
 | `kotlinx-locale-serialization` | 🟢 | 🟢 | 🟢 | 🟢 |
 | `kotlinx-locale-country-serialization` | 🟢 | 🟢 | 🟢 | 🟢 |
 | `kotlinx-locale-currency-serialization` | 🟢 | 🟢 | 🟢 | 🟢 |

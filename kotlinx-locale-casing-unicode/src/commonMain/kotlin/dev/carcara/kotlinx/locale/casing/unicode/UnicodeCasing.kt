@@ -24,6 +24,7 @@ import dev.carcara.kotlinx.locale.Locale
  * All locales are accepted. [supportedLanguages] enumerates language-specific
  * tailorings; other languages use default Unicode casing, including final sigma.
  * Data initializes independently of formatters and host Unicode versions.
+ * Pass `Locale.of("und")` for default Unicode casing regardless of the host locale.
  */
 public object UnicodeCasing {
     public val unicodeVersion: String get() = casingDataVersion

@@ -100,16 +100,24 @@ public class PayloadDateTimeFormats(
         val hour = selectedDateTimeFormat(data.timePattern(FormatStyle.SHORT, null), locale, null).hourCycle
         return DateTimeCapabilities(
             coverage,
-            setOf(
-                "gregory",
-            ),
-            "gregory", numbering, data.defaultNumberingSystem, hour,
+            if (data.calendarIdentifier == "gregory") setOf("gregory", "iso8601") else setOf(data.calendarIdentifier),
+            data.calendarIdentifier, numbering, data.defaultNumberingSystem, hour,
             data.resolveHourCycle(
                 HourCycle.C12,
             ),
             data.resolveHourCycle(HourCycle.C24), true,
             defaultZones != null,
         )
+    }
+
+    override fun calendarEras(calendar: String, locale: Locale): LocaleLookup<List<String>> {
+        val data = recordFor(locale) ?: return LocaleLookup.MissingData
+        if (calendar != data.calendarIdentifier &&
+            !(calendar == "iso8601" && data.calendarIdentifier == "gregory")
+        ) {
+            return LocaleLookup.Unsupported("Calendar $calendar")
+        }
+        return LocaleLookup.Value(data.calendarEraCodes())
     }
 
     override fun select(
@@ -121,12 +129,18 @@ public class PayloadDateTimeFormats(
     ): LocaleLookup<SelectedDateTimeFormat> {
         require(dateStyle != null || timeStyle != null)
         val data = recordFor(locale) ?: return LocaleLookup.MissingData
+        val calendar = locale.unicodeKeywordOrNull("ca") ?: data.calendarIdentifier
+        if (calendar != data.calendarIdentifier &&
+            !(calendar == "iso8601" && data.calendarIdentifier == "gregory")
+        ) {
+            return LocaleLookup.Unsupported("Calendar $calendar")
+        }
         val date = dateStyle?.let { data.dateFormats[it.ordinal] }
         val time = timeStyle?.let { data.timePattern(it, hourCycle ?: locale.hourCycle) }
         val pattern = if (date != null &&
             time != null
         ) {
-            data.glueFormats[dateStyle!!.ordinal].replace("{1}", date).replace("{0}", time)
+            data.glueFormats[dateStyle.ordinal].replace("{1}", date).replace("{0}", time)
         } else {
             date ?: time!!
         }
@@ -135,7 +149,7 @@ public class PayloadDateTimeFormats(
                 pattern,
                 locale,
                 numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.defaultNumberingSystem,
-            ),
+            ).copy(calendar = calendar),
         )
     }
 
@@ -309,6 +323,13 @@ public class DateTimeRecord(record: String, standaloneRecord: String? = null) {
         val separator = row.indexOf(dev.carcara.kotlinx.locale.internal.KEY_SEPARATOR)
         if (separator < 0) null else row.substring(0, separator) to row.substring(separator + 1)
     }.toMap()
+
+    internal fun calendarEraCodes(): List<String> = extraNames.entries.filter { it.key.startsWith("calendar/eraCode/") }
+        .sortedBy { it.value.toInt() }.map { it.key.removePrefix("calendar/eraCode/") }
+        .ifEmpty { if (calendarIdentifier == "gregory") listOf("bce", "ce") else emptyList() }
+
+    internal val calendarIdentifier: String get() = extraNames["calendar/id"] ?: "gregory"
+    internal fun calendarValueOrNull(key: String): String? = extraNames["calendar/$key"]
 
     public val defaultNumberingSystem: String get() = extraNames["default/numberingSystem"] ?: "latn"
 

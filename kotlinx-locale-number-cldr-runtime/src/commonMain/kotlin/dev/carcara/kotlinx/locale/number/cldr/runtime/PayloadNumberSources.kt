@@ -46,6 +46,22 @@ import dev.carcara.kotlinx.locale.number.pluralCategory
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
+private val RANGE_AFFIX_KINDS = setOf(
+    NumberPartKind.CURRENCY,
+    NumberPartKind.UNIT,
+    NumberPartKind.COMPACT,
+    NumberPartKind.LITERAL,
+    NumberPartKind.PLUS_SIGN,
+    NumberPartKind.MINUS_SIGN,
+    NumberPartKind.PERCENT_SIGN,
+    NumberPartKind.PER_MILLE,
+)
+private val RANGE_REPEATED_MODIFIER_KINDS = RANGE_AFFIX_KINDS - NumberPartKind.LITERAL + setOf(
+    NumberPartKind.EXPONENT_SEPARATOR,
+    NumberPartKind.EXPONENT_INTEGER,
+    NumberPartKind.EXPONENT_MINUS_SIGN,
+)
+
 /**
  * A number source over the generated tables.
  *
@@ -264,26 +280,69 @@ public class PayloadNumberFormats(
         val symbols = selectedNumbers(locale, options)?.symbols ?: return LocaleLookup.MissingData
         fun template(kind: String): String? = systemValue("${symbols.numberingSystem}/pattern-$kind", locale)
             ?: systemValue("latn/pattern-$kind", locale)
-        val pattern = template(if (approximately) "approximately" else "range") ?: return LocaleLookup.MissingData
+        var pattern = template(if (approximately) "approximately" else "range") ?: return LocaleLookup.MissingData
         fun partList(parts: List<NumberPart>, source: RangeSource) = parts.map { RangePart(it, source) }
         var prefix = 0
         var suffix = 0
-        val shareable = setOf(NumberPartKind.CURRENCY, NumberPartKind.UNIT, NumberPartKind.COMPACT, NumberPartKind.LITERAL)
-        if (collapse && !approximately) {
-            while (prefix < minOf(start.parts.size, end.parts.size) &&
-                start.parts[prefix] == end.parts[prefix] &&
-                start.parts[prefix].kind in shareable
-            ) {
-                prefix++
+        val shareable = RANGE_AFFIX_KINDS
+        val startPrefix = start.parts.takeWhile { it.kind in shareable }
+        val endPrefix = end.parts.takeWhile { it.kind in shareable }
+        val startSuffix = start.parts.takeLastWhile { it.kind in shareable }
+        val endSuffix = end.parts.takeLastWhile { it.kind in shareable }
+
+        // Unit wording is an outer modifier. Currency, signs and compact
+        // notation belong to the middle modifier, including paired accounting
+        // literals. Compare each whole modifier before sharing either side.
+        fun middlePrefix(parts: List<NumberPart>): List<NumberPart> {
+            val unit = parts.indexOfLast { it.kind == NumberPartKind.UNIT }
+            return if (unit < 0) parts else parts.drop(unit + 1).dropWhile { it.kind == NumberPartKind.LITERAL }
+        }
+        fun middleSuffix(parts: List<NumberPart>): List<NumberPart> {
+            val unit = parts.indexOfFirst { it.kind == NumberPartKind.UNIT }
+            return if (unit < 0) parts else parts.take(unit).dropLastWhile { it.kind == NumberPartKind.LITERAL }
+        }
+        val firstMiddlePrefix = middlePrefix(startPrefix)
+        val lastMiddlePrefix = middlePrefix(endPrefix)
+        val firstMiddleSuffix = middleSuffix(startSuffix)
+        val lastMiddleSuffix = middleSuffix(endSuffix)
+        val firstOuterPrefix = startPrefix.dropLast(firstMiddlePrefix.size)
+        val lastOuterPrefix = endPrefix.dropLast(lastMiddlePrefix.size)
+        val firstOuterSuffix = startSuffix.drop(firstMiddleSuffix.size)
+        val lastOuterSuffix = endSuffix.drop(lastMiddleSuffix.size)
+        val outerEquivalent = firstOuterPrefix == lastOuterPrefix && firstOuterSuffix == lastOuterSuffix
+        val middleEquivalent = firstMiddlePrefix == lastMiddlePrefix && firstMiddleSuffix == lastMiddleSuffix
+        val middleLength = (firstMiddlePrefix + firstMiddleSuffix).sumOf { part -> part.value.count { !it.isLowSurrogate() } }
+        if (collapse && !approximately && outerEquivalent) {
+            // ICU AUTO shares an equivalent middle modifier only when it
+            // contains more than one code point. A one-character $ or K repeats.
+            if (middleEquivalent && middleLength > 1) {
+                prefix = startPrefix.size
+                suffix = startSuffix.size
+            } else {
+                prefix = firstOuterPrefix.size
+                suffix = firstOuterSuffix.size
             }
-            if (start.parts.take(prefix).none { it.kind != NumberPartKind.LITERAL }) prefix = 0
-            while (suffix < minOf(start.parts.size, end.parts.size) - prefix &&
-                start.parts[start.parts.lastIndex - suffix] == end.parts[end.parts.lastIndex - suffix] &&
-                start.parts[start.parts.lastIndex - suffix].kind in shareable
-            ) {
-                suffix++
+        }
+        if (!approximately) {
+            val repeatedModifier = (start.parts.drop(prefix).dropLast(suffix) + end.parts.drop(prefix).dropLast(suffix)).any {
+                it.kind in RANGE_REPEATED_MODIFIER_KINDS
             }
-            if (start.parts.takeLast(suffix).none { it.kind != NumberPartKind.LITERAL }) suffix = 0
+            // ICU's range-spacing policy adds spaces around the locale's
+            // separator when a modifier repeats. Keep existing whitespace.
+            if (repeatedModifier) {
+                val zero = pattern.indexOf("{0}")
+                val one = pattern.indexOf("{1}")
+                val leftMarker = minOf(zero, one)
+                val rightMarker = maxOf(zero, one)
+                if (leftMarker >= 0 && rightMarker >= leftMarker + 3) {
+                    val separator = pattern.substring(leftMarker + 3, rightMarker)
+                    if (separator.isNotEmpty()) {
+                        pattern = pattern.substring(0, leftMarker + 3) +
+                            (if (separator.first().isWhitespace()) "" else " ") + separator +
+                            (if (separator.last().isWhitespace()) "" else " ") + pattern.substring(rightMarker)
+                    }
+                }
+            }
         }
         val left = if (approximately) {
             partList(

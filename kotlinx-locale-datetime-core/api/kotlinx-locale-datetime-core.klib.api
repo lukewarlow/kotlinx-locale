@@ -22,6 +22,20 @@ final enum class dev.carcara.kotlinx.locale.datetime/CalendarNameUsage : kotlin/
     final object Companion // dev.carcara.kotlinx.locale.datetime/CalendarNameUsage.Companion|null[0]
 }
 
+final enum class dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind : kotlin/Enum<dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind> { // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind|null[0]
+    enum entry AM_PM // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.AM_PM|null[0]
+    enum entry FLEXIBLE // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.FLEXIBLE|null[0]
+    enum entry NOON_MIDNIGHT // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.NOON_MIDNIGHT|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind> // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind> // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind.Companion|null[0]
+}
+
 final enum class dev.carcara.kotlinx.locale.datetime/DateTimeField : kotlin/Enum<dev.carcara.kotlinx.locale.datetime/DateTimeField> { // dev.carcara.kotlinx.locale.datetime/DateTimeField|null[0]
     enum entry DAY // dev.carcara.kotlinx.locale.datetime/DateTimeField.DAY|null[0]
     enum entry DAY_PERIOD // dev.carcara.kotlinx.locale.datetime/DateTimeField.DAY_PERIOD|null[0]
@@ -31,10 +45,12 @@ final enum class dev.carcara.kotlinx.locale.datetime/DateTimeField : kotlin/Enum
     enum entry MINUTE // dev.carcara.kotlinx.locale.datetime/DateTimeField.MINUTE|null[0]
     enum entry MONTH // dev.carcara.kotlinx.locale.datetime/DateTimeField.MONTH|null[0]
     enum entry QUARTER // dev.carcara.kotlinx.locale.datetime/DateTimeField.QUARTER|null[0]
+    enum entry RELATED_YEAR // dev.carcara.kotlinx.locale.datetime/DateTimeField.RELATED_YEAR|null[0]
     enum entry SECOND // dev.carcara.kotlinx.locale.datetime/DateTimeField.SECOND|null[0]
     enum entry TIME_ZONE_NAME // dev.carcara.kotlinx.locale.datetime/DateTimeField.TIME_ZONE_NAME|null[0]
     enum entry WEEKDAY // dev.carcara.kotlinx.locale.datetime/DateTimeField.WEEKDAY|null[0]
     enum entry YEAR // dev.carcara.kotlinx.locale.datetime/DateTimeField.YEAR|null[0]
+    enum entry YEAR_NAME // dev.carcara.kotlinx.locale.datetime/DateTimeField.YEAR_NAME|null[0]
 
     final val entries // dev.carcara.kotlinx.locale.datetime/DateTimeField.entries|#static{}entries[0]
         final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.datetime/DateTimeField> // dev.carcara.kotlinx.locale.datetime/DateTimeField.entries.<get-entries>|<get-entries>#static(){}[0]
@@ -61,6 +77,19 @@ final enum class dev.carcara.kotlinx.locale.datetime/DateTimeFieldWidth : kotlin
     final object Companion // dev.carcara.kotlinx.locale.datetime/DateTimeFieldWidth.Companion|null[0]
 }
 
+final enum class dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy : kotlin/Enum<dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy> { // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy|null[0]
+    enum entry ALLOW // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy.ALLOW|null[0]
+    enum entry SUPPRESS // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy.SUPPRESS|null[0]
+
+    final val entries // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy> // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy> // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy.values|values#static(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy.Companion|null[0]
+}
+
 final enum class dev.carcara.kotlinx.locale.datetime/DateTimePartKind : kotlin/Enum<dev.carcara.kotlinx.locale.datetime/DateTimePartKind> { // dev.carcara.kotlinx.locale.datetime/DateTimePartKind|null[0]
     enum entry DAY // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.DAY|null[0]
     enum entry DAY_PERIOD // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.DAY_PERIOD|null[0]
@@ -71,10 +100,12 @@ final enum class dev.carcara.kotlinx.locale.datetime/DateTimePartKind : kotlin/E
     enum entry MINUTE // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.MINUTE|null[0]
     enum entry MONTH // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.MONTH|null[0]
     enum entry QUARTER // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.QUARTER|null[0]
+    enum entry RELATED_YEAR // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.RELATED_YEAR|null[0]
     enum entry SECOND // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.SECOND|null[0]
     enum entry TIME_ZONE_NAME // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.TIME_ZONE_NAME|null[0]
     enum entry WEEKDAY // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.WEEKDAY|null[0]
     enum entry YEAR // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.YEAR|null[0]
+    enum entry YEAR_NAME // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.YEAR_NAME|null[0]
 
     final val entries // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.entries|#static{}entries[0]
         final fun <get-entries>(): kotlin.enums/EnumEntries<dev.carcara.kotlinx.locale.datetime/DateTimePartKind> // dev.carcara.kotlinx.locale.datetime/DateTimePartKind.entries.<get-entries>|<get-entries>#static(){}[0]
@@ -236,11 +267,13 @@ abstract interface dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource : de
     abstract fun formatDateTimeOrNull(kotlinx.datetime/LocalDateTime, dev.carcara.kotlinx.locale.datetime/FormatStyle, dev.carcara.kotlinx.locale.datetime/FormatStyle, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.formatDateTimeOrNull|formatDateTimeOrNull(kotlinx.datetime.LocalDateTime;dev.carcara.kotlinx.locale.datetime.FormatStyle;dev.carcara.kotlinx.locale.datetime.FormatStyle;dev.carcara.kotlinx.locale.Locale){}[0]
     abstract fun formatTimeOrNull(kotlinx.datetime/LocalTime, dev.carcara.kotlinx.locale.datetime/FormatStyle, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.formatTimeOrNull|formatTimeOrNull(kotlinx.datetime.LocalTime;dev.carcara.kotlinx.locale.datetime.FormatStyle;dev.carcara.kotlinx.locale.Locale){}[0]
     abstract fun monthNameOrNull(kotlin/Int, dev.carcara.kotlinx.locale.datetime/TextStyle, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.monthNameOrNull|monthNameOrNull(kotlin.Int;dev.carcara.kotlinx.locale.datetime.TextStyle;dev.carcara.kotlinx.locale.Locale){}[0]
+    open fun calendarEras(kotlin/String, dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale/LocaleLookup<kotlin.collections/List<kotlin/String>> // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.calendarEras|calendarEras(kotlin.String;dev.carcara.kotlinx.locale.Locale){}[0]
     open fun capabilities(dev.carcara.kotlinx.locale/Locale): dev.carcara.kotlinx.locale.datetime/DateTimeCapabilities // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.capabilities|capabilities(dev.carcara.kotlinx.locale.Locale){}[0]
     open fun dayOfWeekNameOrNull(kotlin/Int, dev.carcara.kotlinx.locale.datetime/TextStyle, dev.carcara.kotlinx.locale.datetime/NameContext, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.dayOfWeekNameOrNull|dayOfWeekNameOrNull(kotlin.Int;dev.carcara.kotlinx.locale.datetime.TextStyle;dev.carcara.kotlinx.locale.datetime.NameContext;dev.carcara.kotlinx.locale.Locale){}[0]
     open fun monthNameOrNull(kotlin/Int, dev.carcara.kotlinx.locale.datetime/TextStyle, dev.carcara.kotlinx.locale.datetime/NameContext, dev.carcara.kotlinx.locale/Locale): kotlin/String? // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.monthNameOrNull|monthNameOrNull(kotlin.Int;dev.carcara.kotlinx.locale.datetime.TextStyle;dev.carcara.kotlinx.locale.datetime.NameContext;dev.carcara.kotlinx.locale.Locale){}[0]
     open fun render(dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext, dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat, dev.carcara.kotlinx.locale.number/NumberFormatSource? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameSource? = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.datetime/FormattedDateTime> // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.render|render(dev.carcara.kotlinx.locale.datetime.DateTimeRenderContext;dev.carcara.kotlinx.locale.datetime.SelectedDateTimeFormat;dev.carcara.kotlinx.locale.number.NumberFormatSource?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameSource?){}[0]
     open fun select(dev.carcara.kotlinx.locale.datetime/FormatStyle?, dev.carcara.kotlinx.locale.datetime/FormatStyle?, dev.carcara.kotlinx.locale/Locale, dev.carcara.kotlinx.locale.datetime/HourCycle? = ..., kotlin/String? = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat> // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.select|select(dev.carcara.kotlinx.locale.datetime.FormatStyle?;dev.carcara.kotlinx.locale.datetime.FormatStyle?;dev.carcara.kotlinx.locale.Locale;dev.carcara.kotlinx.locale.datetime.HourCycle?;kotlin.String?){}[0]
+    open fun select(dev.carcara.kotlinx.locale.datetime/FormatStyle?, dev.carcara.kotlinx.locale.datetime/FormatStyle?, dev.carcara.kotlinx.locale/Locale, kotlin/String, dev.carcara.kotlinx.locale.datetime/HourCycle? = ..., kotlin/String? = ...): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat> // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.select|select(dev.carcara.kotlinx.locale.datetime.FormatStyle?;dev.carcara.kotlinx.locale.datetime.FormatStyle?;dev.carcara.kotlinx.locale.Locale;kotlin.String;dev.carcara.kotlinx.locale.datetime.HourCycle?;kotlin.String?){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.datetime/DateTimeFormatSource.Companion|null[0]
 }
@@ -266,6 +299,51 @@ abstract interface dev.carcara.kotlinx.locale.datetime/WeekInfoSource { // dev.c
     open fun regionalWeekInfo(kotlin/String): dev.carcara.kotlinx.locale/LocaleLookup<dev.carcara.kotlinx.locale.datetime/WeekInfo> // dev.carcara.kotlinx.locale.datetime/WeekInfoSource.regionalWeekInfo|regionalWeekInfo(kotlin.String){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.datetime/WeekInfoSource.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.datetime/CalendarDateFields { // dev.carcara.kotlinx.locale.datetime/CalendarDateFields|null[0]
+    constructor <init>(kotlin/String, kotlin/Int? = ..., kotlin/Int? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Boolean = ..., kotlin/Int? = ..., kotlin/Int? = ...) // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.<init>|<init>(kotlin.String;kotlin.Int?;kotlin.Int?;kotlin.String?;kotlin.String?;kotlin.Int?;kotlin.Int?;kotlin.Int?;kotlin.Boolean;kotlin.Int?;kotlin.Int?){}[0]
+
+    final val calendar // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.calendar|{}calendar[0]
+        final fun <get-calendar>(): kotlin/String // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.calendar.<get-calendar>|<get-calendar>(){}[0]
+    final val cyclicYear // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.cyclicYear|{}cyclicYear[0]
+        final fun <get-cyclicYear>(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.cyclicYear.<get-cyclicYear>|<get-cyclicYear>(){}[0]
+    final val day // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.day|{}day[0]
+        final fun <get-day>(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.day.<get-day>|<get-day>(){}[0]
+    final val era // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.era|{}era[0]
+        final fun <get-era>(): kotlin/String? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.era.<get-era>|<get-era>(){}[0]
+    final val eraYear // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.eraYear|{}eraYear[0]
+        final fun <get-eraYear>(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.eraYear.<get-eraYear>|<get-eraYear>(){}[0]
+    final val isLeapYear // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.isLeapYear|{}isLeapYear[0]
+        final fun <get-isLeapYear>(): kotlin/Boolean // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.isLeapYear.<get-isLeapYear>|<get-isLeapYear>(){}[0]
+    final val monthCode // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.monthCode|{}monthCode[0]
+        final fun <get-monthCode>(): kotlin/String? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.monthCode.<get-monthCode>|<get-monthCode>(){}[0]
+    final val monthNumber // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.monthNumber|{}monthNumber[0]
+        final fun <get-monthNumber>(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.monthNumber.<get-monthNumber>|<get-monthNumber>(){}[0]
+    final val relatedYear // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.relatedYear|{}relatedYear[0]
+        final fun <get-relatedYear>(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.relatedYear.<get-relatedYear>|<get-relatedYear>(){}[0]
+    final val weekday // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.weekday|{}weekday[0]
+        final fun <get-weekday>(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.weekday.<get-weekday>|<get-weekday>(){}[0]
+    final val year // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.year|{}year[0]
+        final fun <get-year>(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.year.<get-year>|<get-year>(){}[0]
+
+    final fun component1(): kotlin/String // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component1|component1(){}[0]
+    final fun component10(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component10|component10(){}[0]
+    final fun component11(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component11|component11(){}[0]
+    final fun component2(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component2|component2(){}[0]
+    final fun component3(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component4|component4(){}[0]
+    final fun component5(): kotlin/String? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component5|component5(){}[0]
+    final fun component6(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component6|component6(){}[0]
+    final fun component7(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component7|component7(){}[0]
+    final fun component8(): kotlin/Int? // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component8|component8(){}[0]
+    final fun component9(): kotlin/Boolean // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.component9|component9(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Boolean = ..., kotlin/Int? = ..., kotlin/Int? = ...): dev.carcara.kotlinx.locale.datetime/CalendarDateFields // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.copy|copy(kotlin.String;kotlin.Int?;kotlin.Int?;kotlin.String?;kotlin.String?;kotlin.Int?;kotlin.Int?;kotlin.Int?;kotlin.Boolean;kotlin.Int?;kotlin.Int?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.datetime/CalendarDateFields.Companion|null[0]
 }
 
 final class dev.carcara.kotlinx.locale.datetime/DateTimeCapabilities { // dev.carcara.kotlinx.locale.datetime/DateTimeCapabilities|null[0]
@@ -310,6 +388,37 @@ final class dev.carcara.kotlinx.locale.datetime/DateTimeCapabilities { // dev.ca
     final object Companion // dev.carcara.kotlinx.locale.datetime/DateTimeCapabilities.Companion|null[0]
 }
 
+final class dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern { // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern|null[0]
+    constructor <init>(dev.carcara.kotlinx.locale.datetime/DateTimeField, kotlin.collections/List<dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart>, dev.carcara.kotlinx.locale.datetime/HourCycle?) // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.<init>|<init>(dev.carcara.kotlinx.locale.datetime.DateTimeField;kotlin.collections.List<dev.carcara.kotlinx.locale.datetime.DateTimeIntervalPatternPart>;dev.carcara.kotlinx.locale.datetime.HourCycle?){}[0]
+
+    final val difference // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.difference|{}difference[0]
+        final fun <get-difference>(): dev.carcara.kotlinx.locale.datetime/DateTimeField // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.difference.<get-difference>|<get-difference>(){}[0]
+    final val hourCycle // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.hourCycle|{}hourCycle[0]
+        final fun <get-hourCycle>(): dev.carcara.kotlinx.locale.datetime/HourCycle? // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.hourCycle.<get-hourCycle>|<get-hourCycle>(){}[0]
+    final val parts // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.parts|{}parts[0]
+        final fun <get-parts>(): kotlin.collections/List<dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart> // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.parts.<get-parts>|<get-parts>(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart { // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart|null[0]
+    constructor <init>(kotlin/String, dev.carcara.kotlinx.locale/RangeSource) // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.<init>|<init>(kotlin.String;dev.carcara.kotlinx.locale.RangeSource){}[0]
+
+    final val pattern // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.pattern|{}pattern[0]
+        final fun <get-pattern>(): kotlin/String // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.pattern.<get-pattern>|<get-pattern>(){}[0]
+    final val source // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.source|{}source[0]
+        final fun <get-source>(): dev.carcara.kotlinx.locale/RangeSource // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.source.<get-source>|<get-source>(){}[0]
+
+    final fun component1(): kotlin/String // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.component1|component1(){}[0]
+    final fun component2(): dev.carcara.kotlinx.locale/RangeSource // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., dev.carcara.kotlinx.locale/RangeSource = ...): dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.copy|copy(kotlin.String;dev.carcara.kotlinx.locale.RangeSource){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.toString|toString(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPatternPart.Companion|null[0]
+}
+
 final class dev.carcara.kotlinx.locale.datetime/DateTimePart { // dev.carcara.kotlinx.locale.datetime/DateTimePart|null[0]
     constructor <init>(dev.carcara.kotlinx.locale.datetime/DateTimePartKind, kotlin/String) // dev.carcara.kotlinx.locale.datetime/DateTimePart.<init>|<init>(dev.carcara.kotlinx.locale.datetime.DateTimePartKind;kotlin.String){}[0]
 
@@ -329,10 +438,17 @@ final class dev.carcara.kotlinx.locale.datetime/DateTimePart { // dev.carcara.ko
 }
 
 final class dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext { // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext|null[0]
+    constructor <init>() // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.<init>|<init>(){}[0]
     constructor <init>(kotlinx.datetime/LocalDate? = ..., kotlinx.datetime/LocalTime? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext? = ...) // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.<init>|<init>(kotlinx.datetime.LocalDate?;kotlinx.datetime.LocalTime?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext?){}[0]
+    constructor <init>(kotlinx.datetime/LocalDate? = ..., kotlinx.datetime/LocalTime? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext? = ..., dev.carcara.kotlinx.locale.datetime/CalendarDateFields? = ..., dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy) // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.<init>|<init>(kotlinx.datetime.LocalDate?;kotlinx.datetime.LocalTime?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext?;dev.carcara.kotlinx.locale.datetime.CalendarDateFields?;dev.carcara.kotlinx.locale.datetime.DateTimeMidnightPolicy){}[0]
+    constructor <init>(kotlinx.datetime/LocalDate? = ..., kotlinx.datetime/LocalTime? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext? = ..., dev.carcara.kotlinx.locale.datetime/CalendarDateFields?) // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.<init>|<init>(kotlinx.datetime.LocalDate?;kotlinx.datetime.LocalTime?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext?;dev.carcara.kotlinx.locale.datetime.CalendarDateFields?){}[0]
 
+    final val calendarDate // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.calendarDate|{}calendarDate[0]
+        final fun <get-calendarDate>(): dev.carcara.kotlinx.locale.datetime/CalendarDateFields? // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.calendarDate.<get-calendarDate>|<get-calendarDate>(){}[0]
     final val date // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.date|{}date[0]
         final fun <get-date>(): kotlinx.datetime/LocalDate? // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.date.<get-date>|<get-date>(){}[0]
+    final val midnightPolicy // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.midnightPolicy|{}midnightPolicy[0]
+        final fun <get-midnightPolicy>(): dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.midnightPolicy.<get-midnightPolicy>|<get-midnightPolicy>(){}[0]
     final val time // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.time|{}time[0]
         final fun <get-time>(): kotlinx.datetime/LocalTime? // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.time.<get-time>|<get-time>(){}[0]
     final val zone // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.zone|{}zone[0]
@@ -341,7 +457,11 @@ final class dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext { // dev.c
     final fun component1(): kotlinx.datetime/LocalDate? // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.component1|component1(){}[0]
     final fun component2(): kotlinx.datetime/LocalTime? // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.component2|component2(){}[0]
     final fun component3(): dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext? // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.component3|component3(){}[0]
+    final fun component4(): dev.carcara.kotlinx.locale.datetime/CalendarDateFields? // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.component4|component4(){}[0]
+    final fun component5(): dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.component5|component5(){}[0]
     final fun copy(kotlinx.datetime/LocalDate? = ..., kotlinx.datetime/LocalTime? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext? = ...): dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.copy|copy(kotlinx.datetime.LocalDate?;kotlinx.datetime.LocalTime?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext?){}[0]
+    final fun copy(kotlinx.datetime/LocalDate? = ..., kotlinx.datetime/LocalTime? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext? = ..., dev.carcara.kotlinx.locale.datetime/CalendarDateFields? = ...): dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.copy|copy(kotlinx.datetime.LocalDate?;kotlinx.datetime.LocalTime?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext?;dev.carcara.kotlinx.locale.datetime.CalendarDateFields?){}[0]
+    final fun copy(kotlinx.datetime/LocalDate? = ..., kotlinx.datetime/LocalTime? = ..., dev.carcara.kotlinx.locale.timezone/TimeZoneNameContext? = ..., dev.carcara.kotlinx.locale.datetime/CalendarDateFields? = ..., dev.carcara.kotlinx.locale.datetime/DateTimeMidnightPolicy = ...): dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.copy|copy(kotlinx.datetime.LocalDate?;kotlinx.datetime.LocalTime?;dev.carcara.kotlinx.locale.timezone.TimeZoneNameContext?;dev.carcara.kotlinx.locale.datetime.CalendarDateFields?;dev.carcara.kotlinx.locale.datetime.DateTimeMidnightPolicy){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.datetime/DateTimeRenderContext.toString|toString(){}[0]
@@ -423,6 +543,8 @@ final class dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat { // dev.
 
     final val calendar // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.calendar|{}calendar[0]
         final fun <get-calendar>(): kotlin/String // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.calendar.<get-calendar>|<get-calendar>(){}[0]
+    final val dayPeriodKind // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.dayPeriodKind|{}dayPeriodKind[0]
+        final fun <get-dayPeriodKind>(): dev.carcara.kotlinx.locale.datetime/DateTimeDayPeriodKind? // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.dayPeriodKind.<get-dayPeriodKind>|<get-dayPeriodKind>(){}[0]
     final val fields // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.fields|{}fields[0]
         final fun <get-fields>(): kotlin.collections/Map<dev.carcara.kotlinx.locale.datetime/DateTimeField, dev.carcara.kotlinx.locale.datetime/DateTimeFieldWidth> // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.fields.<get-fields>|<get-fields>(){}[0]
     final val fractionalSecondDigits // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.fractionalSecondDigits|{}fractionalSecondDigits[0]
@@ -452,6 +574,19 @@ final class dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat { // dev.
     final fun toString(): kotlin/String // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.toString|toString(){}[0]
 
     final object Companion // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat.Companion|null[0]
+}
+
+final class dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals { // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals|null[0]
+    constructor <init>(dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat, kotlin.collections/List<dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern>, kotlin/String) // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.<init>|<init>(dev.carcara.kotlinx.locale.datetime.SelectedDateTimeFormat;kotlin.collections.List<dev.carcara.kotlinx.locale.datetime.DateTimeIntervalPattern>;kotlin.String){}[0]
+
+    final val fallback // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.fallback|{}fallback[0]
+        final fun <get-fallback>(): kotlin/String // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.fallback.<get-fallback>|<get-fallback>(){}[0]
+    final val format // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.format|{}format[0]
+        final fun <get-format>(): dev.carcara.kotlinx.locale.datetime/SelectedDateTimeFormat // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.format.<get-format>|<get-format>(){}[0]
+    final val patterns // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.patterns|{}patterns[0]
+        final fun <get-patterns>(): kotlin.collections/List<dev.carcara.kotlinx.locale.datetime/DateTimeIntervalPattern> // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.patterns.<get-patterns>|<get-patterns>(){}[0]
+
+    final object Companion // dev.carcara.kotlinx.locale.datetime/SelectedDateTimeIntervals.Companion|null[0]
 }
 
 final class dev.carcara.kotlinx.locale.datetime/WeekInfo { // dev.carcara.kotlinx.locale.datetime/WeekInfo|null[0]

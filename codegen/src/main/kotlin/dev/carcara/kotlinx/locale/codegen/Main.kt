@@ -43,6 +43,7 @@ fun main(args: Array<String>) {
             generateSources(bundle = bundle, roots = shippedRoots(rootDir))
             generateSegmentationData(rootDir)
             generateCasingData(rootDir)
+            emitCalendarPresentation(rootDir, bundle)
         }
         "metadata" -> {
             val cldr = ensureCloned(rootDir, CLDR_REPO)
@@ -59,6 +60,37 @@ fun main(args: Array<String>) {
             val updated = builder.build()
             bundleFile(rootDir).bufferedWriter().use(updated::writeTo)
             generateSources(updated, shippedRoots(rootDir))
+        }
+        "datePatterns" -> {
+            val cldr = ensureCloned(rootDir, CLDR_REPO)
+            val flattener = Flattener(cldr, parseSupplemental(cldr))
+            val bundle = bundleFile(rootDir).bufferedReader().use(LocaleDataBundle::readFrom)
+            val builder = bundle.toBuilder()
+                .section(
+                    "skeletonFormats",
+                    flattener.localeIds.associate {
+                        canonicalTag(it) to
+                            flattener.resolveSkeletons(it).encodeFormats()
+                    },
+                )
+                .section("intervalFormats", flattener.localeIds.associate { canonicalTag(it) to flattener.resolveIntervals(it).encode() })
+            val updated = builder.build()
+            bundleFile(rootDir).bufferedWriter().use(updated::writeTo)
+            generateSources(
+                updated,
+                SourceRoots.Builder()
+                    .table(GeneratedTable.SKELETONS, rootDir.sourceRoot("kotlinx-locale-datetime-cldr-skeletons"))
+                    .table(GeneratedTable.INTERVAL_FORMATS, rootDir.sourceRoot("kotlinx-locale-datetime-cldr-intervals")).build(),
+            )
+        }
+        "calendars" -> {
+            val cldr = ensureCloned(rootDir, CLDR_REPO)
+            val bundle = bundleFile(rootDir).bufferedReader().use(LocaleDataBundle::readFrom)
+            val builder = bundle.toBuilder()
+            extractCalendarPresentation(cldr, bundle).forEach { (name, records) -> builder.section(name, records) }
+            val updated = builder.build()
+            bundleFile(rootDir).bufferedWriter().use(updated::writeTo)
+            emitCalendarPresentation(rootDir, updated)
         }
         "identityFixtures" -> emitLocaleMetadataFixtures(rootDir, ensureCloned(rootDir, CLDR_REPO))
         "segmentation" -> generateSegmentationData(rootDir)
@@ -174,7 +206,10 @@ internal fun bundleFile(rootDir: File): File = rootDir
     .resolve("dev/carcara/kotlinx/locale/cldr-data.txt")
 
 private fun generate(rootDir: File, cldrDir: File, icuDir: File) {
-    val bundle = extractBundle(rootDir, cldrDir, icuDir)
+    val extracted = extractBundle(rootDir, cldrDir, icuDir)
+    val builder = extracted.toBuilder()
+    extractCalendarPresentation(cldrDir, extracted).forEach { (name, records) -> builder.section(name, records) }
+    val bundle = builder.build()
 
     val bundleFile = bundleFile(rootDir)
     bundleFile.parentFile.mkdirs()
@@ -185,6 +220,7 @@ private fun generate(rootDir: File, cldrDir: File, icuDir: File) {
     generateSources(bundle, shippedRoots(rootDir))
     generateSegmentationData(rootDir)
     generateCasingData(rootDir)
+    emitCalendarPresentation(rootDir, bundle)
 
     println("[codegen] done")
 }
@@ -210,14 +246,6 @@ internal fun shippedRoots(rootDir: File): SourceRoots = SourceRoots.Builder()
             rootDir.sourceRoot("kotlinx-locale-metadata-cldr-full"),
             "dev.carcara.kotlinx.locale.metadata.cldr",
             "CldrLocaleMetadata",
-        ),
-    )
-    .binding(
-        GeneratedBinding.SEGMENTATION,
-        BindingTarget(
-            root = rootDir.sourceRoot("kotlinx-locale-segmentation-unicode"),
-            packageName = "dev.carcara.kotlinx.locale.segmentation.unicode",
-            objectName = "UnicodeSegmentation",
         ),
     )
     .table(GeneratedTable.LOCALE_CATALOG, rootDir.sourceRoot("kotlinx-locale-types"))
@@ -558,13 +586,6 @@ private fun extractBundle(rootDir: File, cldrDir: File, icuDir: File): LocaleDat
     )
     emitGraphemeBreakCases(
         outputFile = coreConformanceDir(rootDir).resolve("GraphemeBreakCaseData.kt"),
-        ucdVersion = UCD_VERSION,
-        cases = parseGraphemeBreakCases(cldrDir),
-        table = encodeGraphemeBreakRanges(parseGraphemeBreakRanges()),
-    )
-    emitGraphemeBreakCases(
-        outputFile = rootDir.sourceRoot("kotlinx-locale-segmentation-unicode", "commonTest")
-            .resolve("dev/carcara/kotlinx/locale/segmentation/conformance").resolve("GraphemeBreakCaseData.kt"),
         ucdVersion = UCD_VERSION,
         cases = parseGraphemeBreakCases(cldrDir),
         table = encodeGraphemeBreakRanges(parseGraphemeBreakRanges()),

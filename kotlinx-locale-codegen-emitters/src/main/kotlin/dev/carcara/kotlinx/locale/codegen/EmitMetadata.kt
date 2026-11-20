@@ -27,6 +27,7 @@ public fun emitMetadataBinding(root: File, packageName: String, objectName: Stri
             "import dev.carcara.kotlinx.locale.Locale\n" +
             "import dev.carcara.kotlinx.locale.metadata.LocaleMetadataSource\n" +
             "import dev.carcara.kotlinx.locale.metadata.LocalePreferences\n" +
+            "import dev.carcara.kotlinx.locale.metadata.TextDirection\n" +
             "import dev.carcara.kotlinx.locale.metadata.CurrencyMetadata\n" +
             "import dev.carcara.kotlinx.locale.metadata.TimeZoneIdentifier\n" +
             "import dev.carcara.kotlinx.locale.metadata.LocaleMatch\n" +
@@ -38,6 +39,7 @@ public fun emitMetadataBinding(root: File, packageName: String, objectName: Stri
             "public fun localeMaximize(value: Locale): Locale = $objectName.maximize(value)\n" +
             "public fun localeMinimize(value: Locale): Locale = $objectName.minimize(value)\n" +
             "public fun localePreferences(locale: Locale = Locale.current): LocalePreferences = $objectName.preferences(locale)\n" +
+            "public fun localeScriptDirectionOrNull(script: String): TextDirection? = $objectName.scriptDirectionOrNull(script)\n" +
             "public fun localeRegionPreference(locale: Locale = Locale.current): RegionPreference =\n" +
             "    $objectName.regionPreference(locale)\n" +
             "public fun localeCanonicalizeUnicodeValue(key: String, value: String): String =\n" +

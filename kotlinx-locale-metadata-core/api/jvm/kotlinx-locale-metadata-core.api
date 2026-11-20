@@ -56,13 +56,20 @@ public abstract interface class dev/carcara/kotlinx/locale/metadata/LocaleMetada
 	public abstract fun numberingSystemDigitsOrNull (Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun numberingSystems ()Ljava/util/Set;
 	public abstract fun preferences (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/LocalePreferences;
+	public fun prepareMatcher (Ljava/util/Set;)Ldev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher;
 	public abstract fun regionPreference (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/metadata/RegionPreference;
+	public fun scriptDirectionOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TextDirection;
 	public abstract fun timeZoneIdentifierOrNull (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TimeZoneIdentifier;
 	public abstract fun timeZoneIdentifiers ()Ljava/util/List;
 	public abstract fun timeZonesForRegion (Ljava/lang/String;)Ljava/util/List;
 }
 
 public final class dev/carcara/kotlinx/locale/metadata/LocaleMetadataSource$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/metadata/LocaleMetadataSource$DefaultImpls {
+	public static fun prepareMatcher (Ldev/carcara/kotlinx/locale/metadata/LocaleMetadataSource;Ljava/util/Set;)Ldev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher;
+	public static fun scriptDirectionOrNull (Ldev/carcara/kotlinx/locale/metadata/LocaleMetadataSource;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/metadata/TextDirection;
 }
 
 public final class dev/carcara/kotlinx/locale/metadata/LocalePreferences {
@@ -90,6 +97,14 @@ public final class dev/carcara/kotlinx/locale/metadata/LocalePreferences {
 }
 
 public final class dev/carcara/kotlinx/locale/metadata/LocalePreferences$Companion {
+}
+
+public abstract interface class dev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher {
+	public static final field Companion Ldev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher$Companion;
+	public abstract fun bestFitOrNull (Ljava/util/List;)Ldev/carcara/kotlinx/locale/metadata/LocaleMatch;
+}
+
+public final class dev/carcara/kotlinx/locale/metadata/PreparedLocaleMatcher$Companion {
 }
 
 public final class dev/carcara/kotlinx/locale/metadata/RegionOrigin : java/lang/Enum {

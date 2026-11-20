@@ -143,35 +143,20 @@ val PHONE_REPO = RepoSpec(
 const val EMOJI_VERSION: String = "17.0"
 
 /**
- * The Unicode release the vendored grapheme cluster properties come from.
+ * The legacy person-name helper's Unicode pin, matching CLDR's grapheme fixtures.
  *
- * Not the newest, and deliberately so: it is the one CLDR `release-48-2` was
- * built against, which is what makes its `GraphemeBreakTest.txt` the right
- * conformance file to hold the implementation to. The two versions disagree
- * about roughly ninety cases, so taking the properties from a later release and
- * the tests from the pinned CLDR would fail for a reason that has nothing to do
- * with the code.
- *
- * Checked rather than trusted: each vendored file carries its own version in its
- * header, and parsing fails if it is not this one.
+ * The standalone segmentation backend pins its own UCD inputs and all three
+ * conformance fixtures in SegmentationData.kt. Casing pins independently in
+ * CasingData.kt. Changing either does not change these legacy bundle tables.
  */
 const val UCD_VERSION: String = "15.1.0"
 
 /**
- * The Unicode release the collation data comes from, which is not [UCD_VERSION].
+ * The Unicode release used by CLDR's collation weights and normalization data.
  *
- * Two subsystems here depend on the UCD and they are held to different
- * conformance files, so they pin separately rather than agreeing on a number
- * neither one wants. Segmentation is held to CLDR's `GraphemeBreakTest.txt` and
- * pins to what that release was built against. Collation is held to the root
- * table in the same CLDR checkout, and `allkeys_CLDR.txt` there declares
- * `UCA Version: 17.0.0` and `UCD Version: 17.0.0` in its own header.
- *
- * UTS #10 maps a string to collation elements over its canonical decomposition,
- * so the decomposition data and the weights have to be one release: taking the
- * mappings from 15.1.0 and the weights from 17.0.0 would disagree about every
- * character added between them, and it would fail as though the algorithm were
- * wrong. Checked the same way, against each file's own header where it has one.
+ * Both must match: UTS #10 maps strings to collation elements over canonical
+ * decomposition. CLDR's allkeys_CLDR.txt declares UCA and UCD 17.0.0, and the
+ * generator checks the normalization inputs against the same version.
  */
 const val UCA_UCD_VERSION: String = "17.0.0"
 

@@ -23,8 +23,8 @@ plugins {
 
 dependencies {
     implementation(project(":kotlinx-locale-codegen-emitters"))
-    // Generates the skeleton goldens and nothing else. This module runs at build
-    // time and is never published, so ICU cannot reach a consumer's classpath.
+    // Extracts calendar presentation data and generates conformance goldens.
+    // Build time only: ICU never reaches a consumer's classpath.
     implementation(libs.icu4j)
     implementation(libs.libphonenumber)
     testImplementation(libs.kotlin.test)
@@ -86,7 +86,7 @@ tasks.register<JavaExec>("generateCasingData") {
 
 tasks.register<JavaExec>("generateSegmentationData") {
     group = "codegen"
-    description = "Generate standalone Unicode word/sentence properties and conformance fixtures"
+    description = "Generate standalone Unicode grapheme/word/sentence properties and conformance fixtures"
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass = mainClassFqn
     args("segmentation", rootDir.absolutePath)
@@ -105,4 +105,21 @@ tasks.register<JavaExec>("generateLocaleIdentityFixtures") {
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass = mainClassFqn
     args("identityFixtures", rootDir.absolutePath)
+}
+
+// Extract presentation only. No calendar arithmetic is emitted.
+tasks.register<JavaExec>("generateCalendarPresentation") {
+    group = "codegen"
+    description = "Generate non-Gregorian calendar presentation records from pinned ICU/CLDR"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = mainClassFqn
+    args("calendars", rootDir.absolutePath)
+}
+
+tasks.register<JavaExec>("generateDateTimePatterns") {
+    group = "codegen"
+    description = "Regenerate structured skeleton and interval patterns, including zone fields"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = mainClassFqn
+    args("datePatterns", rootDir.absolutePath)
 }

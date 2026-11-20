@@ -24,12 +24,16 @@ import dev.carcara.kotlinx.locale.LocaleDataSource
 import dev.carcara.kotlinx.locale.LocaleLookup
 import dev.carcara.kotlinx.locale.RangePart
 import dev.carcara.kotlinx.locale.RangeSource
+import dev.carcara.kotlinx.locale.datetime.DateTimeField
+import dev.carcara.kotlinx.locale.datetime.DateTimeIntervalPattern
+import dev.carcara.kotlinx.locale.datetime.DateTimeIntervalPatternPart
 import dev.carcara.kotlinx.locale.datetime.DateTimePart
 import dev.carcara.kotlinx.locale.datetime.DateTimePartKind
 import dev.carcara.kotlinx.locale.datetime.DateTimeRenderContext
 import dev.carcara.kotlinx.locale.datetime.FormattedDateTime
 import dev.carcara.kotlinx.locale.datetime.FormattedDateTimeRange
 import dev.carcara.kotlinx.locale.datetime.SelectedDateTimeFormat
+import dev.carcara.kotlinx.locale.datetime.SelectedDateTimeIntervals
 import dev.carcara.kotlinx.locale.datetime.format
 import dev.carcara.kotlinx.locale.internal.ENTRY_SEPARATOR
 import dev.carcara.kotlinx.locale.internal.FIELD_SEPARATOR
@@ -68,6 +72,28 @@ public interface IntervalFormatSource : LocaleDataSource {
         numbers: NumberFormatSource? = null,
         zones: TimeZoneNameSource? = null,
     ): LocaleLookup<FormattedDateTimeRange> = LocaleLookup.Unsupported("Structured date/time intervals")
+
+    /** CLDR records compatible with this selected format, without private table access. */
+    public fun selectedIntervals(format: SelectedDateTimeFormat, skeleton: String? = null): LocaleLookup<SelectedDateTimeIntervals> =
+        LocaleLookup.Unsupported("Selected interval records")
+
+    /** Relevant comparison values, including localized periods and effective rendered zone names. */
+    public fun comparisonValues(
+        value: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        numbers: NumberFormatSource? = null,
+        zones: TimeZoneNameSource? = null,
+    ): LocaleLookup<Map<DateTimeField, String>> = LocaleLookup.Unsupported("Interval comparison values")
+
+    /** Render an explicitly selected prepared record, preserving endpoint provenance. */
+    public fun renderIntervalPattern(
+        start: DateTimeRenderContext,
+        end: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        pattern: DateTimeIntervalPattern,
+        numbers: NumberFormatSource? = null,
+        zones: TimeZoneNameSource? = null,
+    ): LocaleLookup<FormattedDateTimeRange> = LocaleLookup.Unsupported("Prepared interval rendering")
 
     public companion object
 }
@@ -267,53 +293,27 @@ public class PayloadIntervalFormats(records: Map<String, String>, private val sk
             is LocaleLookup.Unsupported -> return result
             LocaleLookup.MissingData -> return LocaleLookup.MissingData
         }
-        if (first.parts ==
-            last.parts
-        ) {
-            return LocaleLookup.Value(FormattedDateTimeRange(first.parts.map { RangePart(it, RangeSource.SHARED) }))
+        val before = comparisonValues(start, format, first.parts)
+        val after = comparisonValues(end, format, last.parts)
+        if (before == after) return LocaleLookup.Value(FormattedDateTimeRange(first.parts.map { RangePart(it, RangeSource.SHARED) }))
+        val difference = listOf(
+            DateTimeField.ERA, DateTimeField.YEAR, DateTimeField.RELATED_YEAR, DateTimeField.YEAR_NAME,
+            DateTimeField.MONTH, DateTimeField.DAY,
+            DateTimeField.DAY_PERIOD, DateTimeField.HOUR, DateTimeField.MINUTE, DateTimeField.SECOND,
+            DateTimeField.FRACTIONAL_SECOND, DateTimeField.WEEKDAY, DateTimeField.TIME_ZONE_NAME,
+        )
+            .firstOrNull { before[it] != after[it] }
+        val selected = when (val result = selectedIntervals(format, skeleton)) {
+            is LocaleLookup.Value -> result.value
+            is LocaleLookup.Unsupported -> return result
+            LocaleLookup.MissingData -> return LocaleLookup.MissingData
         }
-        val difference = greatestDifference(start.date, end.date, start.time, end.time)
-        // Only a skeleton request uses skeleton interval patterns. Style requests
-        // retain the exact selected style at both ends of the locale fallback.
-        val canonical = skeleton?.let { request ->
-            val hour = patternHourLetter(format.pattern) ?: 'H'
-            SkeletonFields.of(request.map { if (it in "jJC") hour else it }.joinToString(""))?.canonicalString()
-        }
-        val interval = if (canonical != null &&
-            difference != null &&
-            start.zone == end.zone
-        ) {
-            record.patternFor(canonical, difference, format.pattern)
-        } else {
-            null
-        }
-        val halves = interval?.let(::splitIntervalTokens)
-        if (halves != null) {
-            val repeated = halves.first.filterIsInstance<PatternToken.Field>().map { intervalFieldGroup(it.letter) }.toSet()
-                .intersect(halves.second.filterIsInstance<PatternToken.Field>().map { intervalFieldGroup(it.letter) }.toSet())
-            val output = ArrayList<RangePart<DateTimePart>>()
-            for ((tokens, context, endpoint) in listOf(
-                Triple(halves.first, start, RangeSource.START),
-                Triple(halves.second, end, RangeSource.END),
-            )) {
-                val sources = tokens.map { token ->
-                    if (token is PatternToken.Field && intervalFieldGroup(token.letter) in repeated) endpoint else RangeSource.SHARED
-                }.toMutableList()
-                for (i in tokens.indices) {
-                    if (tokens[i] !is PatternToken.Literal) continue
-                    val before = (i - 1 downTo 0).firstOrNull { tokens[it] is PatternToken.Field }?.let { sources[it] }
-                    val after = (i + 1 until tokens.size).firstOrNull { tokens[it] is PatternToken.Field }?.let { sources[it] }
-                    sources[i] = if (before == endpoint && after == endpoint) endpoint else RangeSource.SHARED
-                }
-                for ((i, token) in tokens.withIndex()) {
-                    when (val value = render(listOf(token), context)) {
-                        is LocaleLookup.Value -> output += value.value.parts.map { RangePart(it, sources[i]) }
-                        is LocaleLookup.Unsupported -> return value
-                        LocaleLookup.MissingData -> return LocaleLookup.MissingData
-                    }
-                }
+        // Epochs remain attached to their endpoints for metazone lookup. Only
+        // names consumed by this format participate in the equality decision.
+        if (before[DateTimeField.TIME_ZONE_NAME] == after[DateTimeField.TIME_ZONE_NAME]) {
+            selected.patterns.firstOrNull { it.difference == difference }?.let {
+                return renderIntervalPattern(start, end, format, it, numbers, zones)
             }
-            return LocaleLookup.Value(FormattedDateTimeRange(output))
         }
         val output = ArrayList<RangePart<DateTimePart>>()
         val template = record.fallback
@@ -333,6 +333,229 @@ public class PayloadIntervalFormats(records: Map<String, String>, private val sk
                     while (index < template.length && !template.startsWith("{0}", index) && !template.startsWith("{1}", index)) index++
                     output += RangePart(DateTimePart(DateTimePartKind.LITERAL, template.substring(begin, index)), RangeSource.SHARED)
                 }
+            }
+        }
+        return LocaleLookup.Value(FormattedDateTimeRange(output))
+    }
+
+    private val selectedIntervalCache =
+        PreparedDateCache<Pair<SelectedDateTimeFormat, String?>, LocaleLookup<SelectedDateTimeIntervals>>(128)
+
+    override fun selectedIntervals(format: SelectedDateTimeFormat, skeleton: String?): LocaleLookup<SelectedDateTimeIntervals> {
+        val snapshot = format.copy(fields = format.fields.toMap())
+        return selectedIntervalCache.getOrPut(snapshot to skeleton) { prepareSelectedIntervals(snapshot, skeleton) }
+    }
+
+    private fun prepareSelectedIntervals(format: SelectedDateTimeFormat, skeleton: String?): LocaleLookup<SelectedDateTimeIntervals> {
+        val record = recordFor(format.locale) ?: return LocaleLookup.MissingData
+        val hour = patternHourLetter(format.pattern) ?: 'H'
+        val request = skeleton ?: parseDateTimePattern(format.pattern).filterIsInstance<PatternToken.Field>()
+            .filterNot { it.letter == 'a' && hour in "hK" }
+            .joinToString("") { it.letter.toString().repeat(it.count) }
+        val canonical = SkeletonFields.of(request.map { if (it in "jJC") hour else it }.joinToString(""))?.canonicalString()
+            ?: return LocaleLookup.Unsupported("Interval skeleton $request")
+        val selectedLetters = parseDateTimePattern(format.pattern).filterIsInstance<PatternToken.Field>()
+            .mapNotNull { token -> dateTimeFieldOrNull(token.letter)?.let { it to token.letter } }.toMap()
+        val selectedWidths = parseDateTimePattern(format.pattern).filterIsInstance<PatternToken.Field>()
+            .mapNotNull { token -> dateTimeFieldOrNull(token.letter)?.let { it to token.count } }.toMap()
+        val selectedTokens = parseDateTimePattern(format.pattern)
+        val exactRecords = record.patternsFor(canonical)
+        val records = if (exactRecords.isEmpty() && canonical.any { it == 's' || it == 'S' }) {
+            val seconds = if ('S' in canonical) record.patternsFor(canonical.filterNot { it == 'S' }) else emptyList()
+            seconds.ifEmpty { record.patternsFor(canonical.filterNot { it == 's' || it == 'S' }) }
+        } else {
+            exactRecords
+        }
+        val patterns = records.mapNotNull { (letter, pattern) ->
+            val difference = dateTimeFieldOrNull(letter) ?: return@mapNotNull null
+            val reversed = pattern.startsWith("latestFirst:")
+            val body = pattern.removePrefix("latestFirst:").removePrefix("earliestFirst:")
+            val adjusted = buildString {
+                for (token in extendIntervalTimeFields(parseDateTimePattern(body), selectedTokens)) {
+                    when (token) {
+                        is PatternToken.Literal -> append(quoteLiteral(token.text))
+                        is PatternToken.Field -> append(
+                            (selectedLetters[dateTimeFieldOrNull(token.letter)] ?: token.letter).toString()
+                                .repeat(selectedWidths[dateTimeFieldOrNull(token.letter)] ?: token.count),
+                        )
+                    }
+                }
+            }
+            val metadata = selectedDateTimeFormat(adjusted, format.locale, format.numberingSystem)
+            // A compact record must not add fields or alter the selected widths.
+            if (metadata.fields != format.fields) return@mapNotNull null
+            DateTimeIntervalPattern(
+                difference,
+                preparedIntervalParts(adjusted).map { part ->
+                    if (!reversed || part.source == RangeSource.SHARED) {
+                        part
+                    } else {
+                        part.copy(source = if (part.source == RangeSource.START) RangeSource.END else RangeSource.START)
+                    }
+                },
+                format.hourCycle,
+            )
+        }.toMutableList()
+        // A minute-difference record with separate endpoint seconds is also a
+        // valid compatible record for a smaller difference. Never share the
+        // very field whose differing values require both endpoints.
+        for ((field, parent) in listOf(
+            DateTimeField.SECOND to DateTimeField.MINUTE,
+            DateTimeField.FRACTIONAL_SECOND to DateTimeField.SECOND,
+        )) {
+            if (field !in format.fields || patterns.any { it.difference == field }) continue
+            val candidate = patterns.firstOrNull { entry ->
+                entry.difference == parent &&
+                    listOf(RangeSource.START, RangeSource.END).all { endpoint ->
+                        entry.parts.any { part ->
+                            part.source == endpoint &&
+                                parseDateTimePattern(part.pattern).any {
+                                    it is PatternToken.Field && dateTimeFieldOrNull(it.letter) == field
+                                }
+                        }
+                    }
+            }
+            if (candidate != null) patterns += DateTimeIntervalPattern(field, candidate.parts, format.hourCycle)
+        }
+        if (patterns.isNotEmpty()) return LocaleLookup.Value(SelectedDateTimeIntervals(format, patterns, record.fallback))
+        // Date+time styles can share their date and use a compatible time
+        // interval without replacing the selected style's fields or glue.
+        val tokens = parseDateTimePattern(format.pattern)
+        val dates = tokens.indices.filter { i ->
+            (tokens[i] as? PatternToken.Field)?.let {
+                dateTimeFieldOrNull(it.letter) in
+                    CALENDAR_DATE_FIELDS
+            } ==
+                true
+        }
+        val times = tokens.indices.filter { i -> tokens[i] is PatternToken.Field && i !in dates }
+        if (dates.isNotEmpty() &&
+            times.isNotEmpty() &&
+            dates.last() < times.first() &&
+            tokens.drop(times.last() + 1).all { it is PatternToken.Literal && it.text.all(Char::isWhitespace) }
+        ) {
+            fun text(tokens: List<PatternToken>): String = tokens.joinToString("") { token ->
+                when (token) {
+                    is PatternToken.Literal -> quoteLiteral(token.text)
+                    is PatternToken.Field -> token.letter.toString().repeat(token.count)
+                }
+            }
+            val timePattern = text(tokens.subList(times.first(), times.last() + 1))
+            val timeFormat = selectedDateTimeFormat(timePattern, format.locale, format.numberingSystem).copy(calendar = format.calendar)
+            val prepared = selectedIntervals(timeFormat)
+            if (prepared is LocaleLookup.Value && prepared.value.patterns.isNotEmpty()) {
+                val prefix = text(tokens.subList(0, times.first()))
+                val suffix = text(tokens.subList(times.last() + 1, tokens.size))
+                val combined = prepared.value.patterns.filter { entry ->
+                    val first = entry.parts.firstOrNull()?.pattern?.let(::parseDateTimePattern)?.firstOrNull()
+                    first !is PatternToken.Literal || first.text.all(Char::isWhitespace)
+                }.map { entry ->
+                    DateTimeIntervalPattern(
+                        entry.difference,
+                        listOf(DateTimeIntervalPatternPart(prefix, RangeSource.SHARED)) + entry.parts +
+                            DateTimeIntervalPatternPart(suffix, RangeSource.SHARED),
+                        format.hourCycle,
+                    )
+                }
+                return LocaleLookup.Value(SelectedDateTimeIntervals(format, combined, record.fallback))
+            }
+        }
+        return LocaleLookup.Value(SelectedDateTimeIntervals(format, patterns, record.fallback))
+    }
+
+    /** Add only smaller numeric time fields, using separators from the selected pattern. */
+    private fun extendIntervalTimeFields(interval: List<PatternToken>, selected: List<PatternToken>): List<PatternToken> {
+        var result = interval
+        for (letter in listOf('s', 'S')) {
+            if (result.any { it is PatternToken.Field && it.letter == letter }) continue
+            val index = selected.indexOfFirst { it is PatternToken.Field && it.letter == letter }
+            if (index < 0) continue
+            val previous = (index - 1 downTo 0).firstOrNull { selected[it] is PatternToken.Field } ?: continue
+            val anchor = (selected[previous] as PatternToken.Field).letter
+            // Seconds extend minutes; fractional seconds extend seconds. Do
+            // not attach them to an unrelated field or guess a separator.
+            if (anchor != if (letter == 's') 'm' else 's') continue
+            val addition = selected.subList(previous + 1, index + 1)
+            result = result.flatMap { token ->
+                if (token is PatternToken.Field && token.letter == anchor) listOf(token) + addition else listOf(token)
+            }
+        }
+        return result
+    }
+
+    override fun comparisonValues(
+        value: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        numbers: NumberFormatSource?,
+        zones: TimeZoneNameSource?,
+    ): LocaleLookup<Map<DateTimeField, String>> {
+        val result = skeletons.renderTokens(parseDateTimePattern(format.pattern), value, format, numbers, zones)
+        if (result !is LocaleLookup.Value) {
+            return when (result) {
+                is LocaleLookup.Unsupported -> result
+                else -> LocaleLookup.MissingData
+            }
+        }
+        return LocaleLookup.Value(comparisonValues(value, format, result.value.parts))
+    }
+
+    private fun comparisonValues(
+        value: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        parts: List<DateTimePart>,
+    ): Map<DateTimeField, String> {
+        val fields = parts.filter { it.kind != DateTimePartKind.LITERAL }
+            .associate { DateTimeField.valueOf(it.kind.name) to it.value }.toMutableMap()
+        fun replace(field: DateTimeField, number: Int?) {
+            if (field in fields && number != null) fields[field] = number.toString()
+        }
+        replace(DateTimeField.YEAR, value.date?.year)
+        replace(DateTimeField.MONTH, value.date?.month?.ordinal?.plus(1))
+        replace(DateTimeField.DAY, value.date?.day)
+        replace(DateTimeField.HOUR, value.time?.hour)
+        replace(DateTimeField.MINUTE, value.time?.minute)
+        replace(DateTimeField.SECOND, value.time?.second)
+        value.calendarDate?.let { date ->
+            replace(
+                DateTimeField.YEAR,
+                if (parseDateTimePattern(format.pattern).any {
+                        it is PatternToken.Field && it.letter == 'u'
+                    }
+                ) {
+                    date.year
+                } else {
+                    date.eraYear
+                },
+            )
+            replace(DateTimeField.RELATED_YEAR, date.relatedYear)
+            replace(DateTimeField.YEAR_NAME, date.year ?: date.relatedYear ?: date.cyclicYear)
+            replace(DateTimeField.DAY, date.day)
+            date.era?.let { if (DateTimeField.ERA in fields) fields[DateTimeField.ERA] = it }
+            if (DateTimeField.MONTH in fields &&
+                date.monthCode != null
+            ) {
+                fields[DateTimeField.MONTH] = date.monthCode + "/" + date.isLeapYear
+            }
+        }
+        return fields.toMap()
+    }
+
+    override fun renderIntervalPattern(
+        start: DateTimeRenderContext,
+        end: DateTimeRenderContext,
+        format: SelectedDateTimeFormat,
+        pattern: DateTimeIntervalPattern,
+        numbers: NumberFormatSource?,
+        zones: TimeZoneNameSource?,
+    ): LocaleLookup<FormattedDateTimeRange> {
+        if (pattern.hourCycle != format.hourCycle) return LocaleLookup.Unsupported("Interval hour cycle differs from selected format")
+        val output = ArrayList<RangePart<DateTimePart>>()
+        for (part in pattern.parts) {
+            val context = if (part.source == RangeSource.END) end else start
+            when (val rendered = skeletons.renderTokens(parseDateTimePattern(part.pattern), context, format, numbers, zones)) {
+                is LocaleLookup.Value -> output += rendered.value.parts.map { RangePart(it, part.source) }
+                is LocaleLookup.Unsupported -> return rendered
+                LocaleLookup.MissingData -> return LocaleLookup.MissingData
             }
         }
         return LocaleLookup.Value(FormattedDateTimeRange(output))
@@ -395,6 +618,25 @@ public class IntervalRecord(record: String) {
         return byKey["$canonicalSkeleton.$hourLetter"] ?: byKey["$canonicalSkeleton.H"] ?: byKey["$canonicalSkeleton.h"]
     }
 
+    internal fun patternsFor(canonicalSkeleton: String): List<Pair<Char, String>> {
+        val exact = byKey.filterKeys { it.substringBeforeLast('.') == canonicalSkeleton }
+        if (exact.isNotEmpty()) return exact.map { it.key.last() to it.value }
+        val request = SkeletonFields.of(canonicalSkeleton) ?: return emptyList()
+        // Width adjustment is permitted only within the same field set and
+        // numeric/text family. Zone, year and period semantics remain exact.
+        val candidate = byKey.keys.map { it.substringBeforeLast('.') }.distinct().sorted().mapNotNull { key ->
+            val fields = SkeletonFields.of(key) ?: return@mapNotNull null
+            if (fields.fieldMask() != request.fieldMask()) return@mapNotNull null
+            var distance = 0
+            for (i in 0 until SkeletonField.COUNT) {
+                if (fields.chars[i] != request.chars[i] || fields.isNumeric(i) != request.isNumeric(i)) return@mapNotNull null
+                distance += kotlin.math.abs(fields.lengths[i] - request.lengths[i])
+            }
+            key to distance
+        }.minByOrNull { it.second }?.first ?: return emptyList()
+        return byKey.filterKeys { it.substringBeforeLast('.') == candidate }.map { it.key.last() to it.value }
+    }
+
     public companion object
 }
 
@@ -429,4 +671,31 @@ private fun intervalFieldGroup(letter: Char): Char = when (letter) {
     'u', 'U', 'r' -> 'y'
     'b', 'B' -> 'a'
     else -> letter
+}
+
+/** Prepare fragments once, retaining the semantic source of each field and joining literal. */
+internal fun preparedIntervalParts(pattern: String): List<DateTimeIntervalPatternPart> {
+    val halves = splitIntervalTokens(pattern) ?: return listOf(DateTimeIntervalPatternPart(pattern, RangeSource.SHARED))
+    val repeated = halves.first.filterIsInstance<PatternToken.Field>().map { intervalFieldGroup(it.letter) }.toSet()
+        .intersect(halves.second.filterIsInstance<PatternToken.Field>().map { intervalFieldGroup(it.letter) }.toSet())
+    return buildList {
+        for ((tokens, endpoint) in listOf(halves.first to RangeSource.START, halves.second to RangeSource.END)) {
+            val sources = tokens.map { token ->
+                if (token is PatternToken.Field && intervalFieldGroup(token.letter) in repeated) endpoint else RangeSource.SHARED
+            }.toMutableList()
+            for (i in tokens.indices) {
+                if (tokens[i] !is PatternToken.Literal) continue
+                val before = (i - 1 downTo 0).firstOrNull { tokens[it] is PatternToken.Field }?.let { sources[it] }
+                val after = (i + 1 until tokens.size).firstOrNull { tokens[it] is PatternToken.Field }?.let { sources[it] }
+                sources[i] = if (before == endpoint && after == endpoint) endpoint else RangeSource.SHARED
+            }
+            for ((i, token) in tokens.withIndex()) {
+                val fragment = when (token) {
+                    is PatternToken.Literal -> quoteLiteral(token.text)
+                    is PatternToken.Field -> token.letter.toString().repeat(token.count)
+                }
+                add(DateTimeIntervalPatternPart(fragment, sources[i]))
+            }
+        }
+    }
 }

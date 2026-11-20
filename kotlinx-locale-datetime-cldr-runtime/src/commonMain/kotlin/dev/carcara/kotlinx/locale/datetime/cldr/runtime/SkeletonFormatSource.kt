@@ -81,6 +81,49 @@ public interface SkeletonFormatSource : LocaleDataSource {
     public fun selectSkeleton(skeleton: String, locale: Locale, numberingSystem: String? = null): LocaleLookup<SelectedDateTimeFormat> =
         LocaleLookup.Unsupported("Skeleton selection")
 
+    public fun selectSkeleton(
+        skeleton: String,
+        locale: Locale,
+        numberingSystem: String? = null,
+        fieldLengthMatching: SkeletonFieldLengthMatching,
+    ): LocaleLookup<SelectedDateTimeFormat> = if (fieldLengthMatching == SkeletonFieldLengthMatching.LOCALE_PREFERRED) {
+        selectSkeleton(skeleton, locale, numberingSystem)
+    } else {
+        LocaleLookup.Unsupported("Requested numeric skeleton widths")
+    }
+
+    public fun selectSkeleton(
+        skeleton: String,
+        locale: Locale,
+        numberingSystem: String? = null,
+        calendar: String,
+        fieldLengthMatching: SkeletonFieldLengthMatching,
+    ): LocaleLookup<SelectedDateTimeFormat> =
+        when (val result = selectSkeleton(skeleton, locale.withUnicodeKeyword("ca", calendar), numberingSystem, fieldLengthMatching)) {
+            is LocaleLookup.Value -> LocaleLookup.Value(result.value.copy(locale = locale))
+            is LocaleLookup.Unsupported -> result
+            LocaleLookup.MissingData -> LocaleLookup.MissingData
+        }
+
+    public fun selectSkeleton(
+        skeleton: String,
+        locale: Locale,
+        numberingSystem: String? = null,
+        calendar: String,
+    ): LocaleLookup<SelectedDateTimeFormat> =
+        when (val result = selectSkeleton(skeleton, locale.withUnicodeKeyword("ca", calendar), numberingSystem)) {
+            is LocaleLookup.Value -> LocaleLookup.Value(result.value.copy(locale = locale))
+            is LocaleLookup.Unsupported -> result
+            LocaleLookup.MissingData -> LocaleLookup.MissingData
+        }
+
+    public fun candidates(locale: Locale, numberingSystem: String? = null, calendar: String): LocaleLookup<List<SelectedDateTimeFormat>> =
+        when (val result = candidates(locale.withUnicodeKeyword("ca", calendar), numberingSystem)) {
+            is LocaleLookup.Value -> LocaleLookup.Value(result.value.map { it.copy(locale = locale) })
+            is LocaleLookup.Unsupported -> result
+            LocaleLookup.MissingData -> LocaleLookup.MissingData
+        }
+
     /** Candidate records for callers implementing their own format matcher. */
     public fun candidates(locale: Locale, numberingSystem: String? = null): LocaleLookup<List<SelectedDateTimeFormat>> =
         LocaleLookup.Unsupported("Format candidates")
@@ -154,8 +197,22 @@ public class PayloadSkeletonFormats(
 
     private val matchers = PreparedDateCache<Pair<String, HourCycle?>, LocaleSkeletons?>()
 
-    override fun selectSkeleton(skeleton: String, locale: Locale, numberingSystem: String?): LocaleLookup<SelectedDateTimeFormat> {
+    override fun selectSkeleton(skeleton: String, locale: Locale, numberingSystem: String?): LocaleLookup<SelectedDateTimeFormat> =
+        selectSkeleton(skeleton, locale, numberingSystem, SkeletonFieldLengthMatching.LOCALE_PREFERRED)
+
+    override fun selectSkeleton(
+        skeleton: String,
+        locale: Locale,
+        numberingSystem: String?,
+        fieldLengthMatching: SkeletonFieldLengthMatching,
+    ): LocaleLookup<SelectedDateTimeFormat> {
         val data = skeletonsFor(locale) ?: return LocaleLookup.MissingData
+        val calendar = locale.unicodeKeywordOrNull("ca") ?: data.dateTime.calendarIdentifier
+        if (calendar != data.dateTime.calendarIdentifier &&
+            !(calendar == "iso8601" && data.dateTime.calendarIdentifier == "gregory")
+        ) {
+            return LocaleLookup.Unsupported("Calendar $calendar")
+        }
         val fraction = skeleton.count { it == 'S' }
         val request = skeleton.filter { it != 'S' }
         val base = if (request.isEmpty() && fraction > 0) {
@@ -164,6 +221,7 @@ public class PayloadSkeletonFormats(
             data.matcher.bestPatternOrNull(
                 if (fraction > 0 && 's' !in request) request + "s" else request,
                 extended = true,
+                fieldLengthMatching = fieldLengthMatching,
             ) ?: return LocaleLookup.Unsupported("Skeleton $skeleton")
         }
         val system = numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.dateTime.defaultNumberingSystem
@@ -198,12 +256,18 @@ public class PayloadSkeletonFormats(
                 pattern,
                 locale,
                 numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.dateTime.defaultNumberingSystem,
-            ),
+            ).copy(calendar = calendar),
         )
     }
 
     override fun candidates(locale: Locale, numberingSystem: String?): LocaleLookup<List<SelectedDateTimeFormat>> {
         val data = skeletonsFor(locale) ?: return LocaleLookup.MissingData
+        val calendar = locale.unicodeKeywordOrNull("ca") ?: data.dateTime.calendarIdentifier
+        if (calendar != data.dateTime.calendarIdentifier &&
+            !(calendar == "iso8601" && data.dateTime.calendarIdentifier == "gregory")
+        ) {
+            return LocaleLookup.Unsupported("Calendar $calendar")
+        }
         val dates = data.dateTime.dateFormats
         val times = FormatStyle.entries.map { data.dateTime.timePattern(it, locale.hourCycle) }
         val patterns = (
@@ -215,14 +279,14 @@ public class PayloadSkeletonFormats(
             patterns.filter { pattern ->
                 parseDateTimePattern(pattern).all { token ->
                     token !is PatternToken.Field ||
-                        (token.letter in "GyMLdEecabBhHKkmsSzvO" && !(token.letter in "ec" && token.count <= 2))
+                        (token.letter in "GyurUMLdEecabBhHKkmsSzvO" && !(token.letter in "ec" && token.count <= 2))
                 }
             }.map {
                 selectedDateTimeFormat(
                     it,
                     locale,
                     numberingSystem ?: locale.unicodeKeywordOrNull("nu") ?: data.dateTime.defaultNumberingSystem,
-                )
+                ).copy(calendar = calendar)
             },
         )
     }

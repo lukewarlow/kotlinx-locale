@@ -10,6 +10,42 @@ public final class dev/carcara/kotlinx/locale/datetime/CalendarCapitalizationSou
 	public static fun capitalized (Ldev/carcara/kotlinx/locale/datetime/CalendarCapitalizationSource;Ljava/lang/String;Ldev/carcara/kotlinx/locale/datetime/CalendarNameUsage;Ldev/carcara/kotlinx/locale/Capitalization;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 }
 
+public final class dev/carcara/kotlinx/locale/datetime/CalendarDateFields {
+	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;ZLjava/lang/Integer;Ljava/lang/Integer;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;ZLjava/lang/Integer;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/Integer;
+	public final fun component11 ()Ljava/lang/Integer;
+	public final fun component2 ()Ljava/lang/Integer;
+	public final fun component3 ()Ljava/lang/Integer;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/Integer;
+	public final fun component7 ()Ljava/lang/Integer;
+	public final fun component8 ()Ljava/lang/Integer;
+	public final fun component9 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;ZLjava/lang/Integer;Ljava/lang/Integer;)Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;ZLjava/lang/Integer;Ljava/lang/Integer;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCalendar ()Ljava/lang/String;
+	public final fun getCyclicYear ()Ljava/lang/Integer;
+	public final fun getDay ()Ljava/lang/Integer;
+	public final fun getEra ()Ljava/lang/String;
+	public final fun getEraYear ()Ljava/lang/Integer;
+	public final fun getMonthCode ()Ljava/lang/String;
+	public final fun getMonthNumber ()Ljava/lang/Integer;
+	public final fun getRelatedYear ()Ljava/lang/Integer;
+	public final fun getWeekday ()Ljava/lang/Integer;
+	public final fun getYear ()Ljava/lang/Integer;
+	public fun hashCode ()I
+	public final fun isLeapYear ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/CalendarDateFields$Companion {
+}
+
 public final class dev/carcara/kotlinx/locale/datetime/CalendarNameUsage : java/lang/Enum {
 	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/CalendarNameUsage$Companion;
 	public static final field DAY_FORMAT Ldev/carcara/kotlinx/locale/datetime/CalendarNameUsage;
@@ -58,6 +94,19 @@ public final class dev/carcara/kotlinx/locale/datetime/DateTimeCapabilities {
 public final class dev/carcara/kotlinx/locale/datetime/DateTimeCapabilities$Companion {
 }
 
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind : java/lang/Enum {
+	public static final field AM_PM Ldev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind;
+	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind$Companion;
+	public static final field FLEXIBLE Ldev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind;
+	public static final field NOON_MIDNIGHT Ldev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind$Companion {
+}
+
 public final class dev/carcara/kotlinx/locale/datetime/DateTimeField : java/lang/Enum {
 	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/DateTimeField$Companion;
 	public static final field DAY Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
@@ -68,10 +117,12 @@ public final class dev/carcara/kotlinx/locale/datetime/DateTimeField : java/lang
 	public static final field MINUTE Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static final field MONTH Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static final field QUARTER Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
+	public static final field RELATED_YEAR Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static final field SECOND Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static final field TIME_ZONE_NAME Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static final field WEEKDAY Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static final field YEAR Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
+	public static final field YEAR_NAME Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
 	public static fun values ()[Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
@@ -97,6 +148,7 @@ public final class dev/carcara/kotlinx/locale/datetime/DateTimeFieldWidth$Compan
 
 public abstract interface class dev/carcara/kotlinx/locale/datetime/DateTimeFormatSource : dev/carcara/kotlinx/locale/LocaleDataSource {
 	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource$Companion;
+	public fun calendarEras (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun capabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/datetime/DateTimeCapabilities;
 	public abstract fun dayOfWeekNameOrNull (ILdev/carcara/kotlinx/locale/datetime/TextStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun dayOfWeekNameOrNull (ILdev/carcara/kotlinx/locale/datetime/TextStyle;Ldev/carcara/kotlinx/locale/datetime/NameContext;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
@@ -108,13 +160,16 @@ public abstract interface class dev/carcara/kotlinx/locale/datetime/DateTimeForm
 	public fun render (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static synthetic fun render$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun select (Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public fun select (Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static synthetic fun select$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun select$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/DateTimeFormatSource$Companion {
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/DateTimeFormatSource$DefaultImpls {
+	public static fun calendarEras (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static fun capabilities (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/datetime/DateTimeCapabilities;
 	public static fun dayOfWeekNameOrNull (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;ILdev/carcara/kotlinx/locale/datetime/TextStyle;Ldev/carcara/kotlinx/locale/datetime/NameContext;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public static fun getLocaleCoverage (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;)Ldev/carcara/kotlinx/locale/LocaleCoverage;
@@ -122,7 +177,9 @@ public final class dev/carcara/kotlinx/locale/datetime/DateTimeFormatSource$Defa
 	public static fun render (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static synthetic fun render$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static fun select (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static fun select (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public static synthetic fun select$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public static synthetic fun select$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/DateTimeFormatSourceKt {
@@ -133,6 +190,46 @@ public final class dev/carcara/kotlinx/locale/datetime/DateTimeFormatSourceKt {
 	public static final fun format (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Lkotlinx/datetime/LocalDate;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public static final fun format (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Lkotlinx/datetime/LocalDateTime;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public static final fun format (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeIntervalPattern {
+	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/DateTimeIntervalPattern$Companion;
+	public fun <init> (Ldev/carcara/kotlinx/locale/datetime/DateTimeField;Ljava/util/List;Ldev/carcara/kotlinx/locale/datetime/HourCycle;)V
+	public final fun getDifference ()Ldev/carcara/kotlinx/locale/datetime/DateTimeField;
+	public final fun getHourCycle ()Ldev/carcara/kotlinx/locale/datetime/HourCycle;
+	public final fun getParts ()Ljava/util/List;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeIntervalPattern$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeIntervalPatternPart {
+	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/DateTimeIntervalPatternPart$Companion;
+	public fun <init> (Ljava/lang/String;Ldev/carcara/kotlinx/locale/RangeSource;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ldev/carcara/kotlinx/locale/RangeSource;
+	public final fun copy (Ljava/lang/String;Ldev/carcara/kotlinx/locale/RangeSource;)Ldev/carcara/kotlinx/locale/datetime/DateTimeIntervalPatternPart;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeIntervalPatternPart;Ljava/lang/String;Ldev/carcara/kotlinx/locale/RangeSource;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/datetime/DateTimeIntervalPatternPart;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPattern ()Ljava/lang/String;
+	public final fun getSource ()Ldev/carcara/kotlinx/locale/RangeSource;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeIntervalPatternPart$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy : java/lang/Enum {
+	public static final field ALLOW Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;
+	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy$Companion;
+	public static final field SUPPRESS Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;
+	public static fun values ()[Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy$Companion {
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/DateTimePart {
@@ -163,10 +260,12 @@ public final class dev/carcara/kotlinx/locale/datetime/DateTimePartKind : java/l
 	public static final field MINUTE Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static final field MONTH Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static final field QUARTER Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
+	public static final field RELATED_YEAR Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static final field SECOND Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static final field TIME_ZONE_NAME Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static final field WEEKDAY Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static final field YEAR Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
+	public static final field YEAR_NAME Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
 	public static fun values ()[Ldev/carcara/kotlinx/locale/datetime/DateTimePartKind;
@@ -180,13 +279,25 @@ public final class dev/carcara/kotlinx/locale/datetime/DateTimeRenderContext {
 	public fun <init> ()V
 	public fun <init> (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;)V
 	public synthetic fun <init> (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;)V
+	public synthetic fun <init> (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;)V
+	public synthetic fun <init> (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lkotlinx/datetime/LocalDate;
 	public final fun component2 ()Lkotlinx/datetime/LocalTime;
 	public final fun component3 ()Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;
+	public final fun component4 ()Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;
+	public final fun component5 ()Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;
 	public final fun copy (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;)Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;
+	public final fun copy (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;)Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;
+	public final fun copy (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;)Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;
 	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;
+	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalTime;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCalendarDate ()Ldev/carcara/kotlinx/locale/datetime/CalendarDateFields;
 	public final fun getDate ()Lkotlinx/datetime/LocalDate;
+	public final fun getMidnightPolicy ()Ldev/carcara/kotlinx/locale/datetime/DateTimeMidnightPolicy;
 	public final fun getTime ()Lkotlinx/datetime/LocalTime;
 	public final fun getZone ()Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameContext;
 	public fun hashCode ()I
@@ -241,6 +352,7 @@ public final class dev/carcara/kotlinx/locale/datetime/DurationStyleKt {
 public final class dev/carcara/kotlinx/locale/datetime/FallbackDateTimeFormats : dev/carcara/kotlinx/locale/datetime/DateTimeFormatSource {
 	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/FallbackDateTimeFormats$Companion;
 	public fun <init> (Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;Ldev/carcara/kotlinx/locale/datetime/DateTimeFormatSource;)V
+	public fun calendarEras (Ljava/lang/String;Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun capabilities (Ldev/carcara/kotlinx/locale/Locale;)Ldev/carcara/kotlinx/locale/datetime/DateTimeCapabilities;
 	public fun dayOfWeekNameOrNull (ILdev/carcara/kotlinx/locale/datetime/TextStyle;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun dayOfWeekNameOrNull (ILdev/carcara/kotlinx/locale/datetime/TextStyle;Ldev/carcara/kotlinx/locale/datetime/NameContext;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
@@ -253,6 +365,7 @@ public final class dev/carcara/kotlinx/locale/datetime/FallbackDateTimeFormats :
 	public fun monthNameOrNull (ILdev/carcara/kotlinx/locale/datetime/TextStyle;Ldev/carcara/kotlinx/locale/datetime/NameContext;Ldev/carcara/kotlinx/locale/Locale;)Ljava/lang/String;
 	public fun render (Ldev/carcara/kotlinx/locale/datetime/DateTimeRenderContext;Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ldev/carcara/kotlinx/locale/number/NumberFormatSource;Ldev/carcara/kotlinx/locale/timezone/TimeZoneNameSource;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 	public fun select (Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/LocaleLookup;
+	public fun select (Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/datetime/FormatStyle;Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/String;)Ldev/carcara/kotlinx/locale/LocaleLookup;
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/FallbackDateTimeFormats$Companion {
@@ -435,6 +548,7 @@ public final class dev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat {
 	public static synthetic fun copy$default (Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ldev/carcara/kotlinx/locale/Locale;Ljava/lang/String;Ljava/util/Map;Ldev/carcara/kotlinx/locale/datetime/HourCycle;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ldev/carcara/kotlinx/locale/datetime/DateTimeZoneNameStyle;ILjava/lang/Object;)Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCalendar ()Ljava/lang/String;
+	public final fun getDayPeriodKind ()Ldev/carcara/kotlinx/locale/datetime/DateTimeDayPeriodKind;
 	public final fun getFields ()Ljava/util/Map;
 	public final fun getFractionalSecondDigits ()Ljava/lang/Integer;
 	public final fun getHourCycle ()Ldev/carcara/kotlinx/locale/datetime/HourCycle;
@@ -447,6 +561,17 @@ public final class dev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat {
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat$Companion {
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/SelectedDateTimeIntervals {
+	public static final field Companion Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeIntervals$Companion;
+	public fun <init> (Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;Ljava/util/List;Ljava/lang/String;)V
+	public final fun getFallback ()Ljava/lang/String;
+	public final fun getFormat ()Ldev/carcara/kotlinx/locale/datetime/SelectedDateTimeFormat;
+	public final fun getPatterns ()Ljava/util/List;
+}
+
+public final class dev/carcara/kotlinx/locale/datetime/SelectedDateTimeIntervals$Companion {
 }
 
 public final class dev/carcara/kotlinx/locale/datetime/TextStyle : java/lang/Enum {
